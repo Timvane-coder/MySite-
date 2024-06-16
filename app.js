@@ -17,7 +17,7 @@ const app = new express();
 let PORT = process.env.PORT || 3000
 
 app.get('/', function (req, res) {
-  res.send('online');
+  res.send('your Jojosc website is online');
 });
 
 
