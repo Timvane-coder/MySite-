@@ -17,7 +17,7 @@ const app = new express();
 let PORT = process.env.PORT || 3000
 
 app.get('/', function (req, res) {
-  res.send('your Jojosc music Whatsapp website is online at https://musicdynansty-3147b60a229f.herokuapp.com/');
+  res.send('your Jojosc music Whatsapp website is online at musicdynansty-3147b60a229f.herokuapp');
 });
 
 
