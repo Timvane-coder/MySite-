@@ -52,7 +52,7 @@ export function comandosInfo(botInfo){
                     "*Contato do criador* : wa.me/{p5}\n"+
                     "*Contato do criador* : wa.me/990117051\n"+
                     "*Versão atual* : {p6}\n"+
-                    "*Facebook* :https://www.facebook.com/Mr.Ayron \n"
+                    "*Facebook* :+265990117051\n"
                 }
             }
         },
