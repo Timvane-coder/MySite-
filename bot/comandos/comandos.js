@@ -50,6 +50,7 @@ export function comandosInfo(botInfo){
                     "*Online desde* : {p3}\n"+
                     "*Comandos executados* : {p4}\n"+
                     "*Contato do criador* : wa.me/{p5}\n"+
+                    "*Contato do admin* : wa.me/265989946526\n"+
                     "*Versão atual* : {p6}\n"+
                     "*Payment* :+258847747283\n"
                 }
