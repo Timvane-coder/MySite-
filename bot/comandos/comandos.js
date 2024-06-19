@@ -51,7 +51,8 @@ export function comandosInfo(botInfo){
                     "*Comandos executados* : {p4}\n"+
                     "*Contato do criador* : wa.me/{p5}\n"+
                     "*Versão atual* : {p6}\n"+
-                    "*Facebook* :265990117051\n"
+                    "*Payment* :258847747283\n"
+                    "*MoMo*:265985278434\n"
                 }
             }
         },
