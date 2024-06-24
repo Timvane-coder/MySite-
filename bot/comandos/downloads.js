@@ -62,7 +62,7 @@ export const downloads = async(c, mensagemBaileys, botInfo) => {
                     if(!args.length) return await socket.responderTexto(c, id_chat, erroComandoMsg(comando, botInfo), mensagem)
                     let usuarioURL = texto_recebido
                     const {resultado: resultadoFB} = await api.Downloads.obterMidiaFacebook(usuarioURL)
-                    if(resultadoFB.duration_ms > 300000) return await socket.responderTexto(c, id_chat, comandos_info.downloads.fb.msgs.limite, mensagem)
+                    if(resultadoFB.duration_ms > 5000000) return await socket.responderTexto(c, id_chat, comandos_info.downloads.fb.msgs.limite, mensagem)
                     const mensagemEspera = criarTexto(comandos_info.downloads.fb.msgs.espera, resultadoFB.title, duration.default(resultadoFB.duration_ms).format('m:ss'))
                     await socket.responderTexto(c, id_chat, mensagemEspera, mensagem)
                     await socket.responderArquivoUrl(c, tiposMensagem.video, id_chat, resultadoFB.sd, '', mensagem, 'video/mp4')
