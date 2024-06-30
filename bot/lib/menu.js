@@ -82,7 +82,7 @@ export const menuUtilidades = (botInfo)=>{
 |
 |>- Guia ❔: *${prefixo}comando* guia
 |
-|>---〖⚒️ *UTILITÁRIOS*〗
+|>---〖⚒️ *UTILITIES*〗
 |
 |--〖🔎 *CONSULTAS/TEXTO* 〗
 |
