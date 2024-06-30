@@ -45,7 +45,7 @@ export function comandosInfo(botInfo){
                 descricao: '',
                 guia: `Ex: *${prefixo}info* - Exibe as informações do bot, dono, etc.\n`,
                 msgs: {
-                    resposta: "*Criador do Bot* : {p1}\n"+
+                    resposta: "*bot is maintained by* : {p1}\n"+
                     "*bot name* : {p2}\n"+
                     "*Online status* : {p3}\n"+
                     "*Command executed* : {p4}\n"+
@@ -114,7 +114,7 @@ export function comandosInfo(botInfo){
             },
             filmes: {
                 descricao: '',
-                guia: `Ex: *${prefixo}filmes* - Exibe as tendências atuais de filmes.\n`,
+                guia: `Ex: *${prefixo} movies* - search for trending movies.\n`,
                 msgs: {
                     resposta : "🎬 TÊNDENCIAS DE FILMES 🎬\n\n"+
                     "{p1}\n"
@@ -122,7 +122,7 @@ export function comandosInfo(botInfo){
             },
             series: {
                 descricao: '',
-                guia: `Ex: *${prefixo}series* - Exibe as tendências atuais de séries.\n`,
+                guia: `Ex: *${prefixo}series* - search for trending series.\n`,
                 msgs: {
                     resposta : "📺 TÊNDENCIAS DE SÉRIES 📺\n\n"+
                     "{p1}\n"
@@ -130,7 +130,7 @@ export function comandosInfo(botInfo){
             },
             gpt : {
                 descricao: '',
-                guia: `Ex: *${prefixo}gpt* texto - Recebe uma resposta do CHAT GPT de acordo com o texto.\n`,
+                guia: `Ex: *${prefixo}gpt* text - recieve responses from chatgpt.\n`,
                 msgs: {
                     resposta: "🤖 Chat GPT v3 :\n\n"+
                     "{p1}"
@@ -184,7 +184,7 @@ export function comandosInfo(botInfo){
             },
             traduz: {
                 descricao: '',
-                guia: `Ex: *${prefixo}traduz* pt texto - Traduz o texto que foi digitado para *Português*.\n\n`+
+                guia: `Ex: *${prefixo} translation* pt texto - Traduz o texto que foi digitado para *Português*.\n\n`+
                 `Ex: *${prefixo}traduz* en texto - Traduz o texto que foi digitado para *Inglês*.\n\n`+
                 `Ex: Responda um *texto* com *${prefixo}traduz* pt - Traduz o resto respondido para *Português*.\n\n`+
                 `Ex: Responda um *texto* com *${prefixo}traduz* en - Traduz o resto respondido para *Inglês*.\n\n`+
@@ -240,7 +240,7 @@ export function comandosInfo(botInfo){
             },
             letra: {
                 descricao: '',
-                guia: `Ex: *${prefixo}letra* nome-musica - Exibe a letra da música que você digitou.\n`,
+                guia: `Ex: *${prefixo} lyrics* music-name- search lyrics of your favorite song.\n`,
                 msgs: {
                     resposta : "🎼 LETRA DE MÚSICA 🎼\n\n"+
                     "Música : *{p1}*\n"+
@@ -597,20 +597,20 @@ export function comandosInfo(botInfo){
         downloads: {
             play: {
                 descricao: '',
-                guia: `Ex: *${prefixo}play* musica - Faz download de uma música do Youtube e envia como audio.\n`,
+                guia: `Ex: *${prefixo}play* song and artist name - download any music audio from Whatsapp web .\n`,
                 msgs: {
-                    espera: "[AGUARDE] 🎧 Sua música está sendo baixada e processada.\n\n"+
-                    "Titulo: *{p1}*\n"+
-                    "Duração: *{p2}*",
+                    espera: "[Vesper-Multidevice] 🎧 processing and sending your music audio .\n\n"+
+                    "song-name: *{p1}*\n"+
+                    "Duration: *{p2}*",
                     limite: "[❗] A música deve ter menos de *5 minutos*",
                     erro_live: "[❗] Houve um erro de download, o bot não aceita download de lives."
                 }
             },
             yt: {
                 descricao: '',
-                guia: `Ex: *${prefixo}yt* titulo - Faz download de um video do Youtube com o titulo digitado e envia.\n`,
+                guia: `Ex: *${prefixo}yt* title - download any music and performance videos across the video servers.\n`,
                 msgs: {
-                    espera: "[AGUARDE] 🎥 Seu video está sendo baixado e processado.\n\n"+
+                    espera: "[Vesper-Multidevice] 🎥 processing and sending your video.\n\n"+
                     "Titulo: *{p1}*\n"+
                     "Duração: *{p2}*",
                     limite: "[❗] O video deve ter menos de *5 minutos*",
@@ -619,41 +619,41 @@ export function comandosInfo(botInfo){
             },
             fb: {
                 descricao: '',
-                guia: `Ex: *${prefixo}fb* link - Faz download de um video do Facebook pelo link digitado e envia.\n`,
+                guia: `Ex: *${prefixo}fb* link - download Facebook media through the link.\n`,
                 msgs: {
-                    espera: "[AGUARDE] 🎬 Sua mídia está sendo baixada e processada.\n\n"+
-                    "Titulo: *{p1}*\n"+
-                    "Duração: *{p2}*",
+                    espera: "[Vesper-Multidevice] 🎬 processing and sending your media.please wait.\n\n"+
+                    "Title: *{p1}*\n"+
+                    "Duration: *{p2}*",
                     limite: "[❗] O video deve ter menos de *3 minutos*",
                 }
             },
             ig: {
                 descricao: '',
-                guia: `Ex: *${prefixo}ig* link - Faz download de um video/foto do Instagram pelo link digitado e envia.\n\n`+
+                guia: `Ex: *${prefixo}ig* link - download Instagram videos and images through any Instagram link .\n\n`+
                 `Ex: *${prefixo}ig* link 2 - Faz download do SEGUNDO video/foto do link (em caso do link ter mais de 1 video/foto).\n`,
                 msgs: {
-                    espera: "[AGUARDE] 🎬 Sua mídia está sendo baixada e processada.",
+                    espera: "[Vesper-Multidevice] 🎬 processing and sending you Instagram media ",
                 }
             },
             tw: {
                 descricao: '',
-                guia: `Ex: *${prefixo}tw* link - Faz download de um video/imagem do Twitter pelo link digitado e envia.\n`,
+                guia: `Ex: *${prefixo}tw* link -download images and videos from Twitter handles through twitter link.\n`,
                 msgs: {
-                    espera: "[AGUARDE] 🎬 Sua mídia está sendo baixada e processada.",
+                    espera: "[Vesper-Multidevice] 🎬 processing and sending your Twitter media.",
                 }
             },
             tk: {
                 descricao: '',
-                guia: `Ex: *${prefixo}tk* link - Faz download de um video do Tiktok pelo link digitado e envia.\n`,
+                guia: `Ex: *${prefixo}tk* download any video from TikTok through TikTok link.\n`,
                 msgs: {
-                    espera: "[AGUARDE] 🎬 Sua mídia está sendo baixada e processada.\n\n"+
+                    espera: "[Vesper-Multidevice] 🎬 processing and sending your videos.\n\n"+
                     "Perfil: *@{p1}*\n"+
                     "Descrição: *{p2}*\n",
                 }
             },
             img: {
                 descricao: '',
-                guia: `Ex: *${prefixo}img* tema - Envia uma imagem com o tema que você digitar.\n`,
+                guia: `Ex: *${prefixo}img* name - download images of celebrities and any other images on google through WhatsApp web search engine.\n`,
                 msgs: {
                     erro_imagem: '[❗] Não foi possível obter nenhuma imagem, tente novamente.',
                 }
