@@ -4,16 +4,16 @@ export const menuPrincipal  = (botInfo)=> {
     return `|
 |>----〖 *🤖 ${nome_bot?.trim()}®* 〗
 |
-|>---〖🔎 *MENU PRINCIPAL*〗
+|>---〖🔎 *MAIN MENU*〗
 |
-|- Digite um dos comandos abaixo:
+|- Enter one of the commands below:
 |
-|- *${prefixo}menu* 0  ❓ Informação
+|- *${prefixo}menu* 0  ❓ Information 
 |- *${prefixo}menu* 1  🖼️ Figurinhas
-|- *${prefixo}menu* 2  ⚒️ Utilidades
+|- *${prefixo}menu* 2  ⚒️ Utilities 
 |- *${prefixo}menu* 3  📥 Downloads
-|- *${prefixo}menu* 4  👨‍👩‍👧‍👦 Grupo
-|- *${prefixo}menu* 5  🕹️ Diversão/Jogos
+|- *${prefixo}menu* 4  👨‍👩‍👧‍👦 Groups
+|- *${prefixo}menu* 5  🕹️ Games/Fun
 |
 ╰╼❥ ${nome_bot?.trim()}® by *${nome_adm?.trim()}*`
 }
