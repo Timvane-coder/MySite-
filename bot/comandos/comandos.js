@@ -8,12 +8,12 @@ export function comandosInfo(botInfo){
                 guia: `Ex: *${prefixo}menu* - Exibe o menu de comandos gerais.\n`,
                 msgs: {
                     resposta_comum: "Olá, *{p1}*\n"+
-                    "Tipo de Usuário : *{p2}*\n"+
-                    "Comandos feitos : *{p3}*\n",
+                    "user type : *{p2}*\n"+
+                    "Commands : *{p3}*\n",
                     resposta_limite_diario: "Olá, *{p1}*\n"+
                     "Limite diário : *{p2}/{p3}*\n"+
-                    "Tipo de Usuário : *{p4}*\n"+
-                    "Comandos feitos : *{p5}*\n"
+                    "user type : *{p4}*\n"+
+                    "Commands : *{p5}*\n"
                 }
             },
             reportar: {
@@ -23,9 +23,9 @@ export function comandosInfo(botInfo){
                     sucesso: `✅ Obrigado, seu problema foi reportado com sucesso e será analisado pelo dono.`,
                     erro: '[❗] Não foi possível enviar a mensagem para o dono, pois ele ainda não está cadastrado.',
                     resposta: "[ 🤖 REPORTAR ⚙️]\n\n"+
-                    "*Usuário* : {p1}\n"+
-                    "*Contato* : http://wa.me/{p2}\n"+
-                    "*Problema* : {p3}\n"
+                    "*User* : {p1}\n"+
+                    "*Contact* : http://wa.me/{p2}\n"+
+                    "*Problem* : {p3}\n"
                 }
             },
             meusdados: {
@@ -46,11 +46,11 @@ export function comandosInfo(botInfo){
                 guia: `Ex: *${prefixo}info* - Exibe as informações do bot, dono, etc.\n`,
                 msgs: {
                     resposta: "*Criador do Bot* : {p1}\n"+
-                    "*Nome do bot* : {p2}\n"+
-                    "*Online desde* : {p3}\n"+
-                    "*Comandos executados* : {p4}\n"+
-                    "*Contato do criador* : wa.me/{p5}\n"+
-                    "*Contato do admin* : wa.me/265989946526\n"+
+                    "*bot name* : {p2}\n"+
+                    "*Online status* : {p3}\n"+
+                    "*Command executed* : {p4}\n"+
+                    "*Contact provider* : wa.me/{p5}\n"+
+                    "*Contact admin* : wa.me/265989946526\n"+
                     "*Versão atual* : {p6}\n"+
                     "*Payment* :+258847747283\n"
                 }
