@@ -595,9 +595,9 @@ export function comandosInfo(botInfo){
         },
         //COMANDOS DOWNLOADS
         downloads: {
-            mp3: {
+            play: {
                 descricao: '',
-                guia: `Ex: *${prefixo}mp3* song and artist name - download any music audio from Whatsapp web .\n`,
+                guia: `Ex: *${prefixo}play* song and artist name - download any music audio from Whatsapp web .\n`,
                 msgs: {
                     espera: "[Vesper-Multidevice] 🎧 processing and sending your music audio .\n\n"+
                     "song: *{p1}*\n"+
@@ -606,9 +606,9 @@ export function comandosInfo(botInfo){
                     erro_live: "[❗] Houve um erro de download, o bot não aceita download de lives."
                 }
             },
-            mp4: {
+            yt: {
                 descricao: '',
-                guia: `Ex: *${prefixo}mp4* title - download any music and performance videos across the video servers.\n`,
+                guia: `Ex: *${prefixo}yt* title - download any music and performance videos across the video servers.\n`,
                 msgs: {
                     espera: "[Vesper-Multidevice] 🎥 processing and sending your video.\n\n"+
                     "Title: *{p1}*\n"+
