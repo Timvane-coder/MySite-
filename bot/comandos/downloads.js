@@ -23,7 +23,7 @@ export const downloads = async(c, mensagemBaileys, botInfo) => {
     //Comandos de downloads
     try{
         switch(comandoSemPrefixo){      
-            case "audio":
+            case "mp3":
                 try{
                     if(!args.length) return await socket.responderTexto(c, id_chat,erroComandoMsg(comando, botInfo),mensagem)
                     let usuarioTexto = texto_recebido
