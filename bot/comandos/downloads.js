@@ -23,14 +23,14 @@ export const downloads = async(c, mensagemBaileys, botInfo) => {
     //Comandos de downloads
     try{
         switch(comandoSemPrefixo){      
-            case "play":
+            case "mp3":
                 try{
                     if(!args.length) return await socket.responderTexto(c, id_chat,erroComandoMsg(comando, botInfo),mensagem)
                     let usuarioTexto = texto_recebido
                     const {resultado: resultadoInfoVideo} = await api.Downloads.obterInfoVideoYT(usuarioTexto)
-                    if(resultadoInfoVideo.isLiveContent) return await socket.responderTexto(c, id_chat, comandos_info.downloads.play.msgs.erro_live,mensagem)
-                    else if (resultadoInfoVideo.lengthSeconds > 180000) return await socket.responderTexto(c, id_chat, comandos_info.downloads.play.msgs.limite, mensagem)
-                    const mensagemEspera = criarTexto(comandos_info.downloads.play.msgs.espera, resultadoInfoVideo.title, resultadoInfoVideo.durationFormatted)
+                    if(resultadoInfoVideo.isLiveContent) return await socket.responderTexto(c, id_chat, comandos_info.downloads.mp3.msgs.erro_live,mensagem)
+                    else if (resultadoInfoVideo.lengthSeconds > 180000) return await socket.responderTexto(c, id_chat, comandos_info.downloads.mp3.msgs.limite, mensagem)
+                    const mensagemEspera = criarTexto(comandos_info.downloads.mp3.msgs.espera, resultadoInfoVideo.title, resultadoInfoVideo.durationFormatted)
                     await socket.responderTexto(c, id_chat, mensagemEspera, mensagem)
                     const {resultado : resultadoYTMP3} = await api.Downloads.obterYTMP3(resultadoInfoVideo.videoId)
                     await socket.responderArquivoBuffer(c, tiposMensagem.audio, id_chat, resultadoYTMP3, '', mensagem, 'audio/mpeg')
@@ -40,13 +40,13 @@ export const downloads = async(c, mensagemBaileys, botInfo) => {
                 }
                 break
             
-            case "yt":
+            case "mp4":
                 try{
                     if(!args.length) return await socket.responderTexto(c,id_chat,erroComandoMsg(comando, botInfo),mensagem)
                     let usuarioTexto = texto_recebido
                     const {resultado : resultadoInfoVideo} = await api.Downloads.obterInfoVideoYT(usuarioTexto)
-                    if(resultadoInfoVideo.isLiveContent) return await socket.responderTexto(c, id_chat, comandos_info.downloads.yt.msgs.erro_live, mensagem)
-                    else if(resultadoInfoVideo.lengthSeconds > 3000000) return await socket.responderTexto(c, id_chat, comandos_info.downloads.yt.msgs.limite, mensagem)
+                    if(resultadoInfoVideo.isLiveContent) return await socket.responderTexto(c, id_chat, comandos_info.downloads.mp4.msgs.erro_live, mensagem)
+                    else if(resultadoInfoVideo.lengthSeconds > 3000000) return await socket.responderTexto(c, id_chat, comandos_info.downloads.mp4.msgs.limite, mensagem)
                     const mensagemEspera = criarTexto(comandos_info.downloads.yt.msgs.espera, resultadoInfoVideo.title, resultadoInfoVideo.durationFormatted)
                     await socket.responderTexto(c, id_chat, mensagemEspera, mensagem)
                     const {resultado : resultadoYTMP4} = await api.Downloads.obterYTMP4(resultadoInfoVideo.videoId)
