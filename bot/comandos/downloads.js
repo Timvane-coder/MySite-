@@ -47,7 +47,7 @@ export const downloads = async(c, mensagemBaileys, botInfo) => {
                     const {resultado : resultadoInfoVideo} = await api.Downloads.obterInfoVideoYT(usuarioTexto)
                     if(resultadoInfoVideo.isLiveContent) return await socket.responderTexto(c, id_chat, comandos_info.downloads.mp4.msgs.erro_live, mensagem)
                     else if(resultadoInfoVideo.lengthSeconds > 3000000) return await socket.responderTexto(c, id_chat, comandos_info.downloads.mp4.msgs.limite, mensagem)
-                    const mensagemEspera = criarTexto(comandos_info.downloads.yt.msgs.espera, resultadoInfoVideo.title, resultadoInfoVideo.durationFormatted)
+                    const mensagemEspera = criarTexto(comandos_info.downloads.mp4.msgs.espera, resultadoInfoVideo.title, resultadoInfoVideo.durationFormatted)
                     await socket.responderTexto(c, id_chat, mensagemEspera, mensagem)
                     const {resultado : resultadoYTMP4} = await api.Downloads.obterYTMP4(resultadoInfoVideo.videoId)
                     await socket.responderArquivoBuffer(c, tiposMensagem.video, id_chat, resultadoYTMP4, '', mensagem, 'video/mp4')
