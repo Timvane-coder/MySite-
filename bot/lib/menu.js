@@ -64,7 +64,7 @@ export const menuDownload = (botInfo)=>{
 |
 |>---〖📥 *DOWNLOADS*〗
 |
-|- *${prefixo}play* nome- Faz download de uma música e envia.
+|- *${prefixo}mp3* nome- Faz download de uma música e envia.
 |- *${prefixo}yt* nome - Faz download de um video do Youtube e envia.
 |- *${prefixo}fb* link - Faz download de um video do Facebook e envia.
 |- *${prefixo}ig* link - Faz download de um video/foto do Instagram e envia.
