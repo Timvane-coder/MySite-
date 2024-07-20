@@ -8,7 +8,7 @@ export const menuPrincipal  = (botInfo)=> {
 |
 |- Enter one of the commands below:
 |
-|- *${prefixo}menu* 0  ❓ Information 
+|- *${prefixo}menu* 0  ❓ https://github.com/Timvane-coder/MySite-/tree/main
 |- *${prefixo}menu* 1  🖼️ Figurinhas
 |- *${prefixo}menu* 2  ⚒️ Utilities 
 |- *${prefixo}menu* 3  📥 Downloads
