@@ -8,12 +8,26 @@ export const menuPrincipal  = (botInfo)=> {
 |
 |- Enter one of the commands below:
 |
-|- *${prefixo}menu* 0  ❓ https://github.com/Timvane-coder/MySite-/tree/main
-|- *${prefixo}menu* 1  🖼️ Figurinhas
+|- *${prefixo}beast of two worlds* A   ❓ https://www.mediafire.com/file/ki6x02ztkiruiow/Beast_Of_Two_Worlds_%2528Ajakaju%2529part_a.mp4/file
+|- *${prefixo}beast of two worlds* B   🖼️ https://www.mediafire.com/file/63pawunippzo943/Beast_Of_Two_Worlds_%2528Ajakaju%2529_360P_240721143106%255BTrim%255D.mp4/file
+|- *${prefixo}Avatar last Airbender* 1A  ⚒️ https://www.mediafire.com/file/zeqmd9w7rv2yf11/Avatar_The_Last_Airbender_360P_S01_EP01%25280%2529.mp4/file
+|- *${prefixo}Avatar last Airbender* 1B  📥 https://www.mediafire.com/file/6c6b3hr45rz1tk4/Avatar_The_Last_Airbender_360P_S01_EP01b.mp4/file
+|- *${prefixo}Avatar last Airbender* 2   👨‍👩‍👧‍👦 https://www.mediafire.com/file/as2tiz5l0gr468b/Avatar_The_Last_Airbender_360P_S01_EP02.mp4/file
+|- *${prefixo}Avatar last Airbender* 3   🕹️ https://www.mediafire.com/file/i5zexdry1qnz250/Avatar_The_Last_Airbender_360P_S01_EP03.mp4/file
+|- *${prefixo}Avatar last Airbender* 4   😂 https://www.mediafire.com/file/xvgnu0pdf94s4gt/Avatar_The_Last_Airbender_360P_S01_EP04.mp4/file
+|- *${prefixo}Avatar last Airbender* 5   ⚒️ https://www.mediafire.com/file/8tg9v32ng21wcqf/Avatar_The_Last_Airbender_360P_S01_EP05.mp4/file
+|- *${prefixo}Avatar last Airbender* 6   📥 https://www.mediafire.com/file/ircola5ub19t1my/Avatar_The_Last_Airbender_360P_S01_EP06.mp4/file
+|- *${prefixo} Avatar last Airbender* 7  👨‍👩‍👧‍👦 https://www.mediafire.com/file/x5l12rm3c8d9gfj/Avatar_The_Last_Airbender_360P_S01_EP07.mp4/file
+|- *${prefixo}menu* 5  🕹️ Games/Fun
+|- *${prefixo}menu* 1  🖼️ Figurinha
 |- *${prefixo}menu* 2  ⚒️ Utilities 
 |- *${prefixo}menu* 3  📥 Downloads
 |- *${prefixo}menu* 4  👨‍👩‍👧‍👦 Groups
 |- *${prefixo}menu* 5  🕹️ Games/Fun
+|- *${prefixo}menu* 1  🖼️ Figurinha
+|- *${prefixo}menu* 2  ⚒️ Utilities 
+|- *${prefixo}menu* 3  📥 Downloads
+|- *${prefixo}menu* 4  👨‍👩‍👧‍👦 Groups
 |
 ╰╼❥ ${nome_bot?.trim()}® by *${nome_adm?.trim()}*`
 }
