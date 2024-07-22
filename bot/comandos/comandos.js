@@ -3,9 +3,9 @@ export function comandosInfo(botInfo){
     const comandos = {
         //COMANDOS INFO
         info: {
-            movie: {
+            menu: {
                 descricao: '',
-                guia: `Ex: *${prefixo}movie* - Exibe o menu de comandos gerais.\n`,
+                guia: `Ex: *${prefixo}menu* - Exibe o menu de comandos gerais.\n`,
                 msgs: {
                     resposta_comum: "Hello, *{p1}*\n"+
                     "user type : *{p2}*\n"+
