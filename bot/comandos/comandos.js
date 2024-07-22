@@ -3,11 +3,11 @@ export function comandosInfo(botInfo){
     const comandos = {
         //COMANDOS INFO
         info: {
-            menu: {
+            movie: {
                 descricao: '',
-                guia: `Ex: *${prefixo}menu* - Exibe o menu de comandos gerais.\n`,
+                guia: `Ex: *${prefixo}movie* - Exibe o menu de comandos gerais.\n`,
                 msgs: {
-                    resposta_comum: "Olá, *{p1}*\n"+
+                    resposta_comum: "Hello, *{p1}*\n"+
                     "user type : *{p2}*\n"+
                     "Commands : *{p3}*\n",
                     resposta_limite_diario: "Olá, *{p1}*\n"+
