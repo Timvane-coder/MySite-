@@ -8,26 +8,45 @@ export const menuPrincipal  = (botInfo)=> {
 |
 |- Enter one of the commands below:
 |
-|- *${prefixo}beast of two worlds* A   ❓ https://www.mediafire.com/file/ki6x02ztkiruiow/Beast_Of_Two_Worlds_%2528Ajakaju%2529part_a.mp4/file
-|- *${prefixo}beast of two worlds* B   🖼️ https://www.mediafire.com/file/63pawunippzo943/Beast_Of_Two_Worlds_%2528Ajakaju%2529_360P_240721143106%255BTrim%255D.mp4/file
-|- *${prefixo}Avatar last Airbender* 1A  ⚒️ https://www.mediafire.com/file/zeqmd9w7rv2yf11/Avatar_The_Last_Airbender_360P_S01_EP01%25280%2529.mp4/file
-|- *${prefixo}Avatar last Airbender* 1B  📥 https://www.mediafire.com/file/6c6b3hr45rz1tk4/Avatar_The_Last_Airbender_360P_S01_EP01b.mp4/file
-|- *${prefixo}Avatar last Airbender* 2   👨‍👩‍👧‍👦 https://www.mediafire.com/file/as2tiz5l0gr468b/Avatar_The_Last_Airbender_360P_S01_EP02.mp4/file
-|- *${prefixo}Avatar last Airbender* 3   🕹️ https://www.mediafire.com/file/i5zexdry1qnz250/Avatar_The_Last_Airbender_360P_S01_EP03.mp4/file
-|- *${prefixo}Avatar last Airbender* 4   😂 https://www.mediafire.com/file/xvgnu0pdf94s4gt/Avatar_The_Last_Airbender_360P_S01_EP04.mp4/file
-|- *${prefixo}Avatar last Airbender* 5   ⚒️ https://www.mediafire.com/file/8tg9v32ng21wcqf/Avatar_The_Last_Airbender_360P_S01_EP05.mp4/file
-|- *${prefixo}Avatar last Airbender* 6   📥 https://www.mediafire.com/file/ircola5ub19t1my/Avatar_The_Last_Airbender_360P_S01_EP06.mp4/file
-|- *${prefixo} Avatar last Airbender* 7  👨‍👩‍👧‍👦 https://www.mediafire.com/file/x5l12rm3c8d9gfj/Avatar_The_Last_Airbender_360P_S01_EP07.mp4/file
-|- *${prefixo}menu* 5  🕹️ Games/Fun
-|- *${prefixo}menu* 1  🖼️ Figurinha
-|- *${prefixo}menu* 2  ⚒️ Utilities 
+|- *${prefixo}beast of two worlds* A   📥https://www.mediafire.com/file/ki6x02ztkiruiow/Beast_Of_Two_Worlds_A.mp4/file
+|- *${prefixo}beast of two worlds* B   📥https://www.mediafire.com/file/63pawunippzo943/Beast_Of_Two_Worlds_B.mp4/file
+|- *${prefixo}Avatar last Airbender* 1A  📥https://www.mediafire.com/file/zeqmd9w7rv2yf11/Avatar_1A.mp4/file
+|- *${prefixo}Avatar last Airbender* 1B  📥https://www.mediafire.com/file/6c6b3hr45rz1tk4/Avatar_1b.mp4/file
+|- *${prefixo}Avatar last Airbender* 2   📥https://www.mediafire.com/file/as2tiz5l0gr468b/Avatar_2.mp4/file
+|- *${prefixo}Avatar last Airbender* 3   📥https://www.mediafire.com/file/i5zexdry1qnz250/Avatar_3.mp4/file
+|- *${prefixo}Avatar last Airbender* 4   📥https://www.mediafire.com/file/xvgnu0pdf94s4gt/Avatar_4.mp4/file
+|- *${prefixo}Avatar last Airbender* 5   📥https://www.mediafire.com/file/8tg9v32ng21wcqf/Avatar_5.mp4/file
+|- *${prefixo}Avatar last Airbender* 6   📥https://www.mediafire.com/file/ircola5ub19t1my/Avatar_6.mp4/file
+|- *${prefixo}Avatar last Airbender* 7   📥 https://www.mediafire.com/file/x5l12rm3c8d9gfj/Avatar_7.mp4/file
+|- *${prefixo}Treasure in the sky* 1  📥https://www.mediafire.com/file/cil6brqvfb54kj1/Treasure_In_The_Sky_1.mp4/file
+|- *${prefixo}Treasure in the sky* 2  📥https://www.mediafire.com/file/4ptr9hta561g6a3/Treasure_In_The_Sky_2.mp4/file
+|- *${prefixo}Treasure in the sky* 2  📥https://www.mediafire.com/file/5o9x6unl03mcn3n/Treasure_In_The_Sky_3.mp4/file
+|- *${prefixo}A Shop for Killers* 1   📥https://www.mediafire.com/file/bolyjilqzez9g5o/shop_for_killers_1.mp4/file
+|- *${prefixo}A Shop for Killers* 2   📥https://www.mediafire.com/file/kyksbxus9h8nzau/shop_for_killers_2.mp4/file
+|- *${prefixo}A Shop for Killers* 3   📥https://www.mediafire.com/file/ojot4hz0m3gjwfd/shop_for_killers_3.mp4/file
+|- *${prefixo}A Shop for Killers* 4   📥https://www.mediafire.com/file/0mmmyn19s28kdqy/A.Shop.for.Killers.E04.mp4/file
+|- *${prefixo}A Shop for Killers* 5   📥https://www.mediafire.com/file/ho0v5hzury7q47m/A.Shop.for.Killers.E05.mp4/file
+|- *${prefixo}A Shop for Killers* 6   📥https://www.mediafire.com/file/77nlg8arg1xyzax/A.Shop.for.Killers.E06.mp4/file
+|- *${prefixo}Escape Plan* 1 📥https://www.mediafire.com/file/kupx0lra9i6ts10/Escape_Plan_1.mp4/file
+|- *${prefixo}Escape Plan* 2 📥https://www.mediafire.com/file/ox0eyyymawuqewi/Escape_Plan_2.mp4/file
+|- *${prefixo}Oloture* 1  📥 https://www.mediafire.com/file/xz5te3dyowmjm7d/Oloture_1.mp4/file
+|- *${prefixo}Oloture* 2  📥 https://www.mediafire.com/file/dxtukaxe3ehqkbl/Oloture_2.mp4/file
+|- *${prefixo}Oloture* 3  📥 https://www.mediafire.com/file/4yrvd6w3447aoup/Oloture_3.mp4/file
+|- *${prefixo}One Piece* 1  📥https://www.mediafire.com/file/w3qok0anhioall8/One.Piece.1.mp4/file
+|- *${prefixo}One Piece* 2  📥https://www.mediafire.com/file/qrzp9m54dqrji0o/One.Piece.2.mp4/file
+|- *${prefixo}One Piece* 3  📥https://www.mediafire.com/file/hem9hqyzve6nyi5/One.Piece.3.mp4/file
+|- *${prefixo}One Piece* 4  📥https://www.mediafire.com/file/vv5mrnvcn0ilehe/One.Piece.4.mp4/file
+|- *${prefixo}One Piece* 5  📥https://www.mediafire.com/file/ispca534aubzke8/One.Piece.5.mp4/file
+|- *${prefixo}One Piece* 6  📥https://www.mediafire.com/file/o3gwkrjryshwnlh/One.Piece.6.mp4/file
+|- *${prefixo}menu* 1  📥Figurinha
+|- *${prefixo}menu* 2  📥Utilities 
 |- *${prefixo}menu* 3  📥 Downloads
-|- *${prefixo}menu* 4  👨‍👩‍👧‍👦 Groups
-|- *${prefixo}menu* 5  🕹️ Games/Fun
-|- *${prefixo}menu* 1  🖼️ Figurinha
-|- *${prefixo}menu* 2  ⚒️ Utilities 
+|- *${prefixo}menu* 4  📥Groups
+|- *${prefixo}menu* 5  📥 Games/Fun
+|- *${prefixo}menu* 1  📥 Figurinha
+|- *${prefixo}menu* 2  📥Utilities 
 |- *${prefixo}menu* 3  📥 Downloads
-|- *${prefixo}menu* 4  👨‍👩‍👧‍👦 Groups
+|- *${prefixo}menu* 4  📥Groups
 |
 ╰╼❥ ${nome_bot?.trim()}® by *${nome_adm?.trim()}*`
 }
