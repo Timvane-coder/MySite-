@@ -6,8 +6,9 @@ export const menuPrincipal  = (botInfo)=> {
 |
 |>---〖🔎 *MOVIE AND SERIES LINKS*〗
 |
-|- Long Click to Copy the Link and past with a #play command :
-|- Example *#play https://www.mediafire.com/file/Avatar_4.mp4/file*
+|- Long Click to Copy the Link and paste with a #play command :
+|-
+|- Example *#play https://www.mediafire.com/file*
 |
 |- *${prefixo}beast of two worlds(Nigerian)* A   📥https://www.mediafire.com/file/ki6x02ztkiruiow/Beast_Of_Two_Worlds_A.mp4/file
 |- *${prefixo}beast of two worlds(Nigerian)* B   📥https://www.mediafire.com/file/63pawunippzo943/Beast_Of_Two_Worlds_B.mp4/file
