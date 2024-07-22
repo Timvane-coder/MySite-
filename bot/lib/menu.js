@@ -4,9 +4,10 @@ export const menuPrincipal  = (botInfo)=> {
     return `|
 |>----〖 *🤖 ${nome_bot?.trim()}®* 〗
 |
-|>---〖🔎 *MAIN MENU*〗
+|>---〖🔎 *MOVIE AND SERIES LINKS*〗
 |
-|- Enter one of the commands below:
+|- Long Click to Copy the Link and past with a #play command :
+|- Example *#play https://www.mediafire.com/file/Avatar_4.mp4/file"
 |
 |- *${prefixo}beast of two worlds* A   📥https://www.mediafire.com/file/ki6x02ztkiruiow/Beast_Of_Two_Worlds_A.mp4/file
 |- *${prefixo}beast of two worlds* B   📥https://www.mediafire.com/file/63pawunippzo943/Beast_Of_Two_Worlds_B.mp4/file
