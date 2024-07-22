@@ -10,8 +10,8 @@ export const menuPrincipal  = (botInfo)=> {
 |-
 |- Example *#play https://www.mediafire.com/file*
 |
-|- *${prefixo}beast of two worlds(Nigerian)* A   📥https://www.mediafire.com/file/ki6x02ztkiruiow/Beast_Of_Two_Worlds_A.mp4/file
-|- *${prefixo}beast of two worlds(Nigerian)* B   📥https://www.mediafire.com/file/63pawunippzo943/Beast_Of_Two_Worlds_B.mp4/file
+|- *${prefixo}Beast Of Two Worlds(Nigerian)* A   📥https://www.mediafire.com/file/ki6x02ztkiruiow/Beast_Of_Two_Worlds_A.mp4/file
+|- *${prefixo}Beast Of Two Worlds(Nigerian)* B   📥https://www.mediafire.com/file/63pawunippzo943/Beast_Of_Two_Worlds_B.mp4/file
 |- *${prefixo}Avatar last Airbender* 1A  📥https://www.mediafire.com/file/zeqmd9w7rv2yf11/Avatar_1A.mp4/file
 |- *${prefixo}Avatar last Airbender* 1B  📥https://www.mediafire.com/file/6c6b3hr45rz1tk4/Avatar_1b.mp4/file
 |- *${prefixo}Avatar last Airbender* 2   📥https://www.mediafire.com/file/as2tiz5l0gr468b/Avatar_2.mp4/file
