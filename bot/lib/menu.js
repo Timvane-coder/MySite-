@@ -47,8 +47,8 @@ export const menuPrincipal  = (botInfo)=> {
 |- *${prefixo}Vikings Valhalla* 2  📥https://www.mediafire.com/file/7upmskea43v1ohl/Vikings_Valhalla_2.mp4/file
 |- *${prefixo}Vikings Valhalla* 3  📥https://www.mediafire.com/file/h82h6zp05c0uv10/Vikings_Valhalla_3.mp4/file
 |- *${prefixo}Vikings Valhalla* 4  📥https://www.mediafire.com/file/mostrrq75tvpz69/Vikings_Valhalla_4.mp4/file
-|- *${prefixo}menu* 3  📥 Downloads
-|- *${prefixo}menu* 4  📥Groups
+|- *${prefixo}movie* 3 📥Download
+|- *${prefixo}movie* 4 📥Download 
 |
 ╰╼❥ ${nome_bot?.trim()}® by *${nome_adm?.trim()}*`
 }
