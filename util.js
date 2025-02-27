@@ -1,1 +1,47 @@
-const _0x1dd72b=_0x16cc;(function(_0x3dddc2,_0x35afaa){const _0x3a66ce=_0x16cc,_0x3a6557=_0x3dddc2();while(!![]){try{const _0x265492=-parseInt(_0x3a66ce(0x14d))/0x1*(parseInt(_0x3a66ce(0x14a))/0x2)+parseInt(_0x3a66ce(0x142))/0x3*(parseInt(_0x3a66ce(0x13a))/0x4)+-parseInt(_0x3a66ce(0x146))/0x5+parseInt(_0x3a66ce(0x13d))/0x6+-parseInt(_0x3a66ce(0x143))/0x7+parseInt(_0x3a66ce(0x136))/0x8*(parseInt(_0x3a66ce(0x144))/0x9)+parseInt(_0x3a66ce(0x13b))/0xa*(-parseInt(_0x3a66ce(0x150))/0xb);if(_0x265492===_0x35afaa)break;else _0x3a6557['push'](_0x3a6557['shift']());}catch(_0x2364f5){_0x3a6557['push'](_0x3a6557['shift']());}}}(_0x2cef,0x59346));function _0x2cef(){const _0x4bb67a=['1903741NbrXJd','27cftieV','node:os','296225RynvPk','hex','join','format','600178uduGzf','toUpperCase','moment-timezone','1CdBEMU','toString','charAt','113608bupoIL','node:crypto','existsSync','617448PfUJhd','randomBytes','fs-extra','lbot-api-midias','29516xIKVnq','280JvjJJg','slice','3448110pRHvzw','exports','node:path','floor','now','195MfJnec'];_0x2cef=function(){return _0x4bb67a;};return _0x2cef();}const moment=require(_0x1dd72b(0x14c)),crypto=require(_0x1dd72b(0x151)),{tmpdir}=require(_0x1dd72b(0x145)),path=require(_0x1dd72b(0x13f)),fs=require(_0x1dd72b(0x138)),timestampToDate=_0xaaccd5=>{const _0x538163=_0x1dd72b;return moment(_0xaaccd5)[_0x538163(0x149)]('DD/MM\x20HH:mm:ss');},formatSeconds=_0x4ff4f8=>{const _0x14f4e8=_0x1dd72b;return moment(_0x4ff4f8*0x3e8)[_0x14f4e8(0x149)]('mm:ss');},currentDateTime=()=>{const _0x5360f3=_0x1dd72b;return moment(Date[_0x5360f3(0x141)]())[_0x5360f3(0x149)]('DD/MM\x20HH:mm:ss');},capitalizeFirstLetter=_0x7b4b59=>{const _0x52b779=_0x1dd72b;return _0x7b4b59[_0x52b779(0x14f)](0x0)[_0x52b779(0x14b)]()+_0x7b4b59[_0x52b779(0x13c)](0x1);},getRandomName=_0x2c49cf=>{const _0x38cc67=_0x1dd72b;return Math[_0x38cc67(0x140)](Math['random']()*0x2710)+'.'+_0x2c49cf;},getTemporaryPath=_0x38b42c=>{const _0x2c94a1=_0x1dd72b,_0x3b45df=path['join'](tmpdir(),_0x2c94a1(0x139));if(!fs[_0x2c94a1(0x152)](_0x3b45df))fs['mkdirSync'](_0x3b45df);return path[_0x2c94a1(0x148)](_0x3b45df,crypto[_0x2c94a1(0x137)](0x14)[_0x2c94a1(0x14e)](_0x2c94a1(0x147))+'.'+_0x38b42c);};function _0x16cc(_0x3074bf,_0x4e2f85){const _0x2cef5b=_0x2cef();return _0x16cc=function(_0x16cc30,_0x318b46){_0x16cc30=_0x16cc30-0x136;let _0xbbff2e=_0x2cef5b[_0x16cc30];return _0xbbff2e;},_0x16cc(_0x3074bf,_0x4e2f85);}module[_0x1dd72b(0x13e)]={'timestampToDate':timestampToDate,'formatSeconds':formatSeconds,'currentDateTime':currentDateTime,'capitalizeFirstLetter':capitalizeFirstLetter,'getRandomName':getRandomName,'getTemporaryPath':getTemporaryPath}
+const moment = require("moment-timezone");
+const crypto = require('node:crypto');
+const { tmpdir } = require('node:os');
+const path = require("node:path");
+const fs = require('fs-extra');
+
+// Converts a timestamp to a formatted date and time (DD/MM HH:mm:ss)
+const timestampToDate = (timestampMsg) => {
+    return moment(timestampMsg).format('DD/MM HH:mm:ss');
+};
+
+// Formats seconds into minutes and seconds (mm:ss)
+const formatSeconds = (seconds) => {
+    return moment(seconds * 1000).format('mm:ss');
+};
+
+// Returns the current date and time (DD/MM HH:mm:ss)
+const currentDateTime = () => {
+    return moment(Date.now()).format('DD/MM HH:mm:ss');
+};
+
+// Capitalizes the first letter of a word
+const capitalizeFirstLetter = (word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+};
+
+// Generates a random name with a given extension
+const getRandomName = (extension) => {
+    return `${Math.floor(Math.random() * 10000)}.${extension}`;
+};
+
+// Generates a path for a temporary file with a given extension
+const getTemporaryPath = (extension) => {
+    const tempDir = path.join(tmpdir(), 'lbot-api-midias');
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
+    return path.join(tempDir, `${crypto.randomBytes(20).toString('hex')}.${extension}`);
+};
+
+// Exporting functions
+module.exports = {
+    timestampToDate,
+    formatSeconds,
+    currentDateTime,
+    capitalizeFirstLetter,
+    getRandomName,
+    getTemporaryPath
+};
