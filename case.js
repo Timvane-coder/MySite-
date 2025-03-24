@@ -1090,6 +1090,8 @@ case 'owner': {
 
 
 
+
+
 case'pinterest':{
 if (limitnya < 1) return m.reply(mess.limit)
 if (!text) return reply(`*Example*: ${ prefix + command } Gojo Satoru`)
@@ -1176,6 +1178,120 @@ async function createImage(url) {
 uselimit()}
 break;
 
+
+case 'caklontong':
+//if(!isGroup) return m.reply(mess.group)
+if (from in caklontong) return m.reply('Masih ada game yang belum diselesaikan');
+var { soal, jawaban, deskripsi } = pickRandom(JSON.parse(fs.readFileSync('./media/game/caklontong.json')));
+console.log(`Jawaban : ${jawaban}\n${deskripsi}`)
+await m.reply(`*GAME CAK LONTONG*\n\nSoal: ${soal}\nPetunjuk: ${monospace(jawaban.replace(/[b|c|d|f|g|h|j|k|l|m|n|p|q|r|s|t|v|w|x|y|z]/gi, '-'))}\nWaktu: ${gamewaktu} detik`)
+caklontong[from] = {
+soal: soal,
+jawaban: jawaban.toLowerCase(),
+hadiah: randomNomor(10, 20),
+waktu: setTimeout(function () {
+if (caklontong[from]) m.reply(`Waktu habis!\nJawabannya adalah: ${jawaban}\n${deskripsi}`)
+delete caklontong[from];
+}, gamewaktu * 1000)
+}
+break
+
+case 'tebakgambar':
+//if(!isGroup) return m.reply(mess.group)
+if (from in tebakgambar2) return m.reply('Masih ada game yang belum diselesaikan');
+var { img, jawaban, deskripsi } = pickRandom(JSON.parse(fs.readFileSync('./media/game/tebakgambar.json')));
+console.log('Jawaban : '+jawaban)
+var teks1 = `*GAME TEBAK GAMBAR*\n\nPetunjuk: ${monospace(jawaban.replace(/[b|c|d|f|g|h|j|k|l|m|n|p|q|r|s|t|v|w|x|y|z]/gi, '-'))}\nDeskripsi: ${deskripsi}\nWaktu: ${gamewaktu} detik`
+await ptz.sendMessage(from, {image: {url: img}, caption: teks1}, {quoted: m})
+tebakgambar2[from] = {
+soal: img,
+jawaban: jawaban.toLowerCase(),
+hadiah: randomNomor(10, 20),
+waktu: setTimeout(function () {
+if (tebakgambar2[from]) m.reply(`Waktu habis!\nJawabannya adalah: ${tebakgambar2[from].jawaban}`);
+delete tebakgambar2[from];
+}, gamewaktu * 1000)
+}
+break
+
+case 'family100': case 'f100':
+//if(!isGroup) return m.reply(mess.group)
+var { soal, jawaban } = pickRandom(JSON.parse(fs.readFileSync('./media/game/family100.json')));
+console.log('Jawaban : '+jawaban)
+let famil = []
+for (let i of jawaban){
+let fefsh = i.split('/') ? i.split('/')[0] : i
+let iuhbs = fefsh.startsWith(' ') ? fefsh.replace(' ','') : fefsh
+let axsfh = iuhbs.endsWith(' ') ? iuhbs.replace(iuhbs.slice(-1), '') : iuhbs
+famil.push(axsfh.toLowerCase())
+}
+await m.reply(`*GAME FAMILY 100*\n\nSoal: ${soal}\nTotal Jawaban: ${jawaban.length}\n\nWaktu: ${gamewaktu} detik`)
+family100[from] = {
+soal: soal,
+jawaban: famil,
+hadiah: randomNomor(10, 20),
+waktu: setTimeout(async function () {
+if (from in family100) {
+let teks = `*WAKTU HABIS!*\nJawaban yang belum terjawab :\n\n`
+let jwb = family100[from].jawaban
+for (let i of jwb){teks += `\n${i}`}
+m.reply(teks)
+delete family100[from];
+};
+}, gamewaktu * 1000)
+}
+break //Powered By alice & Darwin
+
+case 'tebakbendera':
+//if(!isGroup) return m.reply(mess.group)
+if (from in tebakbendera) return m.reply('Masih ada game yang belum diselesaikan');
+var { soal, jawaban } = pickRandom(JSON.parse(fs.readFileSync('./media/game/tebakbendera.json')));
+console.log('Jawaban : '+jawaban)
+await m.reply(`*GAME TEBAK BENDERA*\n\nSoal: ${soal}\nPetunjuk: ${monospace(jawaban.replace(/[b|c|d|f|g|h|j|k|l|m|n|p|q|r|s|t|v|w|x|y|z]/gi, '-'))}\nWaktu: ${gamewaktu} detik`)
+tebakbendera[from] = {
+soal: soal,
+jawaban: jawaban.toLowerCase(),
+hadiah: randomNomor(10, 20),
+waktu: setTimeout(function () {
+if (tebakbendera[from]) m.reply(`Waktu habis!\n\nJawaban dari soal:\n${monospace(soal)}\n\nAdalah: ${monospace(jawaban)}`);
+delete tebakbendera[from];
+}, gamewaktu * 1000)
+}
+break
+
+case 'coin': {
+if (!args || !args[0]) return reply(`🚩 Berikan argumen A atau B.`)
+      let x = Func.ucword(args[0])
+      if (x == 'A' || x == 'B') {
+         var typeC = Func.random(['A', 'B'])
+         if (Func.ucword(args[0]) == typeC) {
+            let percent = Func.randomInt(5, 10)
+            let reward = ((percent / 100) * users.balance)
+            users.balance += reward
+            let last = users.balance
+            let teks = `  *W I N*\n\n`
+            teks += `	*System* : ${typeC}, *You* : ${Func.ucword(args[0])}!\n`
+            teks += `	*+ ${Func.formatNumber(reward)}*\n\n`
+            teks += `• *Total* : ${Func.formatNumber(last)} Point\n\n`
+            teks += `*NB : “Anti-Spam jeda ${global.gamewaktu} detik untuk eksekusi selanjutnya.”*`
+            reply(teks)
+         } else if (Func.ucword(args[0]) != typeC) {
+            let percent = Func.randomInt(5, 15)
+            let reward = ((percent / 100) * users.balance)
+            users.balance -= reward
+            let last = users.balance
+            let teks = `  *L O S E*\n\n`
+            teks += `	*System* : ${typeC}, *You* : ${Func.ucword(args[0])}!\n`
+            teks += `	*- ${Func.formatNumber(reward)}*\n\n`
+            teks += `• *Total* : ${Func.formatNumber(last)} Point\n\n`
+            teks += `*NB : “Anti-Spam jeda ${global.gamewaktu} detik untuk eksekusi selanjutnya.”*`
+            reply(teks)
+         }
+      } else {
+         return reply(`🚩 Hanya terdapat argumen A dan B.`)
+      }
+}
+break
 
 
 case 'play2': {
