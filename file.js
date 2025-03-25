@@ -388,6 +388,22 @@ case 'tebakgambar':
   };
   break;
 
+case 'shop':
+  let shopText = `🛒 *Tebak Gambar Shop*\n\n`;
+
+  shopItems.forEach(item => {
+    shopText += `🛍️ *${item.name}*\n`;
+    shopText += `💰 Price: ${item.price} coins\n`;
+    shopText += `📜 ${item.description}\n`;
+    shopText += `🆔 ID: ${item.index}\n`;
+    shopText += `🖼️ Image: ${item.img}\n\n`;
+  });
+
+  shopText += `🔹 Use *buy <ID>* to purchase an item.`;
+
+  ptz.sendMessage(m.chat, { text: shopText }, { quoted: m });
+  break;
+
 case 'buy':
   if (!args[0]) return m.reply('🔹 Use *buy <ID>* to purchase an item.');
 
