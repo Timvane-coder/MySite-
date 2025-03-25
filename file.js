@@ -355,9 +355,9 @@ delete tebakgambar2[from];
 }
 
 
-Complete the game using the code below
 
 switch(command) {
+
 case 'tebakgambar':
   if (from in tebakgambar2) return m.reply('🚨 You still have an ongoing game.');
 
@@ -387,11 +387,12 @@ case 'tebakgambar':
     }, gamewaktu * 1000)
   };
   break;
-
 case 'shop':
+  let shopData = JSON.parse(fs.readFileSync('./media/game/shop.json'));
+  
   let shopText = `🛒 *Tebak Gambar Shop*\n\n`;
-
-  shopItems.forEach(item => {
+  
+  shopData.forEach(item => {
     shopText += `🛍️ *${item.name}*\n`;
     shopText += `💰 Price: ${item.price} coins\n`;
     shopText += `📜 ${item.description}\n`;
@@ -422,26 +423,7 @@ case 'buy':
 
   m.reply(`✅ You purchased *${item.name}* for 💰 ${item.price} coins.`);
   break;
-
-case 'buy':
-  if (!args[0]) return m.reply('🔹 Use *buy <ID>* to purchase an item.');
-
-  let shopItems = JSON.parse(fs.readFileSync('./media/game/shop.json'));
-  let itemId = parseInt(args[0]);
-  let item = shopItems.find(i => i.index === itemId);
-
-  if (!item) return m.reply('⚠️ Invalid item ID.');
-
-  if (users.balance < item.price) return m.reply('❌ You don\'t have enough coins.');
-
-  users.balance -= item.price;
-  if (!users.inventory) users.inventory = {};
-  let itemKey = item.name.toLowerCase().replace(/\s+/g, "_");
-  users.inventory[itemKey] = (users.inventory[itemKey] || 0) + 1;
-
-  m.reply(`✅ You purchased *${item.name}* for 💰 ${item.price} coins.`);
-  break;
-
+        
 case 'inventory':
   let invText = `🎒 *Your Inventory*\n\n`;
   let shopItems = JSON.parse(fs.readFileSync('./media/game/shop.json'));
@@ -458,6 +440,7 @@ case 'inventory':
 
   ptz.sendMessage(m.chat, { text: invText }, { quoted: m });
   break;
+
 
 case 'use':
   if (!args[0]) return m.reply('🔹 Use *use <item>* to activate an item.');
@@ -514,3 +497,4 @@ case 'use':
   if (users.inventory[itemName] <= 0) delete users.inventory[itemName];
 
   break;
+
