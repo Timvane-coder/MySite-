@@ -424,32 +424,54 @@ case 'buy':
   m.reply(`✅ You purchased *${item.name}* for 💰 ${item.price} coins.`);
   break;
         
+
 case 'inventory':
   let invText = `🎒 *Your Inventory*\n\n`;
   let shopItems = JSON.parse(fs.readFileSync('./media/game/shop.json'));
 
   if (!users.inventory || Object.keys(users.inventory).length === 0) {
-    invText += "Your inventory is empty.";
+    invText += "❌ Your inventory is empty.";
   } else {
+    let mediaMessages = [];
     for (let item in users.inventory) {
       let itemInfo = shopItems.find(i => i.name.toLowerCase().replace(/\s+/g, "_") === item);
-      invText += `🔹 ${itemInfo.name} - ${users.inventory[item]}x\n`;
-      invText += `🖼️ ${itemInfo.img}\n\n`;
+
+      if (itemInfo) {
+        invText += `🔹 *${itemInfo.name}* - ${users.inventory[item]}x\n📜 ${itemInfo.description || "No description"}\n\n`;
+        if (itemInfo.img) {
+          mediaMessages.push({ image: { url: itemInfo.img }, caption: `🔹 *${itemInfo.name}* - ${users.inventory[item]}x` });
+        }
+      } else {
+        invText += `🔹 *Unknown Item* - ${users.inventory[item]}x (Item info not found in shop)\n\n`;
+      }
+    }
+
+    // Send inventory text first
+    ptz.sendMessage(m.chat, { text: invText }, { quoted: m });
+
+    // Send images separately to avoid text overload
+    for (let media of mediaMessages) {
+      ptz.sendMessage(m.chat, media, { quoted: m });
     }
   }
-
-  ptz.sendMessage(m.chat, { text: invText }, { quoted: m });
   break;
 
 
 case 'use':
   if (!args[0]) return m.reply('🔹 Use *use <item>* to activate an item.');
 
-  let itemName = args.join("_").toLowerCase();
+  let itemInput = args.join(" ").toLowerCase();
+  let shopItems = JSON.parse(fs.readFileSync('./media/game/shop.json'));
+
+  // Find item in shop.json to ensure correct matching
+  let itemInfo = shopItems.find(i => i.name.toLowerCase() === itemInput);
+  if (!itemInfo) return m.reply(`⚠️ Invalid item: *${itemInput}*.`);
+
+  let itemName = itemInfo.name.toLowerCase().replace(/\s+/g, "_");  
   let userItems = users.inventory || {};
-  
+
   if (!userItems[itemName] || userItems[itemName] <= 0) {
-    return m.reply(`❌ You don't have *${itemName.replace(/_/g, " ")}*.`);
+    return m.reply(`❌ You don't have *${itemInfo.name}*.`);
   }
 
   if (!(from in tebakgambar2)) {
@@ -461,7 +483,7 @@ case 'use':
       clearTimeout(tebakgambar2[from].waktu);
       tebakgambar2[from].waktu = setTimeout(() => {
         if (tebakgambar2[from]) {
-          m.reply(`⏳ Time's up!\nThe correct answer was: ${tebakgambar2[from].jawaban}`);
+          m.reply(`⏳ Time's up!\nThe correct answer was: *${tebakgambar2[from].jawaban}*`);
           delete tebakgambar2[from];
         }
       }, (gamewaktu + 10) * 1000);
@@ -469,8 +491,9 @@ case 'use':
       break;
 
     case "skip_question":
-      delete tebakgambar2[from];
-      m.reply('⏭️ *Question Skipped!*');
+      let newQuestion = getNewQuestion(); // Ensure this function generates a new question
+      tebakgambar2[from] = newQuestion;
+      m.reply('⏭️ *Question Skipped!* Here is a new one.');
       break;
 
     case "auto_guess":
@@ -479,12 +502,20 @@ case 'use':
       break;
 
     case "double_reward":
+      if (tebakgambar2[from].doubleUsed) {
+        return m.reply('⚠️ *Double Reward* can only be used once per round.');
+      }
       tebakgambar2[from].hadiah *= 2;
+      tebakgambar2[from].doubleUsed = true;
       m.reply('💰 *Double Reward Activated!* You will earn double coins for this round.');
       break;
 
     case "auto_reveal_hint":
+      if (tebakgambar2[from].hintUsed) {
+        return m.reply('⚠️ *Auto Reveal Hint* has already been used.');
+      }
       let hint = tebakgambar2[from].jawaban.slice(0, Math.ceil(tebakgambar2[from].jawaban.length / 2));
+      tebakgambar2[from].hintUsed = true;
       m.reply(`💡 *Auto Reveal Hint Activated!*\nThe hint: *${hint}...*`);
       break;
 
@@ -497,4 +528,3 @@ case 'use':
   if (users.inventory[itemName] <= 0) delete users.inventory[itemName];
 
   break;
-
