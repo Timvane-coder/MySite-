@@ -321,6 +321,641 @@ const AmusementPark = () => {
 
     scene.add(trackGroup);
 
+    function createWoodenTower(scene) {
+  // Tower parameters
+    const towerHeight = 60;
+    const towerBaseWidth = 18;
+    const towerTopWidth = 12;
+    const woodColor = 0x8B4513;
+    const darkWoodColor = 0x5D2906;
+  
+  // Create the main tower structure group
+    const towerGroup = new THREE.Group();
+    towerGroup.name = 'woodenTower';
+    towerGroup.position.set(70, 0, -40);
+    scene.add(towerGroup);
+  
+  // Create the base foundation
+    const baseGeometry = new THREE.BoxGeometry(towerBaseWidth + 4, 2, towerBaseWidth + 4);
+    const baseMaterial = new THREE.MeshStandardMaterial({ color: 0x555555 });
+    const base = new THREE.Mesh(baseGeometry, baseMaterial);
+    base.position.y = 1;
+    base.receiveShadow = true;
+    base.castShadow = true;
+    towerGroup.add(base);
+  
+  // Create the tower frame
+    createTowerFrame(towerGroup, towerHeight, towerBaseWidth, towerTopWidth, woodColor);
+  
+  // Create observation deck at the top
+    createObservationDeck(towerGroup, towerHeight, towerTopWidth, woodColor, darkWoodColor);
+  
+  // Create the elevator shaft
+    const shaftGroup = createElevatorShaft(towerGroup, towerHeight, towerBaseWidth, towerTopWidth);
+  
+  // Create the elevator car
+    const elevator = createElevatorCar(towerHeight, towerBaseWidth, towerTopWidth);
+    elevator.name = 'towerElevator';
+    shaftGroup.add(elevator);
+  
+  // Add ladder on the outside
+    createOutsideLadder(towerGroup, towerHeight, towerBaseWidth, woodColor);
+  
+  // Add some decorative elements
+    createDecorativeElements(towerGroup, towerHeight, towerBaseWidth, towerTopWidth, woodColor, darkWoodColor);
+  
+    return towerGroup;
+ }
+
+ function createTowerFrame(towerGroup, towerHeight, towerBaseWidth, towerTopWidth, woodColor) {
+  // Create the 4 corner posts (tapering from base to top)
+  const cornerPositions = [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1]
+  ];
+  
+  for (let i = 0; i < 4; i++) {
+    // For each corner, create a segmented post to taper it
+    const segments = 6;
+    const segmentHeight = towerHeight / segments;
+    
+    for (let j = 0; j < segments; j++) {
+      const segmentBottom = j * segmentHeight;
+      const segmentTop = (j + 1) * segmentHeight;
+      
+      // Calculate width at bottom and top of this segment
+      const bottomWidthFactor = 1 - (j / segments);
+      const topWidthFactor = 1 - ((j + 1) / segments);
+      const bottomWidth = towerBaseWidth * bottomWidthFactor + towerTopWidth * (1 - bottomWidthFactor);
+      const topWidth = towerBaseWidth * topWidthFactor + towerTopWidth * (1 - topWidthFactor);
+      
+      const bottomPos = cornerPositions[i].map(val => val * (bottomWidth / 2));
+      const topPos = cornerPositions[i].map(val => val * (topWidth / 2));
+      
+      // Create post geometry (tapered cylinder)
+      const postGeometry = new THREE.CylinderGeometry(0.8, 1, segmentHeight, 8);
+      const postMaterial = new THREE.MeshStandardMaterial({ 
+        color: woodColor,
+        roughness: 0.8,
+        metalness: 0.1
+      });
+      const post = new THREE.Mesh(postGeometry, postMaterial);
+      
+      // Position the post segment
+      post.position.x = bottomPos[0];
+      post.position.z = bottomPos[1];
+      post.position.y = segmentBottom + segmentHeight / 2;
+      
+      // Add a slight random rotation for natural wood look
+      post.rotation.y = Math.random() * 0.1;
+      post.castShadow = true;
+      
+      towerGroup.add(post);
+    }
+  }
+  
+  // Create horizontal supports at different heights
+  for (let h = 0; h < towerHeight; h += 10) {
+    createHorizontalSupports(towerGroup, h, towerHeight, towerBaseWidth, towerTopWidth, woodColor);
+  }
+  
+  // Create cross braces
+  createCrossBraces(towerGroup, towerHeight, towerBaseWidth, towerTopWidth, woodColor);
+}
+
+function createHorizontalSupports(towerGroup, height, towerHeight, towerBaseWidth, towerTopWidth, woodColor) {
+  // Calculate width at this height
+  const heightFactor = 1 - (height / towerHeight);
+  const width = towerBaseWidth * heightFactor + towerTopWidth * (1 - heightFactor);
+  
+  // Create horizontal beams connecting the corner posts
+  const sides = [
+    [[-1, -1], [1, -1]], // front
+    [[1, -1], [1, 1]],   // right
+    [[1, 1], [-1, 1]],   // back
+    [[-1, 1], [-1, -1]]  // left
+  ];
+  
+  sides.forEach((side) => {
+    const start = side[0].map(val => val * (width / 2));
+    const end = side[1].map(val => val * (width / 2));
+    const length = Math.sqrt(
+      Math.pow(end[0] - start[0], 2) + 
+      Math.pow(end[1] - start[1], 2)
+    );
+    
+    const supportGeometry = new THREE.BoxGeometry(length, 0.8, 0.8);
+    const supportMaterial = new THREE.MeshStandardMaterial({ 
+      color: woodColor,
+      roughness: 0.8,
+      metalness: 0.1
+    });
+    const support = new THREE.Mesh(supportGeometry, supportMaterial);
+    
+    // Position at midpoint between start and end
+    support.position.x = (start[0] + end[0]) / 2;
+    support.position.z = (start[1] + end[1]) / 2;
+    support.position.y = height;
+    
+    // Rotate to point from start to end
+    support.rotation.y = Math.atan2(end[1] - start[1], end[0] - start[0]);
+    
+    support.castShadow = true;
+    towerGroup.add(support);
+  });
+}
+
+function createCrossBraces(towerGroup, towerHeight, towerBaseWidth, towerTopWidth, woodColor) {
+  // Add cross braces for structural support (X pattern)
+  const sectionHeight = 10;
+  const sections = Math.floor(towerHeight / sectionHeight);
+  
+  for (let section = 0; section < sections; section++) {
+    const bottomHeight = section * sectionHeight;
+    const topHeight = (section + 1) * sectionHeight;
+    
+    // Calculate width at bottom and top of this section
+    const bottomHeightFactor = 1 - (bottomHeight / towerHeight);
+    const topHeightFactor = 1 - (topHeight / towerHeight);
+    const bottomWidth = towerBaseWidth * bottomHeightFactor + towerTopWidth * (1 - bottomHeightFactor);
+    const topWidth = towerBaseWidth * topHeightFactor + towerTopWidth * (1 - topHeightFactor);
+    
+    // Create cross braces on each side
+    const sides = [
+      [[-1, -1], [1, -1], [1, -1], [-1, -1]], // front
+      [[1, -1], [1, 1], [1, 1], [1, -1]],     // right
+      [[1, 1], [-1, 1], [-1, 1], [1, 1]],     // back
+      [[-1, 1], [-1, -1], [-1, -1], [-1, 1]]  // left
+    ];
+    
+    sides.forEach((side) => {
+      // First brace (bottom-left to top-right)
+      createCrossBrace(
+        towerGroup,
+        side[0], bottomHeight, bottomWidth,
+        side[1], topHeight, topWidth,
+        woodColor
+      );
+      
+      // Second brace (bottom-right to top-left)
+      createCrossBrace(
+        towerGroup,
+        side[2], topHeight, topWidth,
+        side[3], bottomHeight, bottomWidth,
+        woodColor
+      );
+    });
+  }
+}
+
+function createCrossBrace(towerGroup, startPos, startHeight, startWidth, endPos, endHeight, endWidth, woodColor) {
+  // Map corner positions to actual coordinates based on width
+  const start = startPos.map(val => val * (startWidth / 2));
+  const end = endPos.map(val => val * (endWidth / 2));
+  
+  // Calculate length of the brace
+  const length = Math.sqrt(
+    Math.pow(end[0] - start[0], 2) + 
+    Math.pow(end[1] - start[1], 2) + 
+    Math.pow(endHeight - startHeight, 2)
+  );
+  
+  // Create the brace as a thin box
+  const braceGeometry = new THREE.BoxGeometry(0.5, length, 0.5);
+  const braceMaterial = new THREE.MeshStandardMaterial({ 
+    color: woodColor,
+    roughness: 0.8,
+    metalness: 0.1
+  });
+  const brace = new THREE.Mesh(braceGeometry, braceMaterial);
+  
+  // Position at midpoint
+  brace.position.x = (start[0] + end[0]) / 2;
+  brace.position.z = (start[1] + end[1]) / 2;
+  brace.position.y = (startHeight + endHeight) / 2;
+  
+  // Calculate rotation to point from start to end
+  // First around Y axis
+  const yRotation = Math.atan2(end[1] - start[1], end[0] - start[0]);
+  brace.rotation.y = yRotation;
+  
+  // Then tilt up/down in brace's local X-Z plane
+  const horizontalDist = Math.sqrt(
+    Math.pow(end[0] - start[0], 2) + 
+    Math.pow(end[1] - start[1], 2)
+  );
+  const xRotation = Math.atan2(endHeight - startHeight, horizontalDist);
+  brace.rotation.x = xRotation;
+  
+  brace.castShadow = true;
+  towerGroup.add(brace);
+}
+
+function createObservationDeck(towerGroup, towerHeight, towerTopWidth, woodColor, darkWoodColor) {
+  // Create observation platform at the top
+  const platformGeometry = new THREE.CylinderGeometry(towerTopWidth * 0.6, towerTopWidth * 0.6, 1.5, 16);
+  const platformMaterial = new THREE.MeshStandardMaterial({ 
+    color: darkWoodColor,
+    roughness: 0.8,
+    metalness: 0.1 
+  });
+  const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+  platform.position.y = towerHeight;
+  platform.castShadow = true;
+  platform.receiveShadow = true;
+  towerGroup.add(platform);
+  
+  // Add railing around the observation deck
+  const railingGroup = new THREE.Group();
+  railingGroup.position.y = towerHeight + 0.75;
+  towerGroup.add(railingGroup);
+  
+  const radius = towerTopWidth * 0.6;
+  const segments = 16;
+  
+  // Create vertical posts
+  for (let i = 0; i < segments; i++) {
+    const angle = (i * Math.PI * 2) / segments;
+    const postGeometry = new THREE.CylinderGeometry(0.2, 0.2, 3, 6);
+    const postMaterial = new THREE.MeshStandardMaterial({ 
+      color: woodColor,
+      roughness: 0.8 
+    });
+    const post = new THREE.Mesh(postGeometry, postMaterial);
+    
+    post.position.x = radius * Math.cos(angle);
+    post.position.z = radius * Math.sin(angle);
+    post.position.y = 1.5;
+    post.castShadow = true;
+    
+    railingGroup.add(post);
+  }
+  
+  // Create horizontal railings
+  for (let i = 0; i < segments; i++) {
+    const startAngle = (i * Math.PI * 2) / segments;
+    const endAngle = ((i + 1) * Math.PI * 2) / segments;
+    
+    const startX = radius * Math.cos(startAngle);
+    const startZ = radius * Math.sin(startAngle);
+    const endX = radius * Math.cos(endAngle);
+    const endZ = radius * Math.sin(endAngle);
+    
+    // Create top and bottom railings
+    [1, 3].forEach(height => {
+      const railGeometry = new THREE.CylinderGeometry(0.15, 0.15, 
+        Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endZ - startZ, 2)), 6);
+      const railMaterial = new THREE.MeshStandardMaterial({ 
+        color: woodColor,
+        roughness: 0.8 
+      });
+      const rail = new THREE.Mesh(railGeometry, railMaterial);
+      
+      // Position at midpoint
+      rail.position.x = (startX + endX) / 2;
+      rail.position.z = (startZ + endZ) / 2;
+      rail.position.y = height;
+      
+      // Rotate to align with segment
+      rail.rotation.y = Math.atan2(endZ - startZ, endX - startX);
+      rail.rotation.z = Math.PI / 2;
+      
+      rail.castShadow = true;
+      railingGroup.add(rail);
+    });
+  }
+  
+  // Create roof
+  const roofGeometry = new THREE.ConeGeometry(towerTopWidth * 0.7, 4, 16);
+  const roofMaterial = new THREE.MeshStandardMaterial({ 
+    color: darkWoodColor,
+    roughness: 0.7
+  });
+  const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+  roof.position.y = towerHeight + 5;
+  roof.castShadow = true;
+  towerGroup.add(roof);
+  
+  // Add small flagpole at the top
+  const flagpoleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 2, 8);
+  const flagpoleMaterial = new THREE.MeshStandardMaterial({ color: 0x888888 });
+  const flagpole = new THREE.Mesh(flagpoleGeometry, flagpoleMaterial);
+  flagpole.position.y = towerHeight + 7;
+  flagpole.castShadow = true;
+  towerGroup.add(flagpole);
+  
+  // Add flag
+  const flagGeometry = new THREE.PlaneGeometry(1.5, 0.8);
+  const flagMaterial = new THREE.MeshStandardMaterial({ 
+    color: 0xff0000,
+    side: THREE.DoubleSide
+  });
+  const flag = new THREE.Mesh(flagGeometry, flagMaterial);
+  flag.position.set(0.6, towerHeight + 6.5, 0);
+  flag.rotation.y = Math.PI / 2;
+  flag.castShadow = true;
+  towerGroup.add(flag);
+}
+
+function createElevatorShaft(towerGroup, towerHeight, towerBaseWidth, towerTopWidth) {
+  // Create elevator shaft group
+  const shaftGroup = new THREE.Group();
+  shaftGroup.name = 'elevatorShaft';
+  towerGroup.add(shaftGroup);
+  
+  // Calculate approximate center width
+  const centerWidth = (towerBaseWidth + towerTopWidth) / 2;
+  const shaftWidth = 4;
+  
+  // Create shaft corners (vertical beams)
+  const cornerPositions = [
+    [-1, -1],
+    [1, -1],
+    [1, 1],
+    [-1, 1]
+  ];
+  
+  for (let i = 0; i < 4; i++) {
+    const beamGeometry = new THREE.BoxGeometry(0.6, towerHeight, 0.6);
+    const beamMaterial = new THREE.MeshStandardMaterial({ color: 0x5D2906 });
+    const beam = new THREE.Mesh(beamGeometry, beamMaterial);
+    
+    beam.position.x = cornerPositions[i][0] * (shaftWidth / 2);
+    beam.position.z = cornerPositions[i][1] * (shaftWidth / 2);
+    beam.position.y = towerHeight / 2;
+    
+    beam.castShadow = true;
+    shaftGroup.add(beam);
+  }
+  
+  // Create horizontal shaft guides at intervals
+  for (let h = 0; h < towerHeight; h += 5) {
+    for (let i = 0; i < 4; i++) {
+      const side = i % 2 === 0 ? 'x' : 'z';
+      const guideGeometry = new THREE.BoxGeometry(
+        side === 'x' ? shaftWidth : 0.4,
+        0.4,
+        side === 'z' ? shaftWidth : 0.4
+      );
+      const guideMaterial = new THREE.MeshStandardMaterial({ color: 0x5D2906 });
+      const guide = new THREE.Mesh(guideGeometry, guideMaterial);
+      
+      guide.position.y = h;
+      if (side === 'x') {
+        guide.position.z = (i === 0 ? -1 : 1) * (shaftWidth / 2);
+      } else {
+        guide.position.x = (i === 1 ? -1 : 1) * (shaftWidth / 2);
+      }
+      
+      guide.castShadow = true;
+      shaftGroup.add(guide);
+    }
+  }
+  
+  // Create cable for elevator
+  const cableGeometry = new THREE.CylinderGeometry(0.1, 0.1, towerHeight, 8);
+  const cableMaterial = new THREE.MeshStandardMaterial({ color: 0x333333 });
+  const cable = new THREE.Mesh(cableGeometry, cableMaterial);
+  cable.position.y = towerHeight / 2;
+  shaftGroup.add(cable);
+  
+  return shaftGroup;
+}
+
+function createElevatorCar(towerHeight, towerBaseWidth, towerTopWidth) {
+  // Create elevator car group
+  const elevatorGroup = new THREE.Group();
+  elevatorGroup.position.y = 3; // Starting position
+  
+  // Create elevator cabin
+  const cabinGeometry = new THREE.BoxGeometry(3.5, 4, 3.5);
+  const cabinMaterial = new THREE.MeshStandardMaterial({ 
+    color: 0x886633,
+    roughness: 0.7,
+    metalness: 0.2
+  });
+  const cabin = new THREE.Mesh(cabinGeometry, cabinMaterial);
+  cabin.position.y = 2;
+  cabin.castShadow = true;
+  elevatorGroup.add(cabin);
+  
+  // Add ornate trim around the top and bottom
+  const trimTopGeometry = new THREE.BoxGeometry(3.7, 0.3, 3.7);
+  const trimBottomGeometry = new THREE.BoxGeometry(3.7, 0.3, 3.7);
+  const trimMaterial = new THREE.MeshStandardMaterial({ color: 0x5D2906 });
+  
+  const trimTop = new THREE.Mesh(trimTopGeometry, trimMaterial);
+  trimTop.position.y = 4;
+  trimTop.castShadow = true;
+  elevatorGroup.add(trimTop);
+  
+  const trimBottom = new THREE.Mesh(trimBottomGeometry, trimMaterial);
+  trimBottom.position.y = 0;
+  trimBottom.castShadow = true;
+  elevatorGroup.add(trimBottom);
+  
+  // Add windows
+  const windowMaterial = new THREE.MeshStandardMaterial({ 
+    color: 0xaaddff,
+    transparent: true,
+    opacity: 0.7,
+    metalness: 0.9
+  });
+  
+  // Side windows (four sides)
+  const sides = [
+    [0, 0, 1.76], // front
+    [1.76, 0, 0], // right
+    [0, 0, -1.76], // back
+    [-1.76, 0, 0]  // left
+  ];
+  
+  sides.forEach(side => {
+    const windowGeometry = new THREE.PlaneGeometry(2, 2.5);
+    const window = new THREE.Mesh(windowGeometry, windowMaterial);
+    window.position.set(side[0], 2, side[1]);
+    window.rotation.y = Math.atan2(side[0], side[1]);
+    elevatorGroup.add(window);
+  });
+  
+  // Add roof
+  const roofGeometry = new THREE.ConeGeometry(2.5, 1, 4);
+  const roofMaterial = new THREE.MeshStandardMaterial({ color: 0x5D2906 });
+  const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+  roof.position.y = 4.6;
+  roof.rotation.y = Math.PI / 4; // Rotate 45 degrees for better alignment
+  roof.castShadow = true;
+  elevatorGroup.add(roof);
+  
+  // Add elevator cables
+  for (let i = -1; i <= 1; i += 2) {
+    const cableGeometry = new THREE.CylinderGeometry(0.05, 0.05, 6, 8);
+    const cableMaterial = new THREE.MeshStandardMaterial({ color: 0x222222 });
+    const cable = new THREE.Mesh(cableGeometry, cableMaterial);
+    cable.position.set(i, 7, 0);
+    cable.castShadow = true;
+    elevatorGroup.add(cable);
+  }
+  
+  // Add pulley wheels at the top
+  for (let i = -1; i <= 1; i += 2) {
+    const wheelGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.1, 16);
+    const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x444444 });
+    const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+    wheel.position.set(i, 4.8, 0);
+    wheel.rotation.x = Math.PI / 2;
+    wheel.castShadow = true;
+    elevatorGroup.add(wheel);
+  }
+  
+  return elevatorGroup;
+}
+
+function createOutsideLadder(towerGroup, towerHeight, towerBaseWidth, woodColor) {
+  // Create ladder from bottom to top for maintenance access
+  const ladderGroup = new THREE.Group();
+  ladderGroup.position.set(towerBaseWidth / 2 + 0.5, 0, 0);
+  towerGroup.add(ladderGroup);
+  
+  // Create vertical rails
+  for (let i = -1; i <= 1; i += 2) {
+    const railGeometry = new THREE.CylinderGeometry(0.15, 0.15, towerHeight, 8);
+    const railMaterial = new THREE.MeshStandardMaterial({ color: woodColor });
+    const rail = new THREE.Mesh(railGeometry, railMaterial);
+    rail.position.set(i * 0.5, towerHeight / 2, 0);
+    rail.castShadow = true;
+    ladderGroup.add(rail);
+  }
+  
+  // Create rungs
+  const rungCount = Math.floor(towerHeight / 2);
+  for (let i = 0; i < rungCount; i++) {
+    const rungGeometry = new THREE.CylinderGeometry(0.1, 0.1, 1.2, 8);
+    const rungMaterial = new THREE.MeshStandardMaterial({ color: woodColor });
+    const rung = new THREE.Mesh(rungGeometry, rungMaterial);
+    rung.position.y = 2 * i;
+    rung.rotation.z = Math.PI / 2;
+    rung.castShadow = true;
+    ladderGroup.add(rung);
+  }
+}
+
+function createDecorativeElements(towerGroup, towerHeight, towerBaseWidth, towerTopWidth, woodColor, darkWoodColor) {
+  // Add entrance at the bottom
+  const entranceWidth = 4;
+  const entranceHeight = 6;
+  
+  // Create entrance frame
+  const entranceFrameGeometry = new THREE.BoxGeometry(entranceWidth + 1, entranceHeight + 1, 0.5);
+  const entranceFrameMaterial = new THREE.MeshStandardMaterial({ color: darkWoodColor });
+  const entranceFrame = new THREE.Mesh(entranceFrameGeometry, entranceFrameMaterial);
+  entranceFrame.position.set(0, entranceHeight / 2, -towerBaseWidth / 2 - 0.25);
+  entranceFrame.castShadow = true;
+  towerGroup.add(entranceFrame);
+  
+  // Create entrance door (partially open)
+  const doorGeometry = new THREE.BoxGeometry(entranceWidth * 0.8, entranceHeight * 0.9, 0.3);
+  const doorMaterial = new THREE.MeshStandardMaterial({ color: woodColor });
+  const door = new THREE.Mesh(doorGeometry, doorMaterial);
+  door.position.set(entranceWidth * 0.3, entranceHeight / 2 - 0.5, -towerBaseWidth / 2 - 0.5);
+  door.rotation.y = Math.PI / 6; // Slightly open
+  door.castShadow = true;
+  towerGroup.add(door);
+  
+  // Add decorative signage
+  const signGeometry = new THREE.PlaneGeometry(5, 1.5);
+  const signMaterial = new THREE.MeshStandardMaterial({ 
+    color: 0xeecc99,
+    side: THREE.DoubleSide
+  });
+  const sign = new THREE.Mesh(signGeometry, signMaterial);
+  sign.position.set(0, entranceHeight + 2, -towerBaseWidth / 2 - 0.6);
+  sign.castShadow = true;
+  towerGroup.add(sign);
+  
+  // Add lanterns at various heights
+  const lanternPositions = [
+    [towerBaseWidth / 2, 10, towerBaseWidth / 2],
+    [-towerBaseWidth / 2, 25, towerBaseWidth / 2],
+    [towerBaseWidth / 2, 40, -towerBaseWidth / 2],
+    [-towerBaseWidth / 3, towerHeight - 5, towerTopWidth / 3]
+  ];
+  
+  lanternPositions.forEach(pos => {
+    createLantern(towerGroup, pos[0], pos[1], pos[2]);
+  });
+}
+
+function createLantern(parent, x, y, z) {
+  const lanternGroup = new THREE.Group();
+  lanternGroup.position.set(x, y, z);
+  
+  // Create lantern base
+  const baseGeometry = new THREE.CylinderGeometry(0.3, 0.2, 0.3, 8);
+  const baseMaterial = new THREE.MeshStandardMaterial({ color: 0x444444 });
+  const base = new THREE.Mesh(baseGeometry, baseMaterial);
+  base.position.y = -0.4;
+  base.castShadow = true;
+  lanternGroup.add(base);
+  
+  // Create lantern body
+  const bodyGeometry = new THREE.CylinderGeometry(0.25, 0.25, 0.6, 8);
+  const bodyMaterial = new THREE.MeshStandardMaterial({ 
+    color: 0xffcc44,
+    transparent: true,
+    opacity: 0.7,
+    emissive: 0xffaa00,
+    emissiveIntensity: 0.5
+  });
+  const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+  body.castShadow = true;
+  lanternGroup.add(body);
+  
+  // Create lantern top
+  const topGeometry = new THREE.ConeGeometry(0.3, 0.3, 8);
+  const topMaterial = new THREE.MeshStandardMaterial({ color: 0x444444 });
+  const top = new THREE.Mesh(topGeometry, topMaterial);
+  top.position.y = 0.45;
+  top.castShadow = true;
+  lanternGroup.add(top);
+  
+  // Add light source inside lantern
+  const light = new THREE.PointLight(0xffaa00, 0.5, 10);
+  light.position.y = 0;
+  lanternGroup.add(light);
+  
+  parent.add(lanternGroup);
+}
+
+// Add this to your animation loop
+function animateWoodenTower(scene, delta) {
+  // Find the elevator
+  let towerElevator;
+  scene.traverse((object) => {
+    if (object.name === 'towerElevator') {
+      towerElevator = object;
+    }
+  });
+  
+  if (towerElevator) {
+    // Elevator movement logic
+    const maxHeight = 50; // Maximum height
+    const minHeight = 3;  // Minimum height
+    const cycleTime = 30; // Time for one full cycle in seconds
+    
+    // Calculate position based on time
+    const time = (Date.now() % (cycleTime * 1000)) / 1000;
+    const normalizedTime = time / cycleTime; // 0 to 1
+    
+    // Use sine wave for smooth up and down movement
+    const elevatorPosition = minHeight + (maxHeight - minHeight) * Math.sin(normalizedTime * Math.PI * 2) * 0.5 + (maxHeight - minHeight) * 0.5;
+    
+    towerElevator.position.y = elevatorPosition;
+  }
+  }
+
     // Function to create a wooden drop tower
   
   // Tower structure (wooden framework)
