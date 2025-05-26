@@ -1013,62 +1013,7 @@ function anim1() {
   _rot3.chain(_move4, _rot4);
 }
 
-function anim_content() {
-  camera_pos = 1;
-  camera.position.set(-38, 200, 57);
-  camera.rotation.set(0, -0.37, 0);
 
-  var _move = new TWEEN.Tween(camera.position).to({ x: -10, z: 64 }, 800).start();
-  var _rot = new TWEEN.Tween(camera.rotation).to({ y: 0.1 }, 800).start();
-
-  var tilt = new TWEEN.Tween(camera.rotation)
-    .to({ z: 0.1 }, 800)
-    .delay(1200)
-    .chain(new TWEEN.Tween(camera.rotation).to({ z: 0 }, 800));
-
-  var _move1 = new TWEEN.Tween(camera.position).to({ z: -60 }, 2000);
-  var _rot1 = new TWEEN.Tween(camera.rotation)
-    .to({ y: Math.PI / 2 }, 800)
-    .easing(TWEEN.Easing.Sinusoidal.InOut)
-    .delay(1200);
-  _move.chain(_move1, _rot1, tilt);
-
-  var _move2 = new TWEEN.Tween(camera.position)
-    .to({ x: -50, z: -56 }, 2000)
-    .easing(TWEEN.Easing.Sinusoidal.InOut);
-  var _rot2 = new TWEEN.Tween(camera.rotation)
-    .to({ y: 3.8 }, 2000)
-    .easing(TWEEN.Easing.Sinusoidal.InOut)
-    .onComplete(() => {
-      $("#pdfBtn").show();
-    });
-  _rot1.chain(_move2, _rot2);
-}
-
-function anim_content_back() {
-  camera_pos = 0;
-  camera.position.set(-50, 200, -56);
-  camera.rotation.set(0, 3.8, 0);
-  // $("#pdfBtn").hide();
-  var _move = new TWEEN.Tween(camera.position)
-    .to({ x: -15, z: -62 }, 1000)
-    .easing(TWEEN.Easing.Sinusoidal.InOut)
-    .start();
-  var _rot = new TWEEN.Tween(camera.rotation)
-    .to({ y: 3.14 })
-    .easing(TWEEN.Easing.Sinusoidal.InOut)
-    .start();
-
-  var _move1 = new TWEEN.Tween(camera.position).to({ z: 57 }, 1500);
-  var _rot1 = new TWEEN.Tween(camera.rotation)
-    .to({ y: -0.37 }, 1500)
-    .easing(TWEEN.Easing.Sinusoidal.InOut);
-  var _move2 = new TWEEN.Tween(camera.position)
-    .to({ x: -38 }, 1000)
-    .easing(TWEEN.Easing.Sinusoidal.InOut);
-  _move.chain(_move1);
-  _move1.chain(_rot1, _move2);
-}
 
 function anim_candidate() {
   camera_pos = 3;
