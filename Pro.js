@@ -87,8 +87,9 @@
 }
 
 export default App;
-import React from 'react';
 
+// components/Character.js
+import React from 'react';
 const Navigation = ({
   currentScene,
   totalScenes,
@@ -152,6 +153,65 @@ const Navigation = ({
 };
 
 export default Navigation;
+
+import React from 'react';
+import Scene from './Scene';
+import Sparkles from './Sparkles';
+
+const StoryContainer = ({ currentScene, totalScenes, storyData }) => {
+  const currentStoryData = storyData[currentScene - 1];
+  const showSparkles = [1, 10, 16, 18].includes(currentScene); // Updated scene numbers for sparkles
+
+  return (
+    <div className="story-container">
+      {showSparkles && <Sparkles />}
+      <Scene
+        sceneData={currentStoryData}
+        sceneNumber={currentScene}
+        totalScenes={totalScenes}
+      />
+    </div>
+  );
+};
+
+export default StoryContainer;
+
+// components/Character.js
+import React from 'react';
+
+const Character = ({ type, isShaking = false }) => {
+  const getCharacterClass = () => {
+    const baseClass = 'character';
+    const typeClass = `character-${type}`;
+    const shakeClass = isShaking ? 'shaking' : '';
+    return `${baseClass} ${typeClass} ${shakeClass}`.trim();
+  };
+
+  const getCharacterImage = () => {
+    switch(type) {
+      case 'cinderella':
+        return '/images/Cinderella.jpg';
+      case 'stepsister':
+        return '/images/stepsister.jpg';
+      case 'fairy-godit':
+        return '/images/godit.jpg';
+      default:
+        return '/images/default-character.jpg';
+    }
+  };
+
+  return (
+    <div className={getCharacterClass()}>
+      <img
+        src={getCharacterImage()}
+        alt={`${type} character`}
+        className="character-image"
+      />
+    </div>
+  );
+};
+
+export default Character;
 
 // src/components/Scene.js
 import React, { useEffect, useState } from 'react';
