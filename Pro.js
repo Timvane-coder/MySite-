@@ -307,19 +307,6 @@ const Scene = ({ sceneData, sceneNumber, totalScenes }) => {
             </div>
           </div>
         );
-
-      case 'warning-signs':
-        return (
-          <div className="warning-signs-content">
-            <Character type="cinderella" />
-            <div className="warning-signs-grid">
-              {sceneData.warningSignsData.map((warning, index) => (
-                <WarningSign key={index} warning={warning} delay={index * 0.3} />
-              ))}
-            </div>
-          </div>
-        );
-
       case 'scam-message':
         return (
           <div className="scam-content">
@@ -335,15 +322,7 @@ const Scene = ({ sceneData, sceneNumber, totalScenes }) => {
           </div>
         );
 
-      case 'hack-attack':
-        return (
-          <div className="hack-content">
-            <Character type="cinderella" isShaking={true} />
-            {sceneData.alerts.map((alert, index) => (
-              <SecurityAlert key={index} alert={alert} delay={index * 0.5} />
-            ))}
-          </div>
-        );
+      
 
       case 'fairy-godit':
         return (
@@ -390,8 +369,6 @@ const Scene = ({ sceneData, sceneNumber, totalScenes }) => {
             </div>
           </div>
         );
-
-
       case 'secure-cinderella':
         return (
           <div className="secure-content">
@@ -414,25 +391,6 @@ const Scene = ({ sceneData, sceneNumber, totalScenes }) => {
             </div>
           </div>
         );
-
-      case 'lessons':
-        return (
-          <div className="lessons-content">
-            <Checklist items={sceneData.checklist} />
-          </div>
-        );
-
-      case 'teaching-others':
-        return (
-          <div className="teaching-content">
-            <TeachingScene
-              teacher={sceneData.teacher}
-              students={sceneData.students}
-              tips={sceneData.tips}
-            />
-          </div>
-        );
-
       case 'end':
         return (
           <div className="end-content">
@@ -512,159 +470,6 @@ export const storyData = [
   },
   {
     id: 5,
-    type: 'warning-signs',
-    title: 'Spotting the Red Flags',
-    narration: "Cinderella learned to recognize warning signs of digital dangers.",
-    warningSignsData: [
-      { iconType: 'oversharing', iconAlt: 'Oversharing Warning', title: 'Oversharing', description: 'Posting personal details publicly can expose you to risks.' },
-      { iconType: 'suspicious-link', iconAlt: 'Suspicious Link Warning', title: 'Suspicious Links', description: 'Unexpected links may lead to phishing sites.' },
-      { iconType: 'weak-password', iconAlt: 'Weak Password Warning', title: 'Weak Passwords', description: 'Simple passwords are easy to crack.' },
-    ],
-    backgroundClass: 'warning-bg',
-  },
-  {
-    id: 6,
-    type: 'scam-message',
-    title: 'The Mysterious Message',
-    narration: "One day, a mysterious message appeared...",
-    email: {
-      subject: "Royal Invitation!",
-      body: "You've been selected to attend the Royal Crypto Gala! Click here to confirm your invite!",
-      buttonText: "CLAIM NOW",
-    },
-    backgroundClass: 'warning-bg',
-  },
-  {
-    id: 7,
-    type: 'phishing-site',
-    title: 'The Suspicious Website',
-    narration: "She didn't notice the strange web address... or the security question that seemed oddly specific.",
-    website: {
-      url: 'royal-crypto-palace.ru/claim',
-      header: 'Royal Registration',
-      formFields: [
-        { type: 'text', placeholder: 'Name' },
-        { type: 'email', placeholder: 'Email' },
-        { type: 'password', placeholder: 'Password' },
-        { type: 'text', placeholder: "Pet's name?", suspicious: true },
-      ],
-    },
-    backgroundClass: 'danger-bg',
-  },
-  {
-    id: 8,
-    type: 'video',
-    title: 'The Phishing Trap',
-    narration: "Watch how phishing scams trick users into giving away sensitive information.",
-    video: { type: 'phishing-warning', alt: 'Phishing Warning Video' },
-    backgroundClass: 'video-bg',
-  },
-  {
-    id: 9,
-    type: 'hack-attack',
-    title: 'The Hack Attack!',
-    narration: "Moments later, her bank sent a warning... and everything started unraveling.",
-    alerts: [
-      { iconType: 'warning', iconAlt: 'Warning', text: 'New login from unknown device – Nigeria' },
-      { iconType: 'bank', iconAlt: 'Bank Alert', text: 'Bank Account: -$2,847' },
-      { iconType: 'identity', iconAlt: 'Identity Theft', text: 'Identity stolen - 15 new accounts opened' },
-      { iconType: 'credit', iconAlt: 'Credit Alert', text: 'Credit score dropped 200 points' },
-    ],
-    backgroundClass: 'danger-bg',
-  },
-  {
-    id: 10,
-    type: 'fairy-godit',
-    title: 'The Fairy God-IT Appears!',
-    narration: "Just when all seemed lost, a magical figure appeared with glowing devices and security wisdom!",
-    message: "Fear not, dear Cinderella! I shall help you reclaim your digital kingdom with the power of cybersecurity!",
-    tools: [
-      { type: 'antivirus', alt: 'Antivirus Software' },
-      { type: 'vpn', alt: 'VPN Protection' },
-      { type: 'firewall', alt: 'Firewall Shield' },
-      { type: 'password-manager', alt: 'Password Manager' },
-      { type: 'authenticator', alt: '2FA Authenticator' },
-    ],
-    backgroundClass: 'magic-bg',
-  },
-  {
-    id: 11,
-    type: 'video',
-    title: 'Cyber Recovery Begins',
-    narration: "Learn the first steps to recover from a cyberattack with Fairy God-IT's guidance.",
-    video: { type: 'cyber-recovery', alt: 'Cyber Recovery Video' },
-    backgroundClass: 'video-bg',
-  },
-  {
-    id: 12,
-    type: 'cleanup',
-    title: 'The Great Cleanup',
-    narration: "Together, they began the process of securing Cinderella's digital life step by step.",
-    actions: [
-      { icon: 'scan', alt: 'System Scan', text: 'Scanning for malware...' },
-      { icon: 'password-change', alt: 'Password Change', text: 'Changing all passwords...' },
-      { icon: 'bank-contact', alt: 'Bank Contact', text: 'Contacting banks...' },
-      { icon: 'privacy-settings', alt: 'Privacy Settings', text: 'Updating privacy settings...' },
-      { icon: 'monitoring', alt: 'Credit Monitoring', text: 'Setting up monitoring...' },
-    ],
-    backgroundClass: 'cleanup-bg',
-  },
-
-  {
-    id: 14,
-    type: 'secure-cinderella',
-    title: 'Cinderella Secured!',
-    narration: "With strong passwords, two-factor authentication, and privacy settings locked down, Cinderella's digital kingdom was safer than ever.",
-    newPassword: "M@gic!Castle2024#Secure",
-    indicators: [
-      { type: 'shield-check', alt: 'Security Verified' },
-      { type: 'lock-secure', alt: 'Account Locked' },
-      { type: '2fa-enabled', alt: '2FA Enabled' },
-      { type: 'privacy-protected', alt: 'Privacy Protected' },
-      { type: 'monitoring-active', alt: 'Monitoring Active' },
-    ],
-    backgroundClass: 'secure-bg',
-  },
-  {
-    id: 15,
-    type: 'lessons',
-    title: 'Lessons Learned',
-    narration: "And so, Cinderella learned the most important rules of digital safety...",
-    checklist: [
-      "Never share personal details publicly online",
-      "Use strong, unique passwords for every account",
-      "Enable two-factor authentication everywhere possible",
-      "Be suspicious of unexpected emails and links",
-      "Keep your software and apps updated",
-      "Use privacy settings on all social media",
-      "Monitor your bank and credit accounts regularly",
-      "Think twice before clicking 'Accept' or 'Allow'",
-    ],
-    backgroundClass: 'lesson-bg',
-  },
-  {
-    id: 16,
-    type: 'teaching-others',
-    title: 'Spreading the Word',
-    narration: "Cinderella shared her newfound knowledge with others in the kingdom.",
-    teacher: {
-      type: 'cinderella',
-      message: "Here's how to stay safe online, everyone!",
-    },
-    students: [
-      { type: 'stepsister', response: "Thanks, Cindy! I'll use 2FA now!" },
-      { type: 'stepsister', response: "No more public posts for me!" },
-    ],
-    tips: [
-      "Use strong passwords",
-      "Enable two-factor authentication",
-      "Avoid suspicious links",
-    ],
-    backgroundClass: 'teaching-bg',
-  },
-  
-  {
-    id: 18,
     type: 'end',
     title: 'Happily Ever After... Online!',
     narration: "And they all lived securely ever after, browsing safely in the digital kingdom!",
