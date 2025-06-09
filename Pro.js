@@ -87,6 +87,71 @@
 }
 
 export default App;
+import React from 'react';
+
+const Navigation = ({
+  currentScene,
+  totalScenes,
+  onNext,
+  onPrevious,
+  onRestart,
+  onGoToScene,
+  isAutoPlay,
+  onToggleAutoPlay
+}) => {
+  return (
+    <div className="navigation">
+      <button
+        className="nav-btn"
+        onClick={onPrevious}
+        disabled={currentScene === 1}
+      >
+        ← Previous
+      </button>
+
+      <div className="scene-selector">
+        <select
+          value={currentScene}
+          onChange={(e) => onGoToScene(parseInt(e.target.value))}
+          className="scene-select"
+        >
+          {Array.from({ length: totalScenes }, (_, i) => (
+            <option key={i + 1} value={i + 1}>
+              Scene {i + 1}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <button
+        className="nav-btn"
+        onClick={onNext}
+        disabled={currentScene === totalScenes}
+      >
+        Next →
+      </button>
+
+      <button className="nav-btn" onClick={onRestart}>
+        <img src="/images/restart.jpg" alt="Restart" className="nav-icon" />
+        Restart
+      </button>
+
+      <button
+        className={`nav-btn ${isAutoPlay ? 'active' : ''}`}
+        onClick={onToggleAutoPlay}
+      >
+        <img
+          src={isAutoPlay ? "/images/pause.jpg" : "/images/play-icon.jpg"}
+          alt={isAutoPlay ? "Pause" : "Play"}
+          className="nav-icon"
+        />
+        {isAutoPlay ? 'Pause' : 'Auto'}
+      </button>
+    </div>
+  );
+};
+
+export default Navigation;
 
 // src/components/Scene.js
 import React, { useEffect, useState } from 'react';
@@ -98,8 +163,6 @@ import EmailPopup from './EmailPopup';
 import SecurityAlert from './SecurityAlert';
 import Checklist from './Checklist';
 import EndSeal from './EndSeal';
-import WarningSign from './WarningSign';
-import TeachingScene from './TeachingScene';
 
 
 const Scene = ({ sceneData, sceneNumber, totalScenes }) => {
@@ -550,3 +613,34 @@ export const storyData = [
   },
 ];
 
+// src/data/assetMap.js
+const fallbackImage = require('../assets/images/fallback.jpg');
+
+export const assetMap = {
+  // Security icons (used in stepsisters scene)
+  security: {
+    lock: require('../assets/images/security-lock.jpg'),
+
+
+  },
+  // Tool icons (used in fairy-godit scene)
+
+  // Video assets (used in video scenes)
+  videos: {
+    'digital-kingdom': require('../assets/videos/intro.mp4'),
+
+  },
+  // Other images used across components
+  castle: require('../assets/images/castle.jpg'),
+
+};
+
+// Helper function to get asset with fallback
+export const getAsset = (category, type) => {
+  try {
+    return assetMap[category][type] || fallbackImage;
+  } catch (error) {
+    console.error(`Asset not found: ${category}/${type}`);
+    return fallbackImage;
+  }
+};
