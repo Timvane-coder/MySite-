@@ -486,18 +486,7 @@ export const storyData = [
     ],
     backgroundClass: 'cleanup-bg',
   },
-  {
-    id: 13,
-    type: 'recovery-resources',
-    title: 'Finding Help',
-    narration: "Cinderella discovered resources to aid her recovery and protect her future.",
-    resources: [
-      { iconType: 'support', iconAlt: 'Support Icon', title: 'Cybercrime Support', description: 'Contact authorities for cybercrime assistance.', contact: 'report@cybercrime.gov' },
-      { iconType: 'helpline', iconAlt: 'Helpline Icon', title: 'ID Theft Helpline', description: 'Get help with identity theft recovery.', contact: '1-800-ID-THEFT' },
-      { iconType: 'website', iconAlt: 'Website Icon', title: 'Online Resources', description: 'Learn more about staying safe online.', contact: 'www.staysafeonline.org' },
-    ],
-    backgroundClass: 'recovery-bg',
-  },
+
   {
     id: 14,
     type: 'secure-cinderella',
@@ -550,18 +539,7 @@ export const storyData = [
     ],
     backgroundClass: 'teaching-bg',
   },
-  {
-    id: 17,
-    type: 'advanced-protection',
-    title: 'Advanced Defenses',
-    narration: "With Fairy God-IT's help, Cinderella explored advanced tools for ultimate protection.",
-    advancedTools: [
-      { iconType: 'mfa', iconAlt: 'MFA Icon', name: 'Multi-Factor Authentication', description: 'Adds extra layers of security.', benefit: 'Prevents unauthorized access.' },
-      { iconType: 'encryption', iconAlt: 'Encryption Icon', name: 'Data Encryption', description: 'Protects your data from prying eyes.', benefit: 'Keeps sensitive info secure.' },
-      { iconType: 'backup', iconAlt: 'Backup Icon', name: 'Regular Backups', description: 'Saves your data in case of attacks.', benefit: 'Ensures data recovery.' },
-    ],
-    backgroundClass: 'advanced-bg',
-  },
+  
   {
     id: 18,
     type: 'end',
