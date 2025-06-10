@@ -714,3 +714,62 @@ export const storyData = [
     backgroundClass: 'end-bg',
   },
 ];
+// src/data/assetMap.js
+const fallbackImage = require('../assets/images/fallback.jpg');
+
+// Image assets
+export const assetMap = {
+  // General scene assets
+  digitalForest: require('../assets/images/digital-forest.jpg'),
+  firewall: require('../assets/images/firewall-effect.jpg'),
+  tablet: require('../assets/images/tablet-interface.jpg'),
+  digitalVirus: require('../assets/images/digital-virus.jpg'),
+  secureCastle: require('../assets/images/secure-digital-castle.jpg'),
+  tower: require('../assets/images/rapunzels-tower.jpg'),
+
+  // Account icons (used in password-spread and login screens)
+  accounts: {
+    cloud: require('../assets/images/cloud-account.jpg'),
+    bank: require('../assets/images/bank-account.jpg'),
+    social: require('../assets/images/social-account.jpg'),
+    shopping: require('../assets/images/shopping-account.jpg'),
+  },
+
+  // Tool icons (used in cyber-fairy scene)
+  tools: {
+    wand: require('../assets/images/magic-wand.jpg'),
+    shield: require('../assets/images/digital-shield.jpg'),
+    key: require('../assets/images/master-key.jpg'),
+  },
+
+  // Action icons (used in password-reset scene)
+  actions: {
+    'password-manager': require('../assets/images/password-manager.jpg'),
+    'unique-passwords': require('../assets/images/unique-passwords.jpg'),
+    '2fa-setup': require('../assets/images/2fa-setup.jpg'),
+    'secure-backup': require('../assets/images/secure-backup.jpg'),
+  },
+
+  // Security icons (used in security-setup scene)
+  security: {
+    'dragon-guard': require('../assets/images/dragon-guard.jpg'),
+    biometric: require('../assets/images/biometric-scan.jpg'),
+    'fortress-mode': require('../assets/images/fortress-mode.jpg'),
+  },
+
+  // Other static assets (used in various components)
+  mailIcon: require('../assets/images/mail-icon.jpg'),
+  musicIcon: require('../assets/images/music-icon.jpg'),
+  shopIcon: require('../assets/images/shop-icon.jpg'),
+  cloudIcon: require('../assets/images/cloud-icon.jpg'),
+};
+
+// Helper function to get asset with fallback
+export const getAsset = (category, type) => {
+  try {
+    return assetMap[category] ? assetMap[category][type] || fallbackImage : assetMap[type] || fallbackImage;
+  } catch (error) {
+    console.error(`Asset not found: ${category}/${type}`);
+    return fallbackImage;
+  }
+};
