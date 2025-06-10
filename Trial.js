@@ -514,4 +514,203 @@ const PasswordTrail = () => {
           className="trail-particle"
           style={{
             animationDelay: `${i * 0.2}s`
-    
+          }}
+        >
+          🔑
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default PasswordTrail;
+
+// src/components/VirusSwirl.js
+import React from 'react';
+
+const VirusSwirl = () => {
+  return (
+    <div className="virus-swirl">
+      {Array.from({ length: 15 }, (_, i) => (
+        <div
+          key={i}
+          className="virus-particle"
+          style={{
+            animationDelay: `${i * 0.1}s`,
+            animationDuration: `${1 + Math.random()}s`
+          }}
+        >
+          🦠
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default VirusSwirl;
+
+// src/data/storyData.js
+export const storyData = [
+  {
+    id: 1,
+    type: 'intro',
+    title: 'Rapunzel: The Shared Password Peril',
+    narration: "High in a tower surrounded by firewalls and fiber-optic forests, lived Rapunzel — a curious girl with a long golden password.",
+    backgroundClass: 'tower-bg',
+  },
+  {
+    id: 2,
+    type: 'password-reuse',
+    title: 'One Password to Rule Them All',
+    narration: "She used just one password for everything — from enchanted mail to fairy-tune playlists.",
+    password: 'Rapunzel123!',
+    accounts: [
+      { name: 'Enchanted Mail', icon: '/images/mail-icon.jpg' },
+      { name: 'Fairy-Tune Playlists', icon: '/images/music-icon.jpg' },
+      { name: 'Scroll-Shop', icon: '/images/shop-icon.jpg' },
+      { name: 'Cloud Castle Drive', icon: '/images/cloud-icon.jpg' }
+    ],
+    backgroundClass: 'password-bg',
+  },
+  {
+    id: 3,
+    type: 'friend-request',
+    title: 'The Friend Request',
+    narration: "And one day, someone charming slid into her DMs…",
+    message: "Hey Rapunzel, mind sharing your login so I can stream your royal playlist?",
+    backgroundClass: 'message-bg',
+  },
+  {
+    id: 4,
+    type: 'oversharing',
+    title: 'Rapunzel Overshares',
+    narration: "She didn't think twice — after all, what harm could it do?",
+    response: "Sure! It's Rapunzel123!",
+    backgroundClass: 'sharing-bg',
+  },
+  {
+    id: 5,
+    type: 'password-spread',
+    title: 'The Spread',
+    narration: "But that one password opened every door…",
+    compromisedAccounts: [
+      { type: 'cloud', name: 'Cloud Drive' },
+      { type: 'bank', name: 'Magic Bank' },
+      { type: 'social', name: 'Social Scroll' },
+      { type: 'shopping', name: 'Scroll Shop' }
+    ],
+    backgroundClass: 'dark-bg',
+  },
+  {
+    id: 6,
+    type: 'accounts-attacked',
+    title: 'Accounts Under Attack',
+    narration: "Her playlist gets renamed to 'Dark Tunes Only.' Her food orders redirect to 'Swamp Tower #13.'",
+    notifications: [
+      { icon: '🚨', text: 'New Login from Unknown Location', type: 'danger' },
+      { icon: '💰', text: 'Scrollshop Order Confirmed – 37 Gold Coins', type: 'warning' },
+      { icon: '🎵', text: 'Playlist renamed to "Dark Tunes Only"', type: 'warning' },
+      { icon: '🏠', text: 'Delivery address changed to Swamp Tower #13', type: 'danger' }
+    ],
+    damages: [
+      { icon: '🎵', text: 'Playlist Hijacked' },
+      { icon: '🛒', text: 'Unauthorized Orders' },
+      { icon: '📧', text: 'Email Compromised' },
+      { icon: '💳', text: 'Payment Info Stolen' }
+    ],
+    backgroundClass: 'chaos-bg',
+  },
+  {
+    id: 7,
+    type: 'virus-attack',
+    title: 'Dark Spells Unleashed',
+    narration: "Her once-magical online world turned into a chaotic digital dungeon.",
+    chaosEffects: [
+      'Files mysteriously deleting...',
+      'Spam messages flooding friends...',
+      '"Rapunzel loves trolls" memes posted...',
+      'Personal photos leaked...'
+    ],
+    backgroundClass: 'virus-bg',
+  },
+  {
+    id: 8,
+    type: 'cyber-fairy',
+    title: 'Fairy Cybermother Appears',
+    narration: "Her Cyber-Godmother arrived — ready to untangle the mess.",
+    message: "Did you reuse your password... everywhere?",
+    tools: [
+      { type: 'wand', alt: 'Magic Security Wand' },
+      { type: 'shield', alt: 'Digital Shield' },
+      { type: 'key', alt: 'Master Key' }
+    ],
+    backgroundClass: 'fairy-bg',
+  },
+  {
+    id: 9,
+    type: 'password-reset',
+    title: 'The Undo Spell Begins',
+    narration: "They worked together to change every password, one spell at a time.",
+    actions: [
+      { icon: 'password-manager', text: 'Open Password Manager', alt: 'Password Manager' },
+      { icon: 'unique-passwords', text: 'Create Unique Passwords', alt: 'Unique Passwords' },
+      { icon: '2fa-setup', text: 'Enable 2FA', alt: 'Two Factor Authentication' },
+      { icon: 'secure-backup', text: 'Secure Backup Codes', alt: 'Backup Codes' }
+    ],
+    backgroundClass: 'reset-bg',
+  },
+  {
+    id: 10,
+    type: 'security-setup',
+    title: 'Locking the Tower',
+    narration: "They added extra protection — so only Rapunzel could enter her accounts.",
+    securityFeatures: [
+      { type: 'dragon-guard', text: 'Digital Dragon Guardian', alt: 'Security Dragon' },
+      { type: 'biometric', text: 'Biometric Scan Access', alt: 'Biometric Scanner' },
+      { type: 'fortress-mode', text: 'Fortress Mode Enabled', alt: 'Digital Fortress' }
+    ],
+    backgroundClass: 'security-bg',
+  },
+  {
+    id: 11,
+    type: 'prince-revealed',
+    title: 'The Prince Revealed',
+    narration: "The charming 'Prince' was just a troll phishing for access.",
+    revealMessage: "Prince_Ch4rmz was actually a cybertroll using social engineering!",
+    backgroundClass: 'reveal-bg',
+  },
+  {
+    id: 12,
+    type: 'secure-rapunzel',
+    title: 'Rapunzel Rebuilt & Ready',
+    narration: "Rapunzel learned that love is kind… but password hygiene is kinder.",
+    newPasswords: [
+      { account: 'Enchanted Mail', password: 'Tower$Secure4Ever!2025' },
+      { account: 'Fairy-Tunes', password: 'Music&Magic#2025!' },
+      { account: 'Scroll-Shop', password: 'Shop$afely&Smart2025' }
+    ],
+    backgroundClass: 'secure-bg',
+  },
+  {
+    id: 13,
+    type: 'lessons',
+    title: 'Final Lessons',
+    narration: "Be like Rapunzel — let your firewall down only for those you trust… and only after 2FA.",
+    checklist: [
+      'Never share your password',
+      'Use unique passwords per account',
+      'Enable two-factor authentication',
+      'Use a password manager',
+      'Watch for charmers with phishing hooks'
+    ],
+    backgroundClass: 'lessons-bg',
+  },
+  {
+    id: 14,
+    type: 'end',
+    title: 'Stay Private. Stay Powerful.',
+    narration: "And they all lived securely ever after, with strong passwords protecting their digital kingdom!",
+    website: "www.cyberwise.org/rapunzel",
+    backgroundClass: 'end-bg',
+  },
+];
