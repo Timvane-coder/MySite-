@@ -290,6 +290,146 @@ body {
   filter: blur(0.8vw);
 }
 
+.bed-c {
+  position: absolute;
+  left: 18vw;
+  top: 20vw;
+  width: 16vw;
+  height: 9vw;
+  transform: translateZ(0.5vw);
+}
+
+.bed-shadow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 5%;
+  background-color: rgba(11, 12, 31, 0.95);
+  filter: blur(1vw);
+  transform: translateZ(0);
+}
+
+.bed {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 16vw;
+  height: 9vw;
+  transform: translateZ(2vw);
+}
+
+.bed__front, .bed__back, .bed__right, .bed__left,
+.bed__top, .bed__bottom {
+  position: absolute;
+  background-color: #121225;
+}
+
+/* Bed Faces */
+.bed__front {
+  width: 16vw;
+  height: 0.5vw;
+  transform-origin: bottom left;
+  transform: rotateX(-90deg) translateZ(8.5vw);
+  background-color: #0b0c1f;
+}
+.bed__back {
+  width: 16vw;
+  height: 0.5vw;
+  transform-origin: top left;
+  transform: rotateX(-90deg) rotateY(180deg) translateX(-16vw) translateY(-0.5vw);
+  background-color: #0b0c1f;
+}
+.bed__right {
+  width: 9vw;
+  height: 0.5vw;
+  transform-origin: top left;
+  transform: rotateY(90deg) rotateZ(-90deg) translateZ(16vw) translateX(-9vw) translateY(-0.5vw);
+  background-color: #1e1e36;
+}
+.bed__left {
+  width: 9vw;
+  height: 0.5vw;
+  transform-origin: top left;
+  transform: rotateY(-90deg) rotateZ(90deg) translateY(-0.5vw);
+  background-color: #1e1e36;
+}
+.bed__top {
+  width: 16vw;
+  height: 9vw;
+  transform-origin: top left;
+  transform: translateZ(0.5vw);
+  background-image: linear-gradient(45deg, #181827, #282847);
+  overflow: hidden;
+}
+.bed__bottom {
+  width: 16vw;
+  height: 9vw;
+  transform-origin: top left;
+  transform: rotateY(180deg) translateX(-16vw);
+  background-color: #121225;
+}
+
+/*mat */
+.bed__mattress {
+  position: absolute;
+  width: 13vw;
+  height: 6vw;
+  background: linear-gradient(to right, #33334d, #29293d);
+  border-radius: 0.5vw;
+  transform: translateZ(2.5vw) translateX(0.5vw) translateY(0.5vw);
+  box-shadow: inset 0.1vw 0.1vw 0.25vw rgba(255,255,255,0.05);
+}
+.bed__headboard {
+  position: absolute;
+  width: 13vw;
+  height: 2.5vw;
+  background: linear-gradient(to bottom, #151628, #22223a);
+  transform-origin: bottom left;
+  transform: rotateX(-90deg) translateZ(0vw) translateY(-2.5vw);
+  border-radius: 0.3vw;
+  box-shadow: inset 0 -0.2vw 0.4vw rgba(0, 0, 0, 0.2);
+}
+
+/* Pillow(s) */
+.bed__pillow {
+  position: absolute;
+  width: 4vw;
+  height: 2vw;
+  background: linear-gradient(45deg, #ffffff, #e6e6f2);
+  border-radius: 0.5vw;
+  box-shadow: inset -0.2vw -0.2vw 0.5vw rgba(0, 0, 0, 0.1);
+  transform: translateZ(2.7vw) translateX(1vw) translateY(-2.2vw);
+}
+.bed__pillow:nth-of-type(2) {
+  transform: translateZ(2.7vw) translateX(6vw) translateY(-2.2vw);
+}
+
+/* Blanket */
+.bed__blanket {
+  position: absolute;
+  width: 13vw;
+  height: 6vw;
+  background: linear-gradient(45deg, #2a2a40, #3f3f5a);
+  transform: translateZ(2.1vw) translateX(1.5vw) translateY(1.5vw) rotateZ(2deg);
+  border-radius: 0.5vw;
+  opacity: 0.95;
+  box-shadow: 0 0 0.75vw rgba(0, 0, 0, 0.3);
+}
+
+/* Bed Light */
+.bed__light {
+  position: absolute;
+  left: 8vw;
+  top: 0;
+  width: 12vw;
+  height: 6vw;
+  background: radial-gradient(ellipse at center, rgba(81, 137, 251, 0.08), transparent 80%);
+  transform: translateZ(0.5vw);
+  filter: blur(1vw);
+  pointer-events: none;
+  z-index: -1;
+  }
+
 .tv {
   position: absolute;
   left: 1.51vw;
