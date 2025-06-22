@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D IoT Monitor with BLT</title>
+    <style>
+        /**/
+        *, *::after, *::before {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          user-select: none;
+          transform-style: preserve-3d;
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Generic */
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100vh;
+          overflow: hidden;
+          cursor: pointer;
+          background-image: radial-gradient(circle, #171424, black);
+        }
+
+        .face {
+          position: absolute;
+        }
+
+        .house {
+          position: absolute;
+          width: 48vw; /* was 40vw */
+          height: 48vw; /* was 40vw */
+          transform: perspective(140vw) rotateX(75deg) rotateZ(45deg) translateZ(-14vw); /* adjusted depth and perspective */
+        }
+
+        .h-shadow {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          box-shadow: 1.5vw -3vw 3vw black, 1.5vw 0.5vw 1.5vw black;
+        }
+
+        .h-lights {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translateX(-50%) translateY(-50%);
+          width: 54vw;
+          height: 54vw;
+        }
+
+        .h-light {
+          position: absolute;
+        }
+
+        .h-light:nth-of-type(1) {
+          bottom: 5vw;
+          right: 0;
+          width: 14vw;
+          height: 14vw;
+          border-radius: 50%;
+          background-image: radial-gradient(#1b182a, transparent);
+          filter: blur(1vw);
+        }
+
+        .h-light:nth-of-type(2) {
+          bottom: 18vw;
+          right: -1vw;
+          width: 2vw;
+          height: 12vw;
+          border-radius: 50%;
+          transform: rotateZ(-50deg);
+          background-image: radial-gradient(rgba(81, 137, 251, 0.45) 50%, rgba(40, 125, 210, 0.45), transparent);
+          box-shadow: -1vw -1vw 2vw 1vw rgba(131, 171, 252, 0.1);
+          filter: blur(1vw);
+        }
+
+        .h-light:nth-of-type(3) {
+          bottom: -2vw;
+          right: 17vw;
+          width: 5vw;
+          height: 12vw;
+          border-radius: 50%;
+          transform: rotateZ(-50deg);
+          background-image: radial-gradient(rgba(81, 137, 251, 0.5) 50%, rgba(40, 125, 210, 0.5), transparent);
+          filter: blur(2vw);
+        }
+
+        .h-light:nth-of-type(3)::before,
+        .h-light:nth-of-type(3)::after {
+          content: "";
+          position: absolute;
+          width: 200%;
+          top: -6vw;
+          height: 400%;
+          background-image: linear-gradient(to bottom, rgba(40, 125, 210, 0.1), rgba(81, 137, 251, 0.1), transparent);
+          border-top-left-radius: 10vw;
+          border-top-right-radius: 10vw;
+          filter: blur(1.5vw);
+        }
+
+        .h-light:nth-of-type(3)::before {
+          right: -50%;
+          transform-origin: top right;
+          transform: rotateZ(15deg);
+          box-shadow: -2vw -2vw 0 rgba(81, 137, 251, 0.075);
+        }
+
+        .h-light:nth-of-type(3)::after {
+          left: -50%;
+          transform-origin: top left;
+          transform: rotateZ(-15deg);
+          box-shadow: 2vw -2vw 0 rgba(81, 137, 251, 0.075);
+        }
+
+        .h-light:nth-of-type(4) {
+          bottom: 5vw;
+          left: 8vw;
+          width: 28vw;
+          height: 4vw;
+          transform-origin: top left;
+          transform: skewX(58deg);
+          background-image: linear-gradient(to right, rgba(81, 137, 251, 0.075) 10%, transparent 25%, transparent, rgba(0, 0, 0, 0.15));
+          filter: blur(0.25vw);
+        }
+
+        .h-light:nth-of-type(6) {
+          bottom: 14vw;
+          right: 2vw;
+          width: 8vw;
+          height: 16vw;
+          transform-origin: bottom left;
+          transform: skewY(49deg);
+          background-image: linear-gradient(to left, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.7));
+          filter: blur(0.35vw);
+        }
+
+    
+
+        
+        .monitor__front {
+            width: 0.5vw;
+            height: 18vw;
+            transform-origin: bottom left;
+            transform: rotateX(-90deg) translateZ(-2vw);
+            background-color: #0b0c1f;
+            border: 0.05vw solid #2a2d5f;
+        }
+
+        .monitor__back {
+            width: 0.5vw;
+            height: 18vw;
+            transform-origin: top left;
+            transform: rotateX(-90deg) rotateY(180deg) translateX(-0.5vw) translateY(-18vw);
+            background-color: #0b0c1f;
+            border: 0.05vw solid #2a2d5f;
+        }
+
+        .monitor__right {
+            width: 16vw;
+            height: 18vw;
+            transform-origin: top left;
+            transform: rotateY(90deg) rotateZ(-90deg) translateZ(0.5vw) translateX(-16vw) translateY(-18vw);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1d3a, #0f1123);
+            border: 0.2vw solid #2a2d5f;
+            border-radius: 0.5vw;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Monitor Screen */
+        .monitor__screen {
+            width: 90%;
+            height: 85%;
+            background: linear-gradient(135deg, #000814, #001d3d);
+            border-radius: 0.3vw;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 2vw rgba(0, 123, 255, 0.3);
+        }
+
+        .monitor__screen::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.05) 49%, rgba(255, 255, 255, 0.05) 51%, transparent 52%);
+            animation: screenGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes screenGlow {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+
+        /* IoT Status Display */
+        .iot-display {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            color: #00d4ff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8vw;
+            text-shadow: 0 0 0.5vw currentColor;
+        }
+
+        .status-line {
+            opacity: 0;
+            animation: typewriter 2s ease-in-out infinite alternate;
+        }
+
+        .status-line:nth-child(1) { animation-delay: 0s; }
+        .status-line:nth-child(2) { animation-delay: 0.5s; }
+        .status-line:nth-child(3) { animation-delay: 1s; }
+        .status-line:nth-child(4) { animation-delay: 1.5s; }
+
+        @keyframes typewriter {
+            0% { opacity: 0; transform: translateX(-2vw); }
+            50% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0.7; transform: translateX(0); }
+        }
+
+        /* Indicator Lights */
+        .indicator-panel {
+            position: absolute;
+            bottom: 5%;
+            right: 5%;
+            display: flex;
+            gap: 0.5vw;
+        }
+
+        .indicator {
+            width: 0.8vw;
+            height: 0.8vw;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 1vw currentColor;
+        }
+
+        .indicator::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .indicator.power {
+            color: #00ff00;
+            animation-delay: 0s;
+        }
+
+        .indicator.network {
+            color: #0080ff;
+            animation-delay: 0.3s;
+        }
+
+        .indicator.data {
+            color: #ff8000;
+            animation-delay: 0.6s;
+        }
+
+        .indicator.alert {
+            color: #ff0040;
+            animation-delay: 0.9s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 0.3; 
+                transform: scale(0.8);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.2);
+            }
+        }
+
+        /* Side Indicator Lights */
+        .side-indicators {
+            position: absolute;
+            right: -0.3vw;
+            top: 20%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8vw;
+        }
+
+        .side-indicator {
+            width: 0.4vw;
+            height: 0.4vw;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 0.8vw currentColor;
+            animation: sidePulse 1.5s ease-in-out infinite;
+        }
+
+        .side-indicator:nth-child(1) { animation-delay: 0s; }
+        .side-indicator:nth-child(2) { animation-delay: 0.2s; color: #ff4400; }
+        .side-indicator:nth-child(3) { animation-delay: 0.4s; color: #4400ff; }
+        .side-indicator:nth-child(4) { animation-delay: 0.6s; color: #ffff00; }
+
+        @keyframes sidePulse {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .monitor__left {
+            width: 16vw;
+            height: 18vw;
+            transform-origin: top left;
+            transform: rotateY(-90deg) rotateZ(90deg) translateY(-18vw);
+            background: linear-gradient(135deg, #0b0c1f, #1a1d3a);
+            border: 0.1vw solid #2a2d5f;
+            box-shadow: 0.5vw 0.5vw 0.6vw rgba(81, 137, 251, 0.2);
+        }
+
+        .monitor__top {
+            width: 0.5vw;
+            height: 16vw;
+            transform-origin: top left;
+            transform: translateZ(18vw);
+            background: linear-gradient(45deg, #0b0c1f, #2a2d5f);
+            border: 0.05vw solid #444;
+        }
+
+        .monitor__top::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            bottom: 0;
+            background: linear-gradient(to left, rgba(40, 125, 210, 0.4), rgba(81, 137, 251, 0.2));
+        }
+
+        .monitor__bottom {
+            width: 0.5vw;
+            height: 16vw;
+            transform-origin: top left;
+            transform: rotateY(180deg) translateX(-0.5vw);
+            background: linear-gradient(45deg, #0b0c1f, #1a1d3a);
+            border: 0.05vw solid #333;
+        }
+
+        .monitor__bottom::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5vw;
+            height: 100%;
+            background: linear-gradient(to left, #0b0c1f, transparent 50%);
+            transform-origin: right bottom;
+            transform: skewY(-20deg);
+            filter: blur(0.25vw);
+        }
+
+        /* Monitor Stand */
+        .monitor-stand {
+            position: absolute;
+            bottom: -2vw;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3vw;
+            height: 2vw;
+            background: linear-gradient(135deg, #2a2d5f, #0b0c1f);
+            border-radius: 0.2vw;
+            border: 0.1vw solid #444;
+        }
+
+        .monitor-stand::before {
+            content: "";
+            position: absolute;
+            top: -0.5vw;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1vw;
+            height: 0.5vw;
+            background: linear-gradient(135deg, #2a2d5f, #1a1d3a);
+            border-radius: 0.1vw;
+        }
+        /* Enhanced Cube Styles */
+        .alt {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 48vw;
+          height: 48vw;
+        }
+
+        .alt__front {
+          width: 48vw;
+          height: 0.5vw;
+          transform-origin: bottom left;
+          transform: rotateX(-90deg) translateZ(47.5vw);
+        }
+
+        .alt__back {
+          width: 48vw;
+          height: 0.5vw;
+          transform-origin: top left;
+          transform: rotateX(-90deg) rotateY(180deg) translateX(-48vw) translateY(-0.5vw);
+        }
+
+        .alt__right {
+          width: 48vw;
+          height: 0.5vw;
+          transform-origin: top left;
+          transform: rotateY(90deg) rotateZ(-90deg) translateZ(48vw) translateX(-48vw) translateY(-0.5vw);
+        }
+
+        .alt__left {
+          width: 48vw;
+          height: 0.5vw;
+          transform-origin: top left;
+          transform: rotateY(-90deg) rotateZ(90deg) translateY(-0.5vw);
+        }
+
+        .alt__top {
+          width: 48vw;
+          height: 48vw;
+          transform-origin: top left;
+          transform: translateZ(0.5vw);
+        }
+
+        .alt__bottom {
+          width: 48vw;
+          height: 48vw;
+          transform-origin: top left;
+          transform: rotateY(180deg) translateX(-48vw);
+        }
+
+        .alt__top .light:nth-of-type(1) {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          background-image: linear-gradient(to bottom, rgba(20, 61, 103, 0.75), rgba(81, 137, 251, 0.75), transparent);
+        }
+
+        .alt__top .light:nth-of-type(2) {
+          position: absolute;
+          left: 7vw; /* was 4vw */
+          height: 100%;
+          width: 10.5vw; /* was 6vw */
+          background-image: linear-gradient(to bottom, transparent 20%, rgba(40, 125, 210, 0.75), rgba(81, 137, 251, 0.25) 80%);
+          filter: blur(0.2vw);
+        }
+
+        .alt__top .light:nth-of-type(3) {
+          position: absolute;
+          bottom: 18vw; /* was 10vw */
+          left: 8.5vw; /* was 5vw */
+          width: 10.5vw; /* was 6vw */
+          height: 5.3vw; /* was 3vw */
+          border-radius: 50%;
+          transform: rotateZ(42deg);
+          background-image: radial-gradient(rgba(131, 171, 252, 0.75) 50%, rgba(32, 99, 167, 0.75));
+          filter: blur(1vw);
+        }
+
+        .alt__top .light:nth-of-type(4) {
+          position: absolute;
+          bottom: 12.5vw; /* was 7vw */
+          left: 7vw; /* was 4vw */
+          width: 15vw; /* was 8.5vw */
+          height: 3.5vw; /* was 2vw */
+          border-radius: 50%;
+          transform: rotateZ(40deg);
+          background-image: radial-gradient(rgba(131, 171, 252, 0.75) 50%, rgba(32, 99, 167, 0.75));
+          filter: blur(1vw);
+        }
+
+        .alt__top .light:nth-of-type(5) {
+          position: absolute;
+          bottom: 6.2vw; /* was 3.5vw */
+          left: 8vw; /* was 4.5vw */
+          width: 10.5vw; /* was 6vw */
+          height: 3.5vw; /* was 2vw */
+          border-radius: 50%;
+          transform: rotateZ(40deg);
+          background-image: radial-gradient(rgba(141, 178, 252, 0.75) 50%, rgba(32, 99, 167, 0.75));
+          filter: blur(1.25vw);
+        }
+
+        .alt__top .light:nth-of-type(6) {
+          position: absolute;
+          bottom: 5.3vw; /* was 3vw */
+          left: 0.9vw; /* was 0.5vw */
+          width: 7vw; /* was 4vw */
+          height: 3.5vw; /* was 2vw */
+          border-radius: 50%;
+          transform: rotateZ(40deg);
+          background-image: radial-gradient(rgba(141, 178, 252, 0.75) 50%, rgba(32, 99, 167, 0.75));
+          filter: blur(0.6vw);
+        }
+
+        .alt__top .light:nth-of-type(7) {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-image: linear-gradient(to right, black, #5189fb 10%, transparent 20%);
+        }
+
+        .alt__top .light:nth-of-type(7)::before {
+          content: "";
+          position: absolute;
+          width: 20%;
+          height: 100%;
+          background-image: linear-gradient(to right, rgba(5, 70, 199, 0.6), transparent 60%);
+        }
+
+        .alt__top .light:nth-of-type(7)::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 20%;
+          background-image: linear-gradient(to bottom, rgba(6, 78, 224, 0.5), transparent 60%);
+        }
+
+        .alt__top .light:nth-of-type(8) {
+          position: absolute;
+          bottom: 8.9vw; /* was 5vw */
+          left: 17.5vw; /* was 10vw */
+          width: 10.5vw; /* was 6vw */
+          height: 7vw; /* was 4vw */
+          border-radius: 50%;
+          transform: rotateZ(40deg);
+          background-image: radial-gradient(rgba(255, 255, 255, 0.1) 50%, rgba(128, 121, 174, 0.1));
+          filter: blur(1.4vw);
+        }
+
+/***************/
+        .blt {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 1vw;
+          height: 48vw;
+          transform: translateZ(0.5vw);
+        }
+        .blt__front {
+          width: 1vw;
+          height: 20vw;
+          transform-origin: bottom left;
+          transform: rotateX(-90deg) translateZ(20vw);
+        }
+        .blt__back {
+          width: 1vw;
+          height: 20vw;
+          transform-origin: top left;
+          transform: rotateX(-90deg) rotateY(180deg) translateX(-1vw) translateY(-20vw);
+        }
+        .blt__right {
+          width: 48vw;
+          height: 20vw;
+          transform-origin: top left;
+          transform: rotateY(90deg) rotateZ(-90deg) translateZ(1vw) translateX(-48vw) translateY(-20vw);
+        }
+        .blt__left {
+          width: 48vw;
+          height: 20vw;
+          transform-origin: top left;
+          transform: rotateY(-90deg) rotateZ(90deg) translateY(-20vw);
+        }
+        .blt__top {
+          width: 1vw;
+          height: 48vw;
+          transform-origin: top left;
+          transform: translateZ(20vw);
+        }
+        .blt__bottom {
+          width: 1vw;
+          height: 48vw;
+          transform-origin: top left;
+          transform: rotateY(180deg) translateX(-1vw);
+        }
+        .blt__front {
+          background-image: linear-gradient(to bottom, #383358, #9E99C1);
+        }
+        .blt__back {
+          background-color: #383358;
+        }
+        .blt__right {
+          background-image: linear-gradient(to bottom, #151225, #383358, #383358 90%, #242040);
+        }
+        .blt__right::before {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          height: 0.75vw;
+          background-image: linear-gradient(to bottom, #8f89b7, #287dd2);
+          border-top: 0.1vw solid #282347;
+          border-bottom: 0.1vw solid #282347;
+        }
+        .blt__right::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background-image: linear-gradient(to bottom, rgba(6, 78, 224, 0.35), transparent 30%, transparent 70%, rgba(40, 125, 210, 0.35));
+        }
+        .blt__left {
+          background-color: #FBFAFE;
+        }
+        .blt__bottom {
+          background-color: #383358;
+        }
+
+        .monitor--new {
+            position: absolute;
+            left: -2vw; /* Positioned at left end of blt */
+            top: 12vw; /* Adjusted to align with blt structure */
+            width: 0.5vw;
+            height: 16vw;
+            transform: translateZ(0.51vw);
+            transform-style: preserve-3d;
+        }
+
+        .monitor__front {
+            width: 0.5vw;
+            height: 18vw;
+            transform-origin: bottom left;
+            transform: rotateX(-90deg) translateZ(-2vw);
+            background-color: #0b0c1f;
+            border: 0.05vw solid #2a2d5f;
+        }
+
+        .monitor__back {
+            width: 0.5vw;
+            height: 18vw;
+            transform-origin: top left;
+            transform: rotateX(-90deg) rotateY(180deg) translateX(-0.5vw) translateY(-18vw);
+            background-color: #0b0c1f;
+            border: 0.05vw solid #2a2d5f;
+        }
+
+        .monitor__right {
+            width: 16vw;
+            height: 18vw;
+            transform-origin: top left;
+            transform: rotateY(90deg) rotateZ(-90deg) translateZ(0.5vw) translateX(-16vw) translateY(-18vw);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1d3a, #0f1123);
+            border: 0.2vw solid #2a2d5f;
+            border-radius: 0.5vw;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Monitor Screen */
+        .monitor__screen {
+            width: 90%;
+            height: 85%;
+            background: linear-gradient(135deg, #000814, #001d3d);
+            border-radius: 0.3vw;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 2vw rgba(0, 123, 255, 0.3);
+        }
+
+        .monitor__screen::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.05) 49%, rgba(255, 255, 255, 0.05) 51%, transparent 52%);
+            animation: screenGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes screenGlow {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+
+        /* IoT Status Display */
+        .iot-display {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            color: #00d4ff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8vw;
+            text-shadow: 0 0 0.5vw currentColor;
+        }
+
+        .status-line {
+            opacity: 0;
+            animation: typewriter 2s ease-in-out infinite alternate;
+        }
+
+        .status-line:nth-child(1) { animation-delay: 0s; }
+        .status-line:nth-child(2) { animation-delay: 0.5s; }
+        .status-line:nth-child(3) { animation-delay: 1s; }
+        .status-line:nth-child(4) { animation-delay: 1.5s; }
+
+        @keyframes typewriter {
+            0% { opacity: 0; transform: translateX(-2vw); }
+            50% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0.7; transform: translateX(0); }
+        }
+
+        /* Indicator Lights */
+        .indicator-panel {
+            position: absolute;
+            bottom: 5%;
+            right: 5%;
+            display: flex;
+            gap: 0.5vw;
+        }
+
+        .indicator {
+            width: 0.8vw;
+            height: 0.8vw;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 1vw currentColor;
+        }
+
+        .indicator::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .indicator.power {
+            color: #00ff00;
+            animation-delay: 0s;
+        }
+
+        .indicator.network {
+            color: #0080ff;
+            animation-delay: 0.3s;
+        }
+
+        .indicator.data {
+            color: #ff8000;
+            animation-delay: 0.6s;
+        }
+
+        .indicator.alert {
+            color: #ff0040;
+            animation-delay: 0.9s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 0.3; 
+                transform: scale(0.8);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.2);
+            }
+        }
+
+        /* Side Indicator Lights */
+        .side-indicators {
+            position: absolute;
+            right: -0.3vw;
+            top: 20%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8vw;
+        }
+
+        .side-indicator {
+            width: 0.4vw;
+            height: 0.4vw;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 0.8vw currentColor;
+            animation: sidePulse 1.5s ease-in-out infinite;
+        }
+
+        .side-indicator:nth-child(1) { animation-delay: 0s; }
+        .side-indicator:nth-child(2) { animation-delay: 0.2s; color: #ff4400; }
+        .side-indicator:nth-child(3) { animation-delay: 0.4s; color: #4400ff; }
+        .side-indicator:nth-child(4) { animation-delay: 0.6s; color: #ffff00; }
+
+        @keyframes sidePulse {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .monitor__left {
+            width: 16vw;
+            height: 18vw;
+            transform-origin: top left;
+            transform: rotateY(-90deg) rotateZ(90deg) translateY(-18vw);
+            background: linear-gradient(135deg, #0b0c1f, #1a1d3a);
+            border: 0.1vw solid #2a2d5f;
+            box-shadow: 0.5vw 0.5vw 0.6vw rgba(81, 137, 251, 0.2);
+        }
+
+        .monitor__top {
+            width: 0.5vw;
+            height: 16vw;
+            transform-origin: top left;
+            transform: translateZ(18vw);
+            background: linear-gradient(45deg, #0b0c1f, #2a2d5f);
+            border: 0.05vw solid #444;
+        }
+
+        .monitor__top::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            bottom: 0;
+            background: linear-gradient(to left, rgba(40, 125, 210, 0.4), rgba(81, 137, 251, 0.2));
+        }
+
+        .monitor__bottom {
+            width: 0.5vw;
+            height: 16vw;
+            transform-origin: top left;
+            transform: rotateY(180deg) translateX(-0.5vw);
+            background: linear-gradient(45deg, #0b0c1f, #1a1d3a);
+            border: 0.05vw solid #333;
+        }
+
+        .monitor__bottom::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5vw;
+            height: 100%;
+            background: linear-gradient(to left, #0b0c1f, transparent 50%);
+            transform-origin: right bottom;
+            transform: skewY(-20deg);
+            filter: blur(0.25vw);
+        }
+
+        /* Monitor Stand */
+        .monitor-stand {
+            position: absolute;
+            bottom: -2vw;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3vw;
+            height: 2vw;
+            background: linear-gradient(135deg, #2a2d5f, #0b0c1f);
+            border-radius: 0.2vw;
+            border: 0.1vw solid #444;
+        }
+
+        .monitor-stand::before {
+            content: "";
+            position: absolute;
+            top: -0.5vw;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1vw;
+            height: 0.5vw;
+            background: linear-gradient(135deg, #2a2d5f, #1a1d3a);
+            border-radius: 0.1vw;
+        }
+
+        /* Floating IoT Icons */
+        .iot-icons {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+        }
+        
+        .iot-icon {
+          position: absolute;
+          width: 3vw;
+          height: 3vw;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          backdrop-filter: blur(0.5vw);
+          border: 0.1vw solid rgba(255, 255, 255, 0.2);
+          transition: all 0.3s ease;
+        }
+        
+        .iot-icon:hover {
+          transform: scale(1.2);
+          box-shadow: 0 0 2vw rgba(255, 255, 255, 0.3);
+        }
+        
+        .iot-icon svg {
+          width: 60%;
+          height: 60%;
+          fill: currentColor;
+        }
+        
+        /* Icon Colors and Animations */
+        .bluetooth {
+          background: linear-gradient(135deg, rgba(0, 123, 255, 0.3), rgba(0, 86, 179, 0.3));
+          color: #007bff;
+          animation: float1 25s ease-in-out infinite, blink 6s ease-in-out infinite;
+        }
+        
+        .headphones {
+          background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(255, 87, 87, 0.3));
+          color: #ff6b6b;
+          animation: float2 30s ease-in-out infinite, blink 7s ease-in-out infinite;
+        }
+        
+        .wifi {
+          background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(34, 197, 94, 0.3));
+          color: #4ade80;
+          animation: float3 22s ease-in-out infinite, blink 5.5s ease-in-out infinite;
+        }
+        
+        .power {
+          background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.3));
+          color: #fbbf24;
+          animation: float4 35s ease-in-out infinite, blink 8s ease-in-out infinite;
+        }
+        
+        .hotspot {
+          background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(147, 51, 234, 0.3));
+          color: #a855f7;
+          animation: float5 28s ease-in-out infinite, blink 6.5s ease-in-out infinite;
+        }
+        
+        .battery {
+          background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(22, 163, 74, 0.3));
+          color: #22c55e;
+          animation: float6 32s ease-in-out infinite, blink 7.5s ease-in-out infinite;
+        }
+        
+        .network {
+          background: linear-gradient(135deg, rgba(99, 179, 237, 0.3), rgba(59, 130, 246, 0.3));
+          color: #63b3ed;
+          animation: float7 26s ease-in-out infinite, blink 5s ease-in-out infinite;
+        }
+        
+        /* Floating Animations - Slower Movement */
+        @keyframes float1 {
+          0%, 100% { transform: translate(20vw, 15vh) rotate(0deg); }
+          25% { transform: translate(80vw, 25vh) rotate(90deg); }
+          50% { transform: translate(75vw, 75vh) rotate(180deg); }
+          75% { transform: translate(15vw, 70vh) rotate(270deg); }
+        }
+        
+        @keyframes float2 {
+          0%, 100% { transform: translate(85vw, 20vh) rotate(0deg); }
+          33% { transform: translate(10vw, 40vh) rotate(120deg); }
+          66% { transform: translate(70vw, 80vh) rotate(240deg); }
+        }
+        
+        @keyframes float3 {
+          0%, 100% { transform: translate(15vw, 80vh) rotate(0deg); }
+          50% { transform: translate(85vw, 10vh) rotate(180deg); }
+        }
+        
+        @keyframes float4 {
+          0%, 100% { transform: translate(70vw, 60vh) rotate(0deg); }
+          25% { transform: translate(25vw, 30vh) rotate(90deg); }
+          50% { transform: translate(80vw, 15vh) rotate(180deg); }
+          75% { transform: translate(60vw, 85vh) rotate(270deg); }
+        }
+        
+        @keyframes float5 {
+          0%, 100% { transform: translate(40vw, 10vh) rotate(0deg); }
+          40% { transform: translate(90vw, 50vh) rotate(144deg); }
+          80% { transform: translate(20vw, 90vh) rotate(288deg); }
+        }
+        
+        @keyframes float6 {
+          0%, 100% { transform: translate(60vw, 85vh) rotate(0deg); }
+          30% { transform: translate(10vw, 20vh) rotate(108deg); }
+          60% { transform: translate(90vw, 70vh) rotate(216deg); }
+        }
+        
+        @keyframes float7 {
+          0%, 100% { transform: translate(30vw, 70vh) rotate(0deg); }
+          33% { transform: translate(80vw, 40vh) rotate(120deg); }
+          66% { transform: translate(25vw, 15vh) rotate(240deg); }
+        }
+        
+        /* Blinking Animation */
+        @keyframes blink {
+          0%, 100% { 
+            opacity: 1; 
+            box-shadow: 0 0 1vw currentColor; 
+          }
+          50% { 
+            opacity: 0.3; 
+            box-shadow: 0 0 2vw currentColor; 
+          }
+        }
+        
+        /* Pulsing Glow Effect */
+        @keyframes pulse {
+          0%, 100% { box-shadow: 0 0 1vw currentColor; }
+          50% { box-shadow: 0 0 3vw currentColor, 0 0 5vw currentColor; }
+        }
+        
+        .iot-icon:nth-child(odd) {
+          animation-name: float1, pulse;
+        }
+        
+        .iot-icon:nth-child(even) {
+          animation-name: float2, blink;
+        }
+
+
+
+
+
+.repisa-t,
+.repisa-b {
+  position: absolute;
+  left: 1.5vw;
+  top: 9vw;
+  width: 1.5vw;
+  height: 16vw;
+  transform: translateZ(16vw);
+}
+
+.repisa-b {
+  transform: translateZ(5vw);
+}
+
+/* FRONT */
+.repisa-t__front,
+.repisa-b__front {
+  width: 1.5vw;
+  height: 0.25vw;
+  transform-origin: bottom left;
+  transform: rotateX(-90deg) translateZ(15.75vw);
+  background-color: #9E99C1;
+}
+
+/* BACK */
+.repisa-t__back,
+.repisa-b__back {
+  width: 1.5vw;
+  height: 0.25vw;
+  transform-origin: top left;
+  transform: rotateX(-90deg) rotateY(180deg) translateX(-1.5vw) translateY(-0.25vw);
+  background-color: #FBFAFE;
+}
+
+/* RIGHT */
+.repisa-t__right,
+.repisa-b__right {
+  width: 16vw;
+  height: 0.25vw;
+  transform-origin: top left;
+  transform: rotateY(90deg) rotateZ(-90deg) translateZ(1.5vw) translateX(-16vw) translateY(-0.25vw);
+  background-color: #8079ae;
+}
+
+/* LEFT */
+.repisa-t__left,
+.repisa-b__left {
+  width: 16vw;
+  height: 0.25vw;
+  transform-origin: top left;
+  transform: rotateY(-90deg) rotateZ(90deg) translateY(-0.25vw);
+  background-color: #FBFAFE;
+}
+
+/* TOP */
+.repisa-t__top,
+.repisa-b__top {
+  width: 1.5vw;
+  height: 16vw;
+  transform-origin: top left;
+  transform: translateZ(0.25vw);
+  background-color: #d9d0f6;
+}
+.repisa-t__top::before,
+.repisa-b__top::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to right, rgba(6, 78, 224, 0.75), transparent);
+}
+
+/* BOTTOM */
+.repisa-t__bottom,
+.repisa-b__bottom {
+  width: 1.5vw;
+  height: 16vw;
+  transform-origin: top left;
+  transform: rotateY(180deg) translateX(-1.5vw);
+  background-color: #383358;
+}
+.repisa-t__bottom::before,
+.repisa-b__bottom::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to right, rgba(6, 78, 224, 0.75), transparent);
+}
+
+.blb {
+  position: absolute;
+  left: 1vw;
+  top: 0;
+  width: 48vw;
+  height: 1vw;
+  transform: translateZ(0.5vw);
+}
+.blb__front {
+  width: 48vw;
+  height: 32vw;
+  transform-origin: bottom left;
+  transform: rotateX(-90deg) translateZ(-31vw);
+}
+.blb__back {
+  width: 48vw;
+  height: 32vw;
+  transform-origin: top left;
+  transform: rotateX(-90deg) rotateY(180deg) translateX(-48vw) translateY(-32vw);
+}
+.blb__right {
+  width: 1vw;
+  height: 32vw;
+  transform-origin: top left;
+  transform: rotateY(90deg) rotateZ(-90deg) translateZ(48vw) translateX(-1vw) translateY(-32vw);
+}
+.blb__left {
+  width: 1vw;
+  height: 32vw;
+  transform-origin: top left;
+  transform: rotateY(-90deg) rotateZ(90deg) translateY(-32vw);
+}
+.blb__top {
+  width: 48vw;
+  height: 1vw;
+  transform-origin: top left;
+  transform: translateZ(32vw);
+}
+.blb__bottom {
+  width: 48vw;
+  height: 1vw;
+  transform-origin: top left;
+  transform: rotateY(180deg) translateX(-48vw);
+}
+.blb__front {
+  background-image: linear-gradient(to bottom, #4b4572, #595388 20%, #4b4572);
+}
+.blb__front::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to bottom, rgba(40, 125, 210, 0.25), transparent 20%, transparent 80%, rgba(40, 125, 210, 0.5)), 
+                    linear-gradient(to right, rgba(31, 33, 88, 0.35), transparent), 
+                    linear-gradient(to bottom, rgba(31, 33, 88, 0.35), transparent), 
+                    linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent 20%, transparent 80%, rgba(40, 125, 210, 0.25));
+}
+.blb__front::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 0.75vw;
+  background-image: linear-gradient(to bottom, #8f89b7, #287dd2);
+  border-top: 0.1vw solid #282347;
+  border-bottom: 0.1vw solid #282347;
+}
+.blb__back {
+  background-color: #383358;
+}
+.blb__right {
+  background-image: linear-gradient(to bottom, #151225, #0f0e17 80%, #151225);
+}
+.blb__bottom {
+  background-color: #383358;
+}
+
+.blb2 {
+  position: absolute;
+  left: 2vw;
+  top: 0;
+  width: 48vw;
+  height: 1vw;
+  transform: translateZ(32.5vw);
+}
+.blb2__front {
+  width: 48vw;
+  height: 0.75vw;
+  transform-origin: bottom left;
+  transform: rotateX(-90deg) translateZ(1.25vw);
+}
+.blb2__back {
+  width: 48vw;
+  height: 0.75vw;
+  transform-origin: top left;
+  transform: rotateX(-90deg) rotateY(180deg) translateX(-48vw) translateY(-0.75vw);
+}
+.blb2__right {
+  width: 2vw;
+  height: 0.75vw;
+  transform-origin: top left;
+  transform: rotateY(90deg) rotateZ(-90deg) translateZ(48vw) translateX(-2vw) translateY(-0.75vw);
+}
+.blb2__left {
+  width: 2vw;
+  height: 0.75vw;
+  transform-origin: top left;
+  transform: rotateY(-90deg) rotateZ(90deg) translateY(-0.75vw);
+}
+.blb2__top {
+  width: 48vw;
+  height: 2vw;
+  transform-origin: top left;
+  transform: translateZ(0.75vw);
+}
+.blb2__bottom {
+  width: 48vw;
+  height: 2vw;
+  transform-origin: top left;
+  transform: rotateY(180deg) translateX(-48vw);
+}
+.blb2__front {
+  background-image: linear-gradient(to right, #7169a4, #9E99C1, #8f89b7);
+}
+.blb2__front::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  bottom: 0;
+  border-bottom: 0.1vw solid rgba(251, 250, 254, 0.75);
+  background-image: linear-gradient(to top, rgba(40, 125, 210, 0.25), transparent);
+}
+.blb2__back {
+  background-color: #383358;
+}
+.blb2__right {
+  background-color: #151225;
+}
+.blb2__left {
+  background-color: #9E99C1;
+}
+.blb2__top {
+  background-image: linear-gradient(to left, #9E99C1, #FBFAFE);
+}
+.blb2__bottom {
+  background-color: #383358;
+}
+
+
+
+        
+        
+    </style>
+</head>
+<body>
+    <div class="house">
+        <div class="h-shadow"></div>
+        <div class="h-lights">
+            <div class="h-light"></div>
+            <div class="h-light"></div>
+            <div class="h-light"></div>
+            <div class="h-light"></div>
+            <div class="h-light"></div>
+            <div class="h-light"></div>
+        </div>
+        
+        <div class="h-shadow"></div>
+        
+        <div class="monitor--new">
+            <div class="monitor__front"></div>
+            <div class="monitor__back"></div>
+            <div class="monitor__right">
+                <div class="monitor__screen">
+                    <div class="iot-display">
+                        <div class="status-line">IoT MONITOR v2.1</div>
+                        <div class="status-line">DEVICES: 24 CONNECTED</div>
+                        <div class="status-line">STATUS: ALL SYSTEMS OK</div>
+                        <div class="status-line">UPTIME: 99.7%</div>
+                    </div>
+                    <div class="indicator-panel">
+                        <div class="indicator power"></div>
+                        <div class="indicator network"></div>
+                        <div class="indicator data"></div>
+                        <div class="indicator alert"></div>
+                    </div>
+                </div>
+                <div class="side-indicators">
+                    <div class="side-indicator"></div>
+                    <div class="side-indicator"></div>
+                    <div class="side-indicator"></div>
+                    <div class="side-indicator"></div>
+                </div>
+            </div>
+            <div class="monitor__left"></div>
+            <div class="monitor__top"></div>
+            <div class="monitor__bottom"></div>
+            <div class="monitor-stand"></div>
+        </div>
+         <div class="tv">
+    <div class="tv__front face"> </div>
+    <div class="tv__back face"> </div>
+    <div class="tv__right face"> </div>
+    <div class="tv__left face"> </div>
+    <div class="tv__top face"> </div>
+    <div class="tv__bottom face"> </div>
+  </div>
+    <div class="repisa-t">
+    <div class="repisa-t__front face"> </div>
+    <div class="repisa-t__back face"> </div>
+    <div class="repisa-t__right face"> </div>
+    <div class="repisa-t__left face"> </div>
+    <div class="repisa-t__top face"> </div>
+    <div class="repisa-t__bottom face"> </div>
+  </div>
+  <div class="repisa-b">
+    <div class="repisa-b__front face"> </div>
+    <div class="repisa-b__back face"> </div>
+    <div class="repisa-b__right face"> </div>
+    <div class="repisa-b__left face"> </div>
+    <div class="repisa-b__top face"> </div>
+    <div class="repisa-b__bottom face"> </div>
+  </div>
+
+        <div class="muro">
+    <div class="muro__front face"> </div>
+    <div class="muro__back face"> </div>
+    <div class="muro__right face"> </div>
+    <div class="muro__left face"> </div>
+    <div class="muro__top face"> </div>
+    <div class="muro__bottom face"> </div>
+   </div>
+
+
+
+        <div class="blt">
+            <div class="blt__front face"></div>
+            <div class="blt__back face"></div>
+            <div class="blt__right face"></div>
+            <div class="blt__left face"></div>
+            <div class="blt__top face"></div>
+            <div class="blt__bottom face"></div>
+        </div>
+
+        <div class="blb">
+    <div class="blb__front face"> </div>
+    <div class="blb__back face"> </div>
+    <div class="blb__right face"> </div>
+    <div class="blb__left face"> </div>
+    <div class="blb__top face"> </div>
+    <div class="blb__bottom face"> </div>
+  </div>
+  <div class="blb2">
+    <div class="blb2__front face"> </div>
+    <div class="blb2__back face"> </div>
+    <div class="blb2__right face"> </div>
+    <div class="blb2__left face"> </div>
+    <div class="blb2__top face"> </div>
+    <div class="blb2__bottom face"> </div>
+  </div>
+
+   <div class="blb">
+    <div class="blb__front face"> </div>
+    <div class="blb__back face"> </div>
+    <div class="blb__right face"> </div>
+    <div class="blb__left face"> </div>
+    <div class="blb__top face"> </div>
+    <div class="blb__bottom face"> </div>
+  </div>
+  <div class="blb2">
+    <div class="blb2__front face"> </div>
+    <div class="blb2__back face"> </div>
+    <div class="blb2__right face"> </div>
+    <div class="blb2__left face"> </div>
+    <div class="blb2__top face"> </div>
+    <div class="blb2__bottom face"> </div>
+  </div>
+        <div class="alt">
+            <div class="alt__front face"></div>
+            <div class="alt__back face"></div>
+            <div class="alt__right face"></div>
+            <div class="alt__left face"></div>
+            <div class="alt__top face">
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+            </div>
+            <div class="alt__bottom face"></div>
+        </div>
+    </div>
+
+    <div class="laptop">
+  <!-- Base -->
+  <div class="laptop-base">
+    <div class="laptop-base__front"></div>
+    <div class="laptop-base__back"></div>
+    <div class="laptop-base__right"></div>
+    <div class="laptop-base__left"></div>
+    <div class="laptop-base__top"></div>
+    <div class="laptop-base__bottom"></div>
+  </div>
+
+  <!-- Hinge and screen -->
+  <div class="laptop-hinge">
+    <div class="laptop-screen">
+      <div class="laptop-screen__front"></div>
+      <div class="laptop-screen__back"></div>
+      <div class="laptop-screen__right"></div>
+      <div class="laptop-screen__left"></div>
+      <div class="laptop-screen__top"></div>
+      <div class="laptop-screen__bottom"></div>
+    </div>
+  </div>
+ </div>
+
+     <!-- Table (Mesa) Structure -->
+        <div class="mesa-c">
+            <div class="mesa-shadow"></div>
+            <div class="mesa">
+                <div class="face mesa__front"></div>
+                <div class="face mesa__back"></div>
+                <div class="face mesa__right"></div>
+                <div class="face mesa__left"></div>
+                <div class="face mesa__top"></div>
+                <div class="face mesa__bottom"></div>
+                
+                <!-- Table Legs -->
+                <div class="mesa-p">
+                    <div class="face mesa-p__front"></div>
+                    <div class="face mesa-p__back"></div>
+                    <div class="face mesa-p__right"></div>
+                    <div class="face mesa-p__left"></div>
+                    <div class="face mesa-p__top"></div>
+                    <div class="face mesa-p__bottom"></div>
+                </div>
+                <div class="mesa-p">
+                    <div class="face mesa-p__front"></div>
+                    <div class="face mesa-p__back"></div>
+                    <div class="face mesa-p__right"></div>
+                    <div class="face mesa-p__left"></div>
+                    <div class="face mesa-p__top"></div>
+                    <div class="face mesa-p__bottom"></div>
+                </div>
+                <div class="mesa-p">
+                    <div class="face mesa-p__front"></div>
+                    <div class="face mesa-p__back"></div>
+                    <div class="face mesa-p__right"></div>
+                    <div class="face mesa-p__left"></div>
+                    <div class="face mesa-p__top"></div>
+                    <div class="face mesa-p__bottom"></div>
+                </div>
+                <div class="mesa-p">
+                    <div class="face mesa-p__front"></div>
+                    <div class="face mesa-p__back"></div>
+                    <div class="face mesa-p__right"></div>
+                    <div class="face mesa-p__left"></div>
+                    <div class="face mesa-p__top"></div>
+                    <div class="face mesa-p__bottom"></div>
+                </div>
+            <div class="mesa-shadow"></div>
+          </div>
+
+    <!-- IoT Device Icons -->
+    <div class="iot-icons">
+        <div class="iot-icon bluetooth">
+            <svg viewBox="0 0 24 24">
+                <path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71L13.41 12l4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/>
+            </svg>
+        </div>
+        
+        <div class="iot-icon headphones">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/>
+            </svg>
+        </div>
+        
+        <div class="iot-icon wifi">
+            <svg viewBox="0 0 24 24">
+                <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.07 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
+            </svg>
+        </div>
+        
+        <div class="iot-icon power">
+            <svg viewBox="0 0 24 24">
+                <path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/>
+            </svg>
+        </div>
+        
+        <div class="iot-icon hotspot">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 2c0-3.31-2.69-6-6-6s-6 2.69-6 6c0 2.22 1.21 4.15 3 5.19l1-1.74c-1.19-.7-2-1.97-2-3.45 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.48-.81 2.75-2 3.45l1 1.74c1.79-1.04 3-2.97 3-5.19zM12 3C7.03 3 3 7.03 3 12c0 3.54 2.29 6.53 5.47 7.59l.86-1.49C6.51 17.23 5 14.78 5 12c0-3.87 3.13-7 7-7s7 3.13 7 7c0 2.78-1.51 5.23-3.33 6.1l.86 1.49C19.71 18.53 22 15.54 22 12c0-4.97-4.03-9-9-9z"/>
+            </svg>
+        </div>
+        
+        <div class="iot-icon battery">
+            <svg viewBox="0 0 24 24">
+                <path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/>
+            </svg>
+        </div>
+        
+        <div class="iot-icon network">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+            </svg>
+        </div>
+    </div>
+</body>
+</html>
