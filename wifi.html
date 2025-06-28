@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi Monitor</title>
+    <style>
+        /**/
+        *, *::after, *::before {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          user-select: none;
+          transform-style: preserve-3d;
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Generic */
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100vh;
+          overflow: hidden;
+          cursor: pointer;
+          background-image: radial-gradient(circle, #171424, black);
+        }
+
+        .face {
+          position: absolute;
+        }
+
+        .house {
+          position: absolute;
+          width: 48vw;
+          height: 48vw;
+          transform: perspective(140vw) rotateX(75deg) rotateZ(45deg) translateZ(-14vw);
+        }
+
+        .h-shadow {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          box-shadow: 1.5vw -3vw 3vw black, 1.5vw 0.5vw 1.5vw black;
+        }
+
+        .h-lights {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translateX(-50%) translateY(-50%);
+          width: 54vw;
+          height: 54vw;
+        }
+
+        .h-light {
+          position: absolute;
+        }
+
+        .h-light:nth-of-type(1) {
+          bottom: 5vw;
+          right: 0;
+          width: 14vw;
+          height: 14vw;
+          border-radius: 50%;
+          background-image: radial-gradient(#1b182a, transparent);
+          filter: blur(1vw);
+        }
+
+        .h-light:nth-of-type(2) {
+          bottom: 18vw;
+          right: -1vw;
+          width: 2vw;
+          height: 12vw;
+          border-radius: 50%;
+          transform: rotateZ(-50deg);
+          background-image: radial-gradient(rgba(81, 137, 251, 0.45) 50%, rgba(40, 125, 210, 0.45), transparent);
+          box-shadow: -1vw -1vw 2vw 1vw rgba(131, 171, 252, 0.1);
+          filter: blur(1vw);
+        }
+
+        .h-light:nth-of-type(3) {
+          bottom: -2vw;
+          right: 17vw;
+          width: 5vw;
+          height: 12vw;
+          border-radius: 50%;
+          transform: rotateZ(-50deg);
+          background-image: radial-gradient(rgba(81, 137, 251, 0.5) 50%, rgba(40, 125, 210, 0.5), transparent);
+          filter: blur(2vw);
+        }
+
+        .h-light:nth-of-type(3)::before,
+        .h-light:nth-of-type(3)::after {
+          content: "";
+          position: absolute;
+          width: 200%;
+          top: -6vw;
+          height: 400%;
+          background-image: linear-gradient(to bottom, rgba(40, 125, 210, 0.1), rgba(81, 137, 251, 0.1), transparent);
+          border-top-left-radius: 10vw;
+          border-top-right-radius: 10vw;
+          filter: blur(1.5vw);
+        }
+
+        .h-light:nth-of-type(3)::before {
+          right: -50%;
+          transform-origin: top right;
+          transform: rotateZ(15deg);
+          box-shadow: -2vw -2vw 0 rgba(81, 137, 251, 0.075);
+        }
+
+        .h-light:nth-of-type(3)::after {
+          left: -50%;
+          transform-origin: top left;
+          transform: rotateZ(-15deg);
+          box-shadow: 2vw -2vw 0 rgba(81, 137, 251, 0.075);
+        }
+
+        .h-light:nth-of-type(4) {
+          bottom: 5vw;
+          left: 8vw;
+          width: 28vw;
+          height: 4vw;
+          transform-origin: top left;
+          transform: skewX(58deg);
+          background-image: linear-gradient(to right, rgba(81, 137, 251, 0.075) 10%, transparent 25%, transparent, rgba(0, 0, 0, 0.15));
+          filter: blur(0.25vw);
+        }
+
+        .h-light:nth-of-type(6) {
+          bottom: 14vw;
+          right: 2vw;
+          width: 8vw;
+          height: 16vw;
+          transform-origin: bottom left;
+          transform: skewY(49deg);
+          background-image: linear-gradient(to left, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.7));
+          filter: blur(0.35vw);
+        }
+
+        /* Floating IoT Icons */
+        .iot-icons {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+        }
+
+        .iot-icon {
+          position: absolute;
+          width: 3vw;
+          height: 3vw;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          backdrop-filter: blur(0.5vw);
+          border: 0.1vw solid rgba(255, 255, 255, 0.2);
+          transition: all 0.3s ease;
+          pointer-events: auto;
+          cursor: pointer;
+        }
+
+        .iot-icon:hover {
+          transform: scale(1.2);
+          box-shadow: 0 0 2vw rgba(255, 255, 255, 0.3);
+        }
+
+        .iot-icon svg {
+          width: 60%;
+          height: 60%;
+          fill: currentColor;
+        }
+
+        /* Icon Colors and Animations */
+        .wifi {
+          background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(34, 197, 94, 0.3));
+          color: #4ade80;
+          animation: float3 22s ease-in-out infinite, blink 5.5s ease-in-out infinite;
+        }
+
+        .power {
+          background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.3));
+          color: #ef4444;
+          animation: float4 18s ease-in-out infinite, pulse 3s ease-in-out infinite;
+        }
+
+        /* WiFi Monitor Component */
+        .wifi-monitor {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0) perspective(1000px) rotateX(0deg) rotateY(0deg);
+            width: 35vw;
+            height: 28vw;
+            transform-style: preserve-3d;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            z-index: 100;
+        }
+
+        .wifi-monitor.active {
+            transform: translate(-50%, -50%) scale(1) perspective(1000px) rotateX(-10deg) rotateY(5deg);
+            opacity: 1;
+            animation: float-monitor 6s ease-in-out infinite;
+        }
+
+        @keyframes float-monitor {
+            0%, 100% { transform: translate(-50%, -50%) scale(1) perspective(1000px) rotateX(-10deg) rotateY(5deg); }
+            50% { transform: translate(-50%, -50%) scale(1) perspective(1000px) rotateX(-12deg) rotateY(7deg) translateY(-0.5vw); }
+        }
+
+        .monitor-base {
+            position: absolute;
+            bottom: -2vw;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12vw;
+            height: 3vw;
+            background: linear-gradient(135deg, #1f2937, #374151);
+            border-radius: 1vw;
+            box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.5);
+        }
+
+        .monitor-stand {
+            position: absolute;
+            bottom: -0.5vw;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2vw;
+            height: 2vw;
+            background: linear-gradient(135deg, #374151, #4b5563);
+            border-radius: 0.2vw;
+        }
+
+        .monitor-frame {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1f2937, #374151);
+            border-radius: 1vw;
+            border: 0.2vw solid rgba(255, 255, 255, 0.1);
+            box-shadow:
+                0 0 0 0.1vw rgba(59, 130, 246, 0.3),
+                0 1vw 3vw rgba(0, 0, 0, 0.5),
+                inset 0 0 0.5vw rgba(255, 255, 255, 0.1);
+        }
+
+        .monitor-screen {
+            position: absolute;
+            top: 0.8vw;
+            left: 0.8vw;
+            right: 0.8vw;
+            bottom: 0.8vw;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-radius: 0.5vw;
+            display: flex;
+            flex-direction: column;
+            padding: 1vw;
+            gap: 0.8vw;
+            overflow-y: auto;
+            max-height: 25vw;
+            scrollbar-width: thin;
+            scrollbar-color: #64748b #1e293b;
+        }
+
+        .monitor-screen::-webkit-scrollbar {
+            width: 0.4vw;
+        }
+
+        .monitor-screen::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        .monitor-screen::-webkit-scrollbar-thumb {
+            background: #64748b;
+            border-radius: 0.2vw;
+        }
+
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.5vw;
+            border-bottom: 0.05vw solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1vw;
+        }
+
+        .screen-title {
+            color: #60a5fa;
+            font-size: 1.2vw;
+            font-weight: bold;
+            text-shadow: 0 0 0.5vw #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        .wifi-icon {
+            font-size: 1.5vw;
+            animation: pulse-wifi 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-wifi {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .screen-time {
+            color: #94a3b8;
+            font-size: 0.8vw;
+        }
+
+        .monitor-close {
+            position: absolute;
+            top: 0.3vw;
+            right: 0.3vw;
+            width: 1.5vw;
+            height: 1.5vw;
+            background: rgba(239, 68, 68, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 0.8vw;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .monitor-close:hover {
+            background: rgba(239, 68, 68, 1);
+            transform: scale(1.1);
+        }
+
+        .wifi-status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1vw;
+            margin-bottom: 1vw;
+        }
+
+        .status-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 0.05vw solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5vw;
+            padding: 1vw;
+            transition: all 0.3s ease;
+        }
+
+        .status-card:hover {
+            background: rgba(30, 41, 59, 1);
+            border-color: #60a5fa;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+            margin-bottom: 0.5vw;
+        }
+
+        .card-icon {
+            font-size: 1vw;
+            width: 1.5vw;
+            height: 1.5vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.3vw;
+        }
+
+        .card-title {
+            color: #e2e8f0;
+            font-size: 0.8vw;
+            font-weight: bold;
+        }
+
+        .card-value {
+            color: #60a5fa;
+            font-size: 1.2vw;
+            font-weight: bold;
+            margin-bottom: 0.3vw;
+        }
+
+        .card-detail {
+            color: #94a3b8;
+            font-size: 0.6vw;
+        }
+
+        .status-online { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .status-signal { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .status-speed { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+        .status-devices { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+
+        .wifi-networks {
+            margin-top: 1vw;
+        }
+
+        .section-title {
+            color: #e2e8f0;
+            font-size: 1vw;
+            font-weight: bold;
+            margin-bottom: 0.8vw;
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+        }
+
+        .network-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5vw;
+        }
+
+        .network-item {
+            background: rgba(30, 41, 59, 0.6);
+            border: 0.05vw solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.4vw;
+            padding: 0.8vw;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .network-item:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: #60a5fa;
+        }
+
+        .network-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+        }
+
+        .network-name {
+            color: #e2e8f0;
+            font-size: 0.8vw;
+            font-weight: bold;
+        }
+
+        .network-security {
+            color: #94a3b8;
+            font-size: 0.6vw;
+            background: rgba(100, 116, 139, 0.2);
+            padding: 0.2vw 0.5vw;
+            border-radius: 0.2vw;
+        }
+
+        .network-signal {
+            display: flex;
+            align-items: center;
+            gap: 0.3vw;
+        }
+
+        .signal-strength {
+            color: #22c55e;
+            font-size: 0.7vw;
+        }
+
+        .signal-bars {
+            display: flex;
+            gap: 0.1vw;
+        }
+
+        .signal-bar {
+            width: 0.2vw;
+            background: #334155;
+            border-radius: 0.1vw;
+        }
+
+        .signal-bar.active {
+            background: #22c55e;
+            box-shadow: 0 0 0.2vw #22c55e;
+        }
+
+        .signal-bar:nth-child(1) { height: 0.3vw; }
+        .signal-bar:nth-child(2) { height: 0.5vw; }
+        .signal-bar:nth-child(3) { height: 0.7vw; }
+        .signal-bar:nth-child(4) { height: 0.9vw; }
+
+        .educational-tip {
+            background: rgba(59, 130, 246, 0.1);
+            border: 0.05vw solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.5vw;
+            padding: 0.8vw;
+            margin-top: 1vw;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+            margin-bottom: 0.5vw;
+        }
+
+        .tip-title {
+            color: #60a5fa;
+            font-size: 0.8vw;
+            font-weight: bold;
+        }
+
+        .tip-content {
+            color: #cbd5e1;
+            font-size: 0.7vw;
+            line-height: 1.4;
+        }
+
+        .activate-button {
+            position: absolute;
+            bottom: 2vw;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1vw 2vw;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 0.5vw;
+            font-size: 1vw;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0.3vw 1vw rgba(59, 130, 246, 0.3);
+        }
+
+        .activate-button:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 0.5vw 2vw rgba(59, 130, 246, 0.5);
+        }
+
+        
+        /* Floating Animations */
+        @keyframes float1 {
+          0%, 100% { transform: translate(20vw, 15vh) rotate(0deg); }
+          25% { transform: translate(80vw, 25vh) rotate(90deg); }
+          50% { transform: translate(75vw, 75vh) rotate(180deg); }
+          75% { transform: translate(15vw, 70vh) rotate(270deg); }
+        }
+
+        @keyframes float2 {
+          0%, 100% { transform: translate(85vw, 20vh) rotate(0deg); }
+          33% { transform: translate(10vw, 40vh) rotate(120deg); }
+          66% { transform: translate(70vw, 80vh) rotate(240deg); }
+        }
+
+        @keyframes float3 {
+          0%, 100% { transform: translate(15vw, 80vh) rotate(0deg); }
+          50% { transform: translate(85vw, 10vh) rotate(180deg); }
+        }
+
+        @keyframes float4 {
+          0%, 100% { transform: translate(70vw, 60vh) rotate(0deg); }
+          25% { transform: translate(25vw, 30vh) rotate(90deg); }
+          50% { transform: translate(80vw, 15vh) rotate(180deg); }
+          75% { transform: translate(60vw, 85vh) rotate(270deg); }
+        }
+
+        @keyframes float5 {
+          0%, 100% { transform: translate(40vw, 10vh) rotate(0deg); }
+          40% { transform: translate(90vw, 50vh) rotate(144deg); }
+          80% { transform: translate(20vw, 90vh) rotate(288deg); }
+        }
+
+        @keyframes float6 {
+          0%, 100% { transform: translate(60vw, 85vh) rotate(0deg); }
+          30% { transform: translate(10vw, 20vh) rotate(108deg); }
+          60% { transform: translate(90vw, 70vh) rotate(216deg); }
+        }
+
+        @keyframes float7 {
+          0%, 100% { transform: translate(30vw, 70vh) rotate(0deg); }
+          33% { transform: translate(80vw, 40vh) rotate(120deg); }
+          66% { transform: translate(25vw, 15vh) rotate(240deg); }
+        }
+
+        /* Blinking and Pulsing Animations */
+        @keyframes blink {
+          0%, 100% {
+            opacity: 1;
+            box-shadow: 0 0 1vw currentColor;
+          }
+          50% {
+            opacity: 0.3;
+            box-shadow: 0 0 2vw currentColor;
+          }
+        }
+
+        @keyframes pulse {
+          0%, 100% { box-shadow: 0 0 1vw currentColor; }
+          50% { box-shadow: 0 0 3vw currentColor, 0 0 5vw currentColor; }
+        }
+
+        .iot-icon:nth-child(odd) {
+          animation-name: float1, pulse;
+        }
+
+        .iot-icon:nth-child(even) {
+          animation-name: float2, blink;
+        }
+    
+
+
+    </style>
+</head>
+<body>
+
+
+    <div class="house">
+        <div class="h-shadow"></div>
+        <div class="h-lights">
+            <div class="h-light"></div>
+            <div class="h-light"></div>
+            <div class="h-light"></div>
+            <div class="h-light"></div>
+            <div class="h-light"></div>
+            <div class="h-light"></div>
+        </div>
+    </div>
+
+    <div class="iot-icons">
+        <!-- WiFi Icon (clickable) -->
+        <div class="iot-icon wifi" id="wifi-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M12,21L15.6,16.2C14.6,15.45 13.35,15 12,15C10.65,15 9.4,15.45 8.4,16.2L12,21M12,3C7.95,3 4.21,4.34 1.2,6.6L3,9C5.5,7.12 8.62,6 12,6C15.38,6 18.5,7.12 21,9L22.8,6.6C19.79,4.34 16.05,3 12,3M12,9C9.3,9 6.81,9.89 4.8,11.4L6.6,13.8C8.1,12.67 9.97,12 12,12C14.03,12 15.9,12.67 17.4,13.8L19.2,11.4C17.19,9.89 14.7,9 12,9Z"/>
+            </svg>
+        </div>
+
+        <!-- Power Icon (clickable) -->
+        <div class="iot-icon power" id="power-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M16.56,5.44L15.11,6.89C16.84,7.94 18,9.83 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12C6,9.83 7.16,7.94 8.88,6.88L7.44,5.44C5.36,6.88 4,9.28 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12C20,9.28 18.64,6.88 16.56,5.44M13,3H11V13H13"/>
+            </svg>
+        </div>
+    </div>
+
+
+
+    <div class="wifi-monitor" id="wifiMonitor">
+        <div class="monitor-base"></div>
+        <div class="monitor-stand"></div>
+        <div class="monitor-frame">
+            <div class="monitor-screen">
+                <div class="screen-header">
+                    <div class="screen-title">
+                        <span class="wifi-icon">📶</span>
+                        WiFi Network Monitor
+                    </div>
+                    <div class="screen-time" id="currentTime">00:00:00</div>
+                </div>
+
+                <div class="wifi-status-grid">
+                    <div class="status-card">
+                        <div class="card-header">
+                            <div class="card-icon status-online">🌐</div>
+                            <div class="card-title">Connection Status</div>
+                        </div>
+                        <div class="card-value" id="connectionStatus">Connected</div>
+                        <div class="card-detail">Stable connection established</div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="card-header">
+                            <div class="card-icon status-signal">📡</div>
+                            <div class="card-title">Signal Strength</div>
+                        </div>
+                        <div class="card-value" id="signalStrength">-42 dBm</div>
+                        <div class="card-detail">Excellent signal quality</div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="card-header">
+                            <div class="card-icon status-speed">⚡</div>
+                            <div class="card-title">Network Speed</div>
+                        </div>
+                        <div class="card-value" id="networkSpeed">867 Mbps</div>
+                        <div class="card-detail">802.11ac 5GHz band</div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="card-header">
+                            <div class="card-icon status-devices">📱</div>
+                            <div class="card-title">Connected Devices</div>
+                        </div>
+                        <div class="card-value" id="connectedDevices">12</div>
+                        <div class="card-detail">Devices on network</div>
+                    </div>
+                </div>
+
+                <div class="wifi-networks">
+                    <div class="section-title">
+                        🔍 Available Networks
+                    </div>
+                    <div class="network-list" id="networkList">
+                        <!-- Networks will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="educational-tip">
+                    <div class="tip-header">
+                        <span>💡</span>
+                        <div class="tip-title">WiFi Tip</div>
+                    </div>
+                    <div class="tip-content" id="educationalTip">
+                        WiFi signal strength is measured in dBm (decibel-milliwatts). Values closer to 0 indicate stronger signals. -30 dBm is excellent, -50 dBm is very good, -70 dBm is okay, and below -80 dBm is poor.
+                    </div>
+                </div>
+            </div>
+            <div class="monitor-close" onclick="closeMonitor()">×</div>
+        </div>
+    </div>
+
+    <button class="activate-button" onclick="activateMonitor()">Activate WiFi Monitor</button>
+
+    <script>
+        let monitorActive = false;
+        let updateInterval;
+
+        const wifiTips = [
+            "WiFi signal strength is measured in dBm (decibel-milliwatts). Values closer to 0 indicate stronger signals. -30 dBm is excellent, -50 dBm is very good, -70 dBm is okay, and below -80 dBm is poor.",
+            "The 5GHz band offers faster speeds but shorter range, while 2.4GHz provides better coverage but slower speeds. Modern routers often broadcast both bands simultaneously.",
+            "WPA3 is the latest WiFi security protocol, offering better encryption than WPA2. Always use WPA2 or WPA3 for secure connections and avoid open networks for sensitive activities.",
+            "Channel congestion can slow your WiFi. Use tools to find the least congested channel (1, 6, or 11 for 2.4GHz) or let your router automatically select the best channel.",
+            "Mesh networks use multiple access points to create seamless coverage throughout large areas, automatically switching devices to the strongest signal point.",
+            "WiFi 6 (802.11ax) provides up to 4x faster speeds than WiFi 5, better performance in crowded areas, and improved battery life for connected devices."
+        ];
+
+        const networkData = [
+            { name: "HomeNetwork_5G", security: "WPA3", signal: -35, strength: 4, frequency: "5GHz", connected: true },
+            { name: "HomeNetwork_2.4G", security: "WPA3", signal: -45, strength: 3, frequency: "2.4GHz", connected: false },
+            { name: "Neighbor_WiFi", security: "WPA2", signal: -68, strength: 2, frequency: "2.4GHz", connected: false },
+            { name: "Coffee_Shop_Free", security: "Open", signal: -75, strength: 1, frequency: "2.4GHz", connected: false },
+            { name: "Office_Guest", security: "WPA2", signal: -72, strength: 2, frequency: "5GHz", connected: false }
+        ];
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('currentTime').textContent = timeString;
+        }
+
+        function updateNetworkStats() {
+            // Simulate dynamic network statistics
+            const signalStrength = -35 + Math.random() * 10;
+            const networkSpeed = 850 + Math.random() * 50;
+            const connectedDevices = 10 + Math.floor(Math.random() * 5);
+            
+            document.getElementById('signalStrength').textContent = `${signalStrength.toFixed(0)} dBm`;
+            document.getElementById('networkSpeed').textContent = `${networkSpeed.toFixed(0)} Mbps`;
+            document.getElementById('connectedDevices').textContent = connectedDevices;
+        }
+
+        function createSignalBars(strength) {
+            const bars = [];
+            for (let i = 1; i <= 4; i++) {
+                const activeClass = i <= strength ? 'active' : '';
+                bars.push(`<div class="signal-bar ${activeClass}"></div>`);
+            }
+            return `<div class="signal-bars">${bars.join('')}</div>`;
+        }
+
+        function populateNetworks() {
+            const networkList = document.getElementById('networkList');
+            networkList.innerHTML = networkData.map(network => `
+                <div class="network-item ${network.connected ? 'connected' : ''}" onclick="selectNetwork('${network.name}')">
+                    <div class="network-info">
+                        <div>
+                            <div class="network-name">${network.connected ? '🔗 ' : ''}${network.name}</div>
+                            <div class="network-security">${network.security} • ${network.frequency}</div>
+                        </div>
+                    </div>
+                    <div class="network-signal">
+                        <div class="signal-strength">${network.signal} dBm</div>
+                        ${createSignalBars(network.strength)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectNetwork(networkName) {
+            const network = networkData.find(n => n.name === networkName);
+            if (network && !network.connected) {
+                alert(`Connecting to ${networkName}...`);
+                // Simulate connection process
+                setTimeout(() => {
+                    // Reset all connections
+                    networkData.forEach(n => n.connected = false);
+                    // Set new connection
+                    network.connected = true;
+                    populateNetworks();
+                    updateConnectionStatus(network);
+                }, 1000);
+            }
+        }
+
+        function updateConnectionStatus(network) {
+            document.getElementById('connectionStatus').textContent = `Connected to ${network.name}`;
+        }
+
+        function rotateTips() {
+            const tipElement = document.getElementById('educationalTip');
+            const randomTip = wifiTips[Math.floor(Math.random() * wifiTips.length)];
+            tipElement.textContent = randomTip;
+        }
+
+        function activateMonitor() {
+            const monitor = document.getElementById('wifiMonitor');
+            monitor.classList.add('active');
+            monitorActive = true;
+            
+            // Start updating data
+            updateTime();
+            populateNetworks();
+            updateNetworkStats();
+            rotateTips();
+            
+            updateInterval = setInterval(() => {
+                updateTime();
+                updateNetworkStats();
+                
+                // Rotate tips every 10 seconds
+                if (Math.random() < 0.1) {
+                    rotateTips();
+                }
+            }, 1000);
+        }
+
+        function closeMonitor() {
+            const monitor = document.getElementById('wifiMonitor');
+            monitor.classList.remove('active');
+            monitorActive = false;
+            
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+        }
+
+        // Add event listener to power icon to activate the monitor
+        document.getElementById('power-icon').addEventListener('click', activateMonitor);
+
+
+        // Initialize
+        updateTime();
+        populateNetworks();
+    </script>
+
+</body>
+</html>
