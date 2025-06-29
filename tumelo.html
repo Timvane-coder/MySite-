@@ -1,0 +1,1869 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D IoT Monitor with Browser Interface</title>
+    <style>
+
+/* ==============================================
+   RESET & BASE STYLES
+   ============================================== */
+*, *::after, *::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  transform-style: preserve-3d;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  cursor: pointer;
+  background-image: radial-gradient(circle, #171424, black);
+}
+
+/* ==============================================
+   HOUSE & LIGHTING EFFECTS
+   ============================================== */
+.house {
+  position: absolute;
+  width: 48vw;
+  height: 48vw;
+  transform: perspective(140vw) rotateX(75deg) rotateZ(45deg) translateZ(-14vw);
+}
+
+.h-shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: 1.5vw -3vw 3vw black, 1.5vw 0.5vw 1.5vw black;
+}
+
+.h-lights {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 54vw;
+  height: 54vw;
+}
+
+.h-light {
+  position: absolute;
+}
+
+.h-light:nth-of-type(1) {
+  bottom: 5vw;
+  right: 0;
+  width: 14vw;
+  height: 14vw;
+  border-radius: 50%;
+  background-image: radial-gradient(#1b182a, transparent);
+  filter: blur(1vw);
+}
+
+.h-light:nth-of-type(2) {
+  bottom: 18vw;
+  right: -1vw;
+  width: 2vw;
+  height: 12vw;
+  border-radius: 50%;
+  transform: rotateZ(-50deg);
+  background-image: radial-gradient(rgba(81, 137, 251, 0.45) 50%, rgba(40, 125, 210, 0.45), transparent);
+  box-shadow: -1vw -1vw 2vw 1vw rgba(131, 171, 252, 0.1);
+  filter: blur(1vw);
+}
+
+.h-light:nth-of-type(3) {
+  bottom: -2vw;
+  right: 17vw;
+  width: 5vw;
+  height: 12vw;
+  border-radius: 50%;
+  transform: rotateZ(-50deg);
+  background-image: radial-gradient(rgba(81, 137, 251, 0.5) 50%, rgba(40, 125, 210, 0.5), transparent);
+  filter: blur(2vw);
+}
+
+.h-light:nth-of-type(3)::before,
+.h-light:nth-of-type(3)::after {
+  content: "";
+  position: absolute;
+  width: 200%;
+  top: -6vw;
+  height: 400%;
+  background-image: linear-gradient(to bottom, rgba(40, 125, 210, 0.1), rgba(81, 137, 251, 0.1), transparent);
+  border-top-left-radius: 10vw;
+  border-top-right-radius: 10vw;
+  filter: blur(1.5vw);
+}
+
+.h-light:nth-of-type(3)::before {
+  right: -50%;
+  transform-origin: top right;
+  transform: rotateZ(15deg);
+  box-shadow: -2vw -2vw 0 rgba(81, 137, 251, 0.075);
+}
+
+.h-light:nth-of-type(3)::after {
+  left: -50%;
+  transform-origin: top left;
+  transform: rotateZ(-15deg);
+  box-shadow: 2vw -2vw 0 rgba(81, 137, 251, 0.075);
+}
+
+.h-light:nth-of-type(4) {
+  bottom: 5vw;
+  left: 8vw;
+  width: 28vw;
+  height: 4vw;
+  transform-origin: top left;
+  transform: skewX(58deg);
+  background-image: linear-gradient(to right, rgba(81, 137, 251, 0.075) 10%, transparent 25%, transparent, rgba(0, 0, 0, 0.15));
+  filter: blur(0.25vw);
+}
+
+.h-light:nth-of-type(6) {
+  bottom: 14vw;
+  right: 2vw;
+  width: 8vw;
+  height: 16vw;
+  transform-origin: bottom left;
+  transform: skewY(49deg);
+  background-image: linear-gradient(to left, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.7));
+  filter: blur(0.35vw);
+}
+
+/* ==============================================
+   IOT ICONS - BASE STYLES
+   ============================================== */
+.iot-icons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.iot-icon {
+  position: absolute;
+  width: 3vw;
+  height: 3vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  backdrop-filter: blur(0.5vw);
+  border: 0.1vw solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.iot-icon:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 2vw rgba(255, 255, 255, 0.3);
+}
+
+.iot-icon svg {
+  width: 60%;
+  height: 60%;
+  fill: currentColor;
+}
+
+/* ==============================================
+   IOT ICONS - INDIVIDUAL STYLES
+   ============================================== */
+.iot-icon.wifi {
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(34, 197, 94, 0.3));
+  color: #4ade80;
+  animation: float3 22s ease-in-out infinite, blink 5.5s ease-in-out infinite;
+}
+
+.iot-icon.power {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.3));
+  color: #ef4444;
+  animation: float4 18s ease-in-out infinite, pulse 3s ease-in-out infinite;
+}
+
+.iot-icon.bluetooth {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.3));
+  color: #3b82f6;
+  animation: float5 20s ease-in-out infinite, pulse 4s ease-in-out infinite;
+}
+
+.iot-icon.location {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(219, 39, 119, 0.3));
+  color: #ec4899;
+  animation: float6 24s ease-in-out infinite, pulse 3.5s ease-in-out infinite;
+}
+
+.iot-icon.sim {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(234, 179, 8, 0.3));
+  color: #fbbf24;
+  animation: float7 19s ease-in-out infinite, blink 4.5s ease-in-out infinite;
+}
+
+.iot-icon.network {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(147, 51, 234, 0.3));
+  color: #a855f7;
+  animation: float8 21s ease-in-out infinite, pulse 4s ease-in-out infinite;
+}
+
+.iot-icon.account {
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.3), rgba(20, 184, 166, 0.3));
+  color: #2dd4bf;
+  animation: float9 23s ease-in-out infinite, blink 5s ease-in-out infinite;
+}
+
+.iot-icon.internet {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.3));
+  color: #3b82f6;
+  animation: float10 20s ease-in-out infinite, pulse 3.2s ease-in-out infinite;
+}
+
+.iot-icon.hotspot {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(219, 39, 119, 0.3));
+  color: #ec4899;
+  animation: float11 22s ease-in-out infinite, blink 4.2s ease-in-out infinite;
+}
+
+.iot-icon.storage {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.3), rgba(202, 138, 4, 0.3));
+  color: #eab308;
+  animation: float12 18s ease-in-out infinite, pulse 3.8s ease-in-out infinite;
+}
+
+.iot-icon.vpn {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3));
+  color: #10b981;
+  animation: float13 24s ease-in-out infinite, blink 4.8s ease-in-out infinite;
+}
+
+.iot-icon.battery-sim {
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(21, 128, 61, 0.3));
+  color: #4ade80;
+  animation: float14 19s ease-in-out infinite, pulse 3.6s ease-in-out infinite;
+}
+
+.iot-icon.scroll-up {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(91, 33, 182, 0.3));
+  color: #8b5cf6;
+  animation: float15 21s ease-in-out infinite, blink 4.4s ease-in-out infinite;
+}
+
+.iot-icon.scroll-down {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.3), rgba(225, 29, 72, 0.3));
+  color: #f43f5e;
+  animation: float16 23s ease-in-out infinite, pulse 4.0s ease-in-out infinite;
+}
+
+.iot-icon.phone {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+  border: 0.1vw solid rgba(59, 130, 246, 0.5);
+  animation: float14 19s ease-in-out infinite, pulse 3.6s ease-in-out infinite;
+  box-shadow: 0 0 0.5vw rgba(59, 130, 246, 0.3);
+}
+
+.iot-icon.phone:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(37, 99, 235, 0.4));
+  box-shadow: 0 0 1vw rgba(59, 130, 246, 0.5);
+  transform: scale(1.1);
+}
+
+.iot-icon.grok {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(107, 33, 168, 0.2));
+  border: 0.1vw solid rgba(147, 51, 234, 0.5);
+  animation: float17 18s ease-in-out infinite;
+  box-shadow: 0 0 0.5vw rgba(147, 51, 234, 0.3);
+}
+
+.iot-icon.grok:hover {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.4), rgba(107, 33, 168, 0.4));
+  box-shadow: 0 0 1vw rgba(147, 51, 234, 0.5);
+  transform: scale(1.1);
+}
+
+.iot-icon.globe {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(107, 33, 168, 0.2));
+  border: 0.1vw solid rgba(147, 51, 234, 0.5);
+  animation: float17 18s ease-in-out infinite;
+  box-shadow: 0 0 0.5vw rgba(147, 51, 234, 0.3);
+  color: #a855f7;
+}
+
+.iot-icon.globe:hover {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.4), rgba(107, 33, 168, 0.4));
+  box-shadow: 0 0 1vw rgba(147, 51, 234, 0.5);
+  transform: scale(1.1);
+}
+
+
+
+
+/* ==============================================
+   MONITOR COMPONENT
+   ============================================== */
+.iot-monitor {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0) perspective(1000px) rotateX(0deg) rotateY(0deg);
+  width: 20vw;
+  height: 18vw;
+  transform-style: preserve-3d;
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  opacity: 0;
+  z-index: 100;
+}
+
+.iot-monitor.active {
+  transform: translate(-50%, -50%) scale(1) perspective(1000px) rotateX(-10deg) rotateY(5deg);
+  opacity: 1;
+  animation: float-monitor 6s ease-in-out infinite;
+}
+
+.monitor-base {
+  position: absolute;
+  bottom: -2vw;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8vw;
+  height: 3vw;
+  background: linear-gradient(135deg, #1f2937, #374151);
+  border-radius: 1vw;
+  box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.5);
+}
+
+.monitor-stand {
+  position: absolute;
+  bottom: -0.5vw;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1.5vw;
+  height: 2vw;
+  background: linear-gradient(135deg, #374151, #4b5563);
+  border-radius: 0.2vw;
+}
+
+.monitor-frame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1f2937, #374151);
+  border-radius: 1vw;
+  border: 0.2vw solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 0 0 0.1vw rgba(59, 130, 246, 0.3),
+    0 1vw 3vw rgba(0, 0, 0, 0.5),
+    inset 0 0 0.5vw rgba(255, 255, 255, 0.1);
+}
+
+.monitor-screen {
+  position: absolute;
+  top: 0.8vw;
+  left: 0.8vw;
+  right: 0.8vw;
+  bottom: 0.8vw;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 0.5vw;
+  display: flex;
+  flex-direction: column;
+  padding: 1vw;
+  gap: 0.8vw;
+  overflow-y: auto;
+  max-height: 20vw;
+  scrollbar-width: thin;
+  scrollbar-color: #64748b #1e293b;
+}
+
+.monitor-screen::-webkit-scrollbar {
+  width: 0.4vw;
+}
+
+.monitor-screen::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.monitor-screen::-webkit-scrollbar-thumb {
+  background: #64748b;
+  border-radius: 0.2vw;
+}
+
+.screen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.5vw;
+  border-bottom: 0.05vw solid rgba(255, 255, 255, 0.1);
+}
+
+.screen-title {
+  color: #60a5fa;
+  font-family: 'Arial', sans-serif;
+  font-size: 0.7vw;
+  font-weight: bold;
+  text-shadow: 0 0 0.5vw #60a5fa;
+}
+
+.screen-time {
+  color: #94a3b8;
+  font-family: 'Arial', sans-serif;
+  font-size: 0.6vw;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.8vw;
+  min-height: 30vw;
+}
+
+.monitor-close {
+  position: absolute;
+  top: 0.3vw;
+  right: 0.3vw;
+  width: 1.2vw;
+  height: 1.2vw;
+  background: rgba(239, 68, 68, 0.8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 0.7vw;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.monitor-close:hover {
+  background: rgba(239, 68, 68, 1);
+  transform: scale(1.1);
+}
+
+/* ==============================================
+   STATUS ITEMS - BASE STYLES
+   ============================================== */
+.status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4vw;
+  padding: 0.6vw;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.4vw;
+  border: 0.05vw solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.status-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-0.1vw);
+}
+
+.status-item.active {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: currentColor;
+}
+
+.status-icon {
+  width: 1.5vw;
+  height: 1.5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.status-icon svg {
+  width: 80%;
+  height: 80%;
+  fill: currentColor;
+}
+
+.status-text {
+  font-family: 'Arial', sans-serif;
+  font-size: 0.5vw;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.connection-indicator {
+  position: absolute;
+  top: -0.2vw;
+  right: -0.2vw;
+  width: 0.6vw;
+  height: 0.6vw;
+  border-radius: 50%;
+  background: #ef4444;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.connection-indicator.connected {
+  background: #10b981;
+  opacity: 1;
+  animation: connectionPulse 2s ease-in-out infinite;
+}
+
+/* ==============================================
+   STATUS ITEMS - INDIVIDUAL STYLES
+   ============================================== */
+.wifi-status {
+  color: #4ade80;
+}
+
+.wifi-status .status-icon {
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(34, 197, 94, 0.2));
+  border: 0.05vw solid rgba(74, 222, 128, 0.5);
+}
+
+.wifi-status.blinking .status-icon {
+  animation: statusBlink 1s ease-in-out infinite;
+}
+
+.battery-status {
+  color: #22c55e;
+}
+
+.battery-status .status-icon {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(21, 128, 61, 0.2));
+  border: 0.05vw solid rgba(34, 197, 94, 0.5);
+}
+
+.airplane-status {
+  color: #64748b;
+}
+
+.airplane-status .status-icon {
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.2), rgba(71, 85, 105, 0.2));
+  border: 0.05vw solid rgba(100, 116, 139, 0.5);
+}
+
+.bluetooth-status {
+  color: #3b82f6;
+}
+
+.bluetooth-status .status-icon {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+  border: 0.05vw solid rgba(59, 130, 246, 0.5);
+}
+
+.bluetooth-status.connected {
+  color: #10b981;
+}
+
+.bluetooth-status.connected .status-icon {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+  border: 0.05vw solid rgba(16, 185, 129, 0.5);
+  animation: bluetoothPulse 2s ease-in-out infinite;
+}
+
+.location-status {
+  color: #ec4899;
+}
+
+.location-status .status-icon {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.2));
+  border: 0.05vw solid rgba(236, 72, 153, 0.5);
+}
+
+.location-status.active .status-icon {
+  animation: statusBlinkLocation 1s ease-in-out infinite;
+}
+
+.sim-status {
+  color: #fbbf24;
+}
+
+.sim-status .status-icon {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(234, 179, 8, 0.2));
+  border: 0.05vw solid rgba(251, 191, 36, 0.5);
+}
+
+.sim-status.active .status-icon {
+  animation: statusBlinkSim 1s ease-in-out infinite;
+}
+
+.network-status {
+  color: #a855f7;
+}
+
+.network-status .status-icon {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(147, 51, 234, 0.2));
+  border: 0.05vw solid rgba(168, 85, 247, 0.5);
+}
+
+.network-status.active .status-icon {
+  animation: statusBlinkNetwork 1s ease-in-out infinite;
+}
+
+.account-status {
+  color: #2dd4bf;
+}
+
+.account-status .status-icon {
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.2), rgba(20, 184, 166, 0.2));
+  border: 0.05vw solid rgba(45, 212, 191, 0.5);
+}
+
+.account-status.active {
+  color: #10b981;
+}
+
+.account-status.active .status-icon {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+  border: 0.05vw solid rgba(16, 185, 129, 0.5);
+  animation: accountPulse 2s ease-in-out infinite;
+}
+
+.internet-status {
+  color: #3b82f6;
+}
+
+.internet-status .status-icon {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+  border: 0.05vw solid rgba(59, 130, 246, 0.5);
+}
+
+.internet-status.active .status-icon {
+  animation: statusBlinkInternet 1s ease-in-out infinite;
+}
+
+.hotspot-status {
+  color: #ec4899;
+}
+
+.hotspot-status .status-icon {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.2));
+  border: 0.05vw solid rgba(236, 72, 153, 0.5);
+}
+
+.hotspot-status.active .status-icon {
+  animation: statusBlinkHotspot 1s ease-in-out infinite;
+}
+
+.storage-status {
+  color: #eab308;
+}
+
+.storage-status .status-icon {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(202, 138, 4, 0.2));
+  border: 0.05vw solid rgba(234, 179, 8, 0.5);
+}
+
+.storage-status.active .status-icon {
+  animation: statusBlinkStorage 1s ease-in-out infinite;
+}
+
+.vpn-status {
+  color: #10b981;
+}
+
+.vpn-status .status-icon {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+  border: 0.05vw solid rgba(16, 185, 129, 0.5);
+}
+
+.vpn-status.active .status-icon {
+  animation: statusBlinkVpn 1s ease-in-out infinite;
+}
+
+
+/* ===================================
+   ANIMATIONS & KEYFRAMES
+   =================================== */
+
+/* Floating Animations for IoT Icons */
+@keyframes float1 {
+  0%, 100% { transform: translate(20vw, 15vh) rotate(0deg); }
+  25% { transform: translate(80vw, 25vh) rotate(90deg); }
+  50% { transform: translate(75vw, 75vh) rotate(180deg); }
+  75% { transform: translate(15vw, 70vh) rotate(270deg); }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: translate(85vw, 20vh) rotate(0deg); }
+  33% { transform: translate(10vw, 40vh) rotate(120deg); }
+  66% { transform: translate(70vw, 80vh) rotate(240deg); }
+}
+
+@keyframes float3 {
+  0%, 100% { transform: translate(15vw, 80vh) rotate(0deg); }
+  50% { transform: translate(85vw, 10vh) rotate(180deg); }
+}
+
+@keyframes float4 {
+  0%, 100% { transform: translate(70vw, 60vh) rotate(0deg); }
+  25% { transform: translate(25vw, 30vh) rotate(90deg); }
+  50% { transform: translate(80vw, 15vh) rotate(180deg); }
+  75% { transform: translate(60vw, 85vh) rotate(270deg); }
+}
+
+@keyframes float5 {
+  0%, 100% { transform: translate(40vw, 10vh) rotate(0deg); }
+  40% { transform: translate(90vw, 50vh) rotate(144deg); }
+  80% { transform: translate(20vw, 90vh) rotate(288deg); }
+}
+
+@keyframes float6 {
+  0%, 100% { transform: translate(35vw, 65vh) rotate(0deg); }
+  33% { transform: translate(85vw, 25vh) rotate(110deg); }
+  66% { transform: translate(15vw, 75vh) rotate(220deg); }
+}
+
+@keyframes float7 {
+  0%, 100% { transform: translate(75vw, 35vh) rotate(0deg); }
+  50% { transform: translate(20vw, 85vh) rotate(180deg); }
+}
+
+@keyframes float8 {
+  0%, 100% { transform: translate(30vw, 80vh) rotate(0deg); }
+  25% { transform: translate(80vw, 15vh) rotate(90deg); }
+  50% { transform: translate(65vw, 55vh) rotate(180deg); }
+  75% { transform: translate(25vw, 20vh) rotate(270deg); }
+}
+
+@keyframes float9 {
+  0%, 100% { transform: translate(60vw, 30vh) rotate(0deg); }
+  40% { transform: translate(15vw, 80vh) rotate(144deg); }
+  80% { transform: translate(85vw, 35vh) rotate(288deg); }
+}
+
+@keyframes float10 {
+  0%, 100% { transform: translate(35vw, 65vh) rotate(0deg); }
+  33% { transform: translate(85vw, 25vh) rotate(110deg); }
+  66% { transform: translate(15vw, 75vh) rotate(220deg); }
+}
+
+@keyframes float11 {
+  0%, 100% { transform: translate(75vw, 35vh) rotate(0deg); }
+  50% { transform: translate(20vw, 85vh) rotate(180deg); }
+}
+
+@keyframes float12 {
+  0%, 100% { transform: translate(30vw, 80vh) rotate(0deg); }
+  25% { transform: translate(80vw, 15vh) rotate(90deg); }
+  50% { transform: translate(65vw, 55vh) rotate(180deg); }
+  75% { transform: translate(25vw, 20vh) rotate(270deg); }
+}
+
+@keyframes float13 {
+  0%, 100% { transform: translate(60vw, 30vh) rotate(0deg); }
+  40% { transform: translate(15vw, 80vh) rotate(144deg); }
+  80% { transform: translate(85vw, 35vh) rotate(288deg); }
+}
+
+@keyframes float14 {
+  0%, 100% { transform: translate(40vw, 70vh) rotate(0deg); }
+  33% { transform: translate(90vw, 20vh) rotate(120deg); }
+  66% { transform: translate(25vw, 85vh) rotate(240deg); }
+}
+
+@keyframes float15 {
+  0%, 100% { transform: translate(70vw, 45vh) rotate(0deg); }
+  50% { transform: translate(10vw, 90vh) rotate(180deg); }
+}
+
+@keyframes float16 {
+  0%, 100% { transform: translate(20vw, 75vh) rotate(0deg); }
+  25% { transform: translate(80vw, 10vh) rotate(90deg); }
+  50% { transform: translate(65vw, 60vh) rotate(180deg); }
+  75% { transform: translate(30vw, 25vh) rotate(270deg); }
+}
+
+@keyframes float17 {
+  0%, 100% { transform: translate(70vw, 60vh) rotate(0deg); }
+  25% { transform: translate(25vw, 30vh) rotate(90deg); }
+  50% { transform: translate(80vw, 15vh) rotate(180deg); }
+  75% { transform: translate(60vw, 85vh) rotate(270deg); }
+}
+
+/* Monitor Floating Animation */
+@keyframes float-monitor {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1) perspective(1000px) rotateX(-10deg) rotateY(5deg) translateZ(0);
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1) perspective(1000px) rotateX(-15deg) rotateY(-5deg) translateZ(0.5vw);
+  }
+}
+
+/* Blinking & Pulsing Effects */
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 1vw currentColor;
+  }
+  50% {
+    opacity: 0.3;
+    box-shadow: 0 0 2vw currentColor;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 1vw currentColor; }
+  50% { box-shadow: 0 0 3vw currentColor, 0 0 5vw currentColor; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+/* Status Indicator Animations */
+@keyframes statusBlink {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0.5vw #4ade80;
+  }
+  50% {
+    opacity: 0.3;
+    box-shadow: 0 0 1vw #4ade80;
+  }
+}
+
+@keyframes statusBlinkInternet {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0.5vw #3b82f6; }
+  50% { opacity: 0.3; box-shadow: 0 0 1vw #3b82f6; }
+}
+
+@keyframes statusBlinkHotspot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0.5vw #ec4899; }
+  50% { opacity: 0.3; box-shadow: 0 0 1vw #ec4899; }
+}
+
+@keyframes statusBlinkStorage {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0.5vw #eab308; }
+  50% { opacity: 0.3; box-shadow: 0 0 1vw #eab308; }
+}
+
+@keyframes statusBlinkVpn {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0.5vw #10b981; }
+  50% { opacity: 0.3; box-shadow: 0 0 1vw #10b981; }
+}
+
+@keyframes statusBlinkLocation {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0.5vw #ec4899;
+  }
+  50% {
+    opacity: 0.3;
+    box-shadow: 0 0 1vw #ec4899;
+  }
+}
+
+@keyframes statusBlinkSim {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0.5vw #fbbf24;
+  }
+  50% {
+    opacity: 0.3;
+    box-shadow: 0 0 1vw #fbbf24;
+  }
+}
+
+@keyframes statusBlinkNetwork {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0.5vw #a855f7;
+  }
+  50% {
+    opacity: 0.3;
+    box-shadow: 0 0 1vw #a855f7;
+  }
+}
+
+@keyframes bluetoothPulse {
+  0%, 100% {
+    box-shadow: 0 0 0.5vw #10b981;
+  }
+  50% {
+    box-shadow: 0 0 1.5vw #10b981, 0 0 2vw #10b981;
+  }
+}
+
+@keyframes accountPulse {
+  0%, 100% {
+    box-shadow: 0 0 0.5vw #10b981;
+  }
+  50% {
+    box-shadow: 0 0 1.5vw #10b981, 0 0 2vw #10b981;
+  }
+}
+
+@keyframes connectionPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+/* ==============================================
+   SMARTPHONE COMPONENT
+   ============================================== */
+.iot-smartphone {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 15vw;
+  height: 30vw;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  z-index: 1002;
+}
+
+.iot-smartphone.active {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.smartphone-body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #2d3748, #1a202c);
+  border-radius: 2vw;
+  box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.5), inset 0 0 0.5vw rgba(255, 255, 255, 0.1);
+  transform: rotateX(15deg) rotateY(15deg);
+  transform-style: preserve-3d;
+}
+
+.smartphone-screen {
+  position: absolute;
+  top: 1vw;
+  left: 1vw;
+  right: 1vw;
+  bottom: 1vw;
+  background: #0f172a;
+  border-radius: 1vw;
+  padding: 1vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1vw;
+  color: #e2e8f0;
+  font-family: 'Arial', sans-serif;
+  font-size: 0.9vw;
+}
+
+.smartphone-close {
+  position: absolute;
+  top: 0.5vw;
+  right: 0.5vw;
+  width: 1.5vw;
+  height: 1.5vw;
+  background: #ef4444;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1vw;
+  box-shadow: 0 0 0.3vw rgba(239, 68, 68, 0.5);
+  transition: transform 0.3s ease;
+}
+
+.smartphone-close:hover {
+  transform: scale(1.1);
+}
+
+.smartphone-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vw;
+}
+
+.smartphone-info div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.smartphone-info span {
+  font-weight: bold;
+}
+
+/* ==============================================
+   ROUTER COMPONENT
+   ============================================== */
+
+/* 3D ROUTER */
+.iot-router {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 25vw;
+    height: 20vw;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    z-index: 1001;
+}
+
+.iot-router.active {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.router-base {
+    position: absolute;
+    bottom: -1.5vw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20vw;
+    height: 1vw;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border-radius: 0.5vw;
+    box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.5);
+}
+
+.router-body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2d3748, #1a202c);
+    border-radius: 1vw;
+    box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.5), inset 0 0 0.5vw rgba(255, 255, 255, 0.1);
+    transform: rotateX(20deg) rotateY(20deg);
+    transform-style: preserve-3d;
+}
+
+.router-antennas {
+    position: absolute;
+    top: -2vw;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1vw;
+}
+
+.router-antenna {
+    width: 0.5vw;
+    height: 3vw;
+    background: #64748b;
+    border-radius: 0.2vw;
+    transform: rotateX(-20deg);
+    box-shadow: 0 0 0.3vw rgba(100, 116, 139, 0.5);
+}
+
+.router-screen {
+    position: absolute;
+    top: 2vw;
+    left: 2vw;
+    right: 2vw;
+    bottom: 2vw;
+    background: #0f172a;
+    border-radius: 0.5vw;
+    padding: 1vw;
+    display: flex;
+    flex-direction: column;
+    gap: 1vw;
+    color: #e2e8f0;
+    font-family: 'Arial', sans-serif;
+    font-size: 1vw;
+}
+
+.router-close {
+    position: absolute;
+    top: 0.5vw;
+    right: 0.5vw;
+    width: 1.5vw;
+    height: 1.5vw;
+    background: #ef4444;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1vw;
+    box-shadow: 0 0 0.3vw rgba(239, 68, 68, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.router-close:hover {
+    transform: scale(1.1);
+}
+
+.router-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vw;
+}
+
+.router-info div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.router-info span {
+    font-weight: bold;
+}
+
+
+/* BROWSER INTERFACE */
+.browser {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 60vw;
+    height: 40vw;
+    background: #f3f4f6;
+    border-radius: 1vw;
+    box-shadow: 0 2vw 4vw rgba(0, 0, 0, 0.3), 0 0 0 0.1vw rgba(255, 255, 255, 0.1);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    z-index: 100;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.browser.active {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.browser-header {
+    background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+    height: 4vw;
+    border-radius: 1vw 1vw 0 0;
+    display: flex;
+    align-items: center;
+    padding: 0 1vw;
+    border-bottom: 0.05vw solid #9ca3af;
+}
+
+.browser-controls {
+    display: flex;
+    gap: 0.5vw;
+    margin-right: 1vw;
+}
+
+.browser-btn {
+    width: 0.8vw;
+    height: 0.8vw;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+.browser-close {
+    position: absolute;
+    top: 0.5vw;
+    right: 0.5vw;
+    width: 1.5vw;
+    height: 1.5vw;
+    background: #ef4444;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1vw;
+    box-shadow: 0 0 0.3vw rgba(239, 68, 68, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.browser-close:hover {
+    transform: scale(1.1);
+}
+
+.minimize-btn {
+    background: #f59e0b;
+}
+
+.maximize-btn {
+    background: #10b981;
+}
+
+.browser-btn:hover {
+    opacity: 0.8;
+}
+
+.address-bar {
+    flex: 1;
+    background: white;
+    height: 2.2vw;
+    border-radius: 0.8vw;
+    display: flex;
+    align-items: center;
+    padding: 0 1vw;
+    margin-right: 1vw;
+    border: 0.05vw solid #d1d5db;
+    box-shadow: inset 0 0.1vw 0.2vw rgba(0, 0, 0, 0.05);
+}
+
+.url-segments {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    font-size: 0.9vw;
+    width: 100%;
+}
+
+.url-segment {
+    padding: 0.3vw 0.6vw;
+    border-radius: 0.4vw;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.protocol {
+    background: #1e293b;
+    color: white;
+}
+
+.subdomain {
+    background: #374151;
+    color: white;
+}
+
+.domain {
+    background: #4338ca;
+    color: white;
+}
+
+.path {
+    background: #6366f1;
+    color: white;
+    max-width: 12vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nav-controls {
+    display: flex;
+    gap: 0.5vw;
+}
+
+.nav-btn {
+    width: 2vw;
+    height: 2vw;
+    background: white;
+    border: 0.05vw solid #d1d5db;
+    border-radius: 0.3vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1vw;
+    color: #6b7280;
+}
+
+.nav-btn:hover {
+    background: #f9fafb;
+}
+
+.browser-content {
+    height: calc(100% - 4vw);
+    background: white;
+    border-radius: 0 0 1vw 1vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2vw;
+    position: relative;
+    overflow: hidden;
+}
+
+.content-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5vw;
+}
+
+.domain-visual {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    padding: 1vw 2vw;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    border-radius: 1vw;
+    border: 0.1vw solid #cbd5e1;
+}
+
+.domain-icon {
+    width: 3vw;
+    height: 3vw;
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+    border-radius: 0.5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.domain-icon svg {
+    width: 60%;
+    height: 60%;
+    fill: white;
+}
+
+.domain-info h3 {
+    font-size: 1.2vw;
+    color: #1e293b;
+    margin-bottom: 0.2vw;
+}
+
+.domain-info p {
+    font-size: 0.8vw;
+    color: #64748b;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    padding: 0.5vw 1vw;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(74, 222, 128, 0.1));
+    border: 0.1vw solid rgba(34, 197, 94, 0.3);
+    border-radius: 2vw;
+}
+
+.status-dot {
+    width: 0.6vw;
+    height: 0.6vw;
+    background: #22c55e;
+    border-radius: 50%;
+}
+
+.status-text {
+    font-size: 0.8vw;
+    color: #16a34a;
+    font-weight: 500;
+}
+
+
+/* ==============================================
+   GLOBE COMPONENT
+   ============================================== */
+.iot-globe {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 15vw;
+  height: 15vw;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  z-index: 1003;
+}
+
+.iot-globe.active {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.globe-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: rotateGlobe 20s linear infinite;
+}
+
+.globe-sphere {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #1e90ff 0%, #000066 70%);
+  border-radius: 50%;
+  box-shadow: 0 0 2vw rgba(30, 144, 255, 0.5), inset 0 0 1vw rgba(255, 255, 255, 0.2);
+}
+
+.globe-meridian {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 0.1vw solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform-style: preserve-3d;
+}
+
+.globe-meridian:nth-child(1) { transform: rotateY(0deg); }
+.globe-meridian:nth-child(2) { transform: rotateY(60deg); }
+.globe-meridian:nth-child(3) { transform: rotateY(120deg); }
+.globe-meridian:nth-child(4) { transform: rotateX(90deg); }
+
+.globe-continent {
+  position: absolute;
+  background: rgba(34, 197, 94, 0.7);
+  border-radius: 50%;
+  transform-style: preserve-3d;
+}
+
+.globe-continent:nth-child(1) {
+  width: 3vw;
+  height: 1.5vw;
+  top: 30%;
+  left: 60%;
+  transform: translateZ(0.1vw);
+}
+
+.globe-continent:nth-child(2) {
+  width: 2vw;
+  height: 3vw;
+  top: 50%;
+  left: 30%;
+  transform: translateZ(0.1vw) rotateY(45deg);
+}
+
+.globe-continent:nth-child(3) {
+  width: 1.5vw;
+  height: 2vw;
+  top: 20%;
+  left: 40%;
+  transform: translateZ(0.1vw) rotateY(-30deg);
+}
+
+.globe-close {
+  position: absolute;
+  top: 0.5vw;
+  right: 0.5vw;
+  width: 1.5vw;
+  height: 1.5vw;
+  background: #ef4444;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1vw;
+  box-shadow: 0 0 0.3vw rgba(239, 68, 68, 0.5);
+  transition: transform 0.3s ease;
+}
+
+.globe-close:hover {
+  transform: scale(1.1);
+}
+
+
+
+/***************/
+    </style>
+</head>
+<body>
+
+  <div class="house">
+    <div class="h-shadow"></div>
+    <div class="h-lights">
+      <div class="h-light"></div>
+      <div class="h-light"></div>
+      <div class="h-light"></div>
+      <div class="h-light"></div>
+      <div class="h-light"></div>
+      <div class="h-light"></div>
+    </div>
+  </div>
+
+  <div class="iot-icons">
+    <!-- WiFi Icon -->
+    <div class="iot-icon wifi" id="wifi-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12,21L15.6,16.2C14.6,15.45 13.35,15 12,15C10.65,15 9.4,15.45 8.4,16.2L12,21M12,3C7.95,3 4.21,4.34 1.2,6.6L3,9C5.5,7.12 8.62,6 12,6C15.38,6 18.5,7.12 21,9L22.8,6.6C19.79,4.34 16.05,3 12,3M12,9C9.3,9 6.81,9.89 4.8,11.4L6.6,13.8C8.1,12.67 9.97,12 12,12C14.03,12 15.9,12.67 17.4,13.8L19.2,11.4C17.19,9.89 14.7,9 12,9Z"/>
+      </svg>
+    </div>
+
+    <!-- Power Icon -->
+    <div class="iot-icon power" id="power-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M16.56,5.44L15.11,6.89C16.84,7.94 18,9.83 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12C6,9.83 7.16,7.94 8.88,6.88L7.44,5.44C5.36,6.88 4,9.28 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12C20,9.28 18.64,6.88 16.56,5.44M13,3H11V13H13"/>
+      </svg>
+    </div>
+
+    <!-- Bluetooth Icon -->
+    <div class="iot-icon bluetooth" id="bluetooth-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M17.71,7.71L12,2H11V9H9.41L6.71,6.29L5.29,7.71L10.59,13L5.29,18.29L6.71,19.71L9.41,17H11V22H12L17.71,16.29L13.41,12L17.71,7.71M13,5.83L15.17,8L13,10.17V5.83M13,15.83V19.17L15.17,17L13,15.83Z"/>
+      </svg>
+    </div>
+
+    <!-- Location Icon -->
+    <div class="iot-icon location" id="location-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z"/>
+      </svg>
+    </div>
+
+    <!-- SIM Icon -->
+    <div class="iot-icon sim" id="sim-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M19,2H9A2,2 0 0,0 7,4V6H5V8H7V10H5V12H7V14H5V16H7V18H5V20H19A2,2 0 0,0 21,18V4A2,2 0 0,0 19,2M11,4H17V18H11V4Z"/>
+      </svg>
+    </div>
+
+    <!-- Network Icon -->
+    <div class="iot-icon network" id="network-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M1,9L3,11H5V13H3V15H5V17H3V19H5V21H7V19H9V21H11V19H13V21H15V19H17V21H19V19H21V17H19V15H21V13H19V11H21V9H19V7H17V9H15V7H13V9H11V7H9V9H7V7H5V9H3V11H1V9M15,15H17V17H15V15M11,15H13V17H11V15M7,15H9V17H7V15M15,11H17V13H15V11M11,11H13V13H11V11M7,11H9V13H7V11Z"/>
+      </svg>
+    </div>
+
+    <!-- Account Icon -->
+    <div class="iot-icon account" id="account-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+      </svg>
+    </div>
+
+    <!-- Internet Icon -->
+    <div class="iot-icon internet" id="internet-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M16.36,14C17.65,13.08 18.85,11.45 19.07,10H4.93C5.15,11.45 6.35,13.08 7.64,14C6.35,14.92 5.15,16.55 4.93,18H19.07C18.85,16.55 17.65,14.92 16.36,14M12,18A2,2 0 0,0 10,20H14A2,2 0 0,0 12,18M12,2A8,8 0 0,0 4,10H20A8,8 0 0,0 12,2Z"/>
+      </svg>
+    </div>
+
+    <!-- Hotspot Icon -->
+    <div class="iot-icon hotspot" id="hotspot-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M3.53,12.29C4.24,10.25 5.54,8.46 7.27,7.2C6.87,8.76 7.17,10.67 8.47,12.29C7.17,13.91 6.87,15.82 7.27,17.38C5.54,16.12 4.24,14.33 3.53,12.29M12,4C8.07,4 4.55,6.13 2.63,9.47C3.21,10.46 4,11.31 5,12C4,12.69 3.21,13.54 2.63,14.53C4.55,17.87 8.07,20 12,20C15.93,20 19.45,17.87 21.37,14.53C20.79,13.54 20,12.69 19,12C20,11.31 20.79,10.46 21.37,9.47C19.45,6.13 15.93,4 12,4Z"/>
+      </svg>
+    </div>
+
+    <!-- Storage Icon -->
+    <div class="iot-icon storage" id="storage-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M2,6H4V18H2V6M5,6H6V18H5V6M7,6H22V9H7V6M7,18H22V15H7V18Z"/>
+      </svg>
+    </div>
+
+    <!-- VPN Icon -->
+    <div class="iot-icon vpn" id="vpn-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M19,5V19H5V5H19M21,3H3V21H21V3M12,17A1.5,1.5 0 0,1 10.5,15.5A1.5,1.5 0 0,1 12,14A1.5,1.5 0 0,1 13.5,15.5A1.5,1.5 0 0,1 12,17M15,12H13.5V9H10.5V12H9L12,7L15,12Z"/>
+      </svg>
+    </div>
+
+    <!-- Battery Simulation Icon -->
+    <div class="iot-icon battery-sim" id="battery-sim-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M15.67,4H14V2H10V4H8.33C7.6,4 7,4.6 7,5.33V20.67C7,21.4 7.6,22 8.33,22H15.67C16.4,22 17,21.4 17,20.67V5.33C17,4.6 16.4,4 15.67,4M11,20V6H13V20H11Z"/>
+      </svg>
+    </div>
+
+    <!-- Scroll Up Icon -->
+    <div class="iot-icon scroll-up" id="scroll-up-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12,8L7,13H9V19H15V13H17L12,8M12,4L7,9H17L12,4Z"/>
+      </svg>
+    </div>
+
+    <!-- Scroll Down Icon -->
+    <div class="iot-icon scroll-down" id="scroll-down-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12,16L17,11H15V5H9V11H7L12,16M12,20L17,15H7L12,20Z"/>
+      </svg>
+    </div>
+
+    <!-- Phone Icon -->
+    <div class="iot-icon phone" id="phone-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.78 16.43,14.85C17.55,15.07 18.75,15.19 20,15.19C20.55,15.19 21,15.64 21,16.19V20C21,20.55 20.55,21 20,21C10.61,21 3,13.39 3,4C3,3.45 3.45,3 4,3H7.81C8.36,3 8.81,3.45 8.81,4C8.81,5.25 8.93,6.45 9.15,7.57C9.22,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
+      </svg>
+    </div>
+
+
+     <!-- Browser Icon (replacing Grok icon) -->
+        <div class="iot-icon grok" id="grok-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm4-8c0-2.21-1.79-4-4-4s-4 1.79-4 4 1.79 4 4 4 4-1.79 4-4zm-8 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/>
+            </svg>
+        </div>
+    </div>
+
+
+ <!-- Globe Icon (replacing grok icon) -->
+    <div class="iot-icon globe" id="globe-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95.49-7.44-2.24-7.93-6.19C4.56 14.78 6.22 15.5 8 15.5c1.78 0 3.44-.72 4.94-1.76.49 1.76 1.76 3.42 3.52 3.91-1.76 1.27-3.91 2-6.46 2zM12 4.07c2.54 0 4.7.73 6.46 2-1.76.49-3.03 2.15-3.52 3.91-1.5-1.04-3.16-1.76-4.94-1.76-1.78 0-3.44.72-4.93 1.76.49-1.76 2.15-3.42 3.91-3.91C8.3 4.8 10.46 4.07 12 4.07z"/>
+      </svg>
+    </div>
+  </div>
+
+
+  <!-- IoT Monitor -->
+  <div class="iot-monitor" id="iot-monitor">
+    <div class="monitor-base"></div>
+    <div class="monitor-stand"></div>
+    <div class="monitor-frame">
+      <div class="monitor-close" id="monitor-close">×</div>
+      <div class="monitor-screen">
+        <div class="screen-header">
+          <div class="screen-title">IoT Monitor</div>
+          <div class="screen-time" id="screen-time">19:22</div>
+        </div>
+        
+        <div class="status-grid">
+          <!-- WiFi Status -->
+          <div class="status-item wifi-status" id="wifi-status">
+            <div class="connection-indicator" id="wifi-indicator"></div>
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M12,21L15.6,16.2C14.6,15.45 13.35,15 12,15C10.65,15 9.4,15.45 8.4,16.2L12,21M12,3C7.95,3 4.21,4.34 1.2,6.6L3,9C5.5,7.12 8.62,6 12,6C15.38,6 18.5,7.12 21,9L22.8,6.6C19.79,4.34 16.05,3 12,3M12,9C9.3,9 6.81,9.89 4.8,11.4L6.6,13.8C8.1,12.67 9.97,12 12,12C14.03,12 15.9,12.67 17.4,13.8L19.2,11.4C17.19,9.89 14.7,9 12,9Z"/>
+              </svg>
+            </div>
+            <div class="status-text">WiFi<br>Connected</div>
+          </div>
+
+          <!-- Battery Status -->
+          <div class="status-item battery-status" id="battery-status">
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M15.67,4H14V2H10V4H8.33C7.6,4 7,4.6 7,5.33V20.67C7,21.4 7.6,22 8.33,22H15.67C16.4,22 17,21.4 17,20.67V5.33C17,4.6 16.4,4 15.67,4M11,20V6H13V20H11Z"/>
+              </svg>
+            </div>
+            <div class="status-text">Battery<br><span id="battery-level">85%</span></div>
+          </div>
+
+          <!-- Airplane Mode -->
+          <div class="status-item airplane-status" id="airplane-status">
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M20.36,2.64L19.64,1.93L17.93,3.64L14.5,7.05L9,2.55L8,3.55L12.45,8L9.04,11.41L4.55,9.91L3.55,10.91L7.05,14.5L3.64,17.93L1.93,19.64L2.64,20.36L4.36,18.64L7.76,15.24L12.26,19.74L13.26,18.74L11.76,14.24L15.17,10.83L19.67,15.33L20.67,14.33L16.17,9.83L19.58,6.42L20.36,2.64Z"/>
+              </svg>
+            </div>
+            <div class="status-text">Airplane<br>Mode OFF</div>
+          </div>
+
+          <!-- Bluetooth Status -->
+          <div class="status-item bluetooth-status" id="bluetooth-status">
+            <div class="connection-indicator" id="bluetooth-indicator"></div>
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M17.71,7.71L12,2H11V9H9.41L6.71,6.29L5.29,7.71L10.59,13L5.29,18.29L6.71,19.71L9.41,17H11V22H12L17.71,16.29L13.41,12L17.71,7.71M13,5.83L15.17,8L13,10.17V5.83M13,15.83V19.17L15.17,17L13,15.83Z"/>
+              </svg>
+            </div>
+            <div class="status-text">Bluetooth<br><span id="bluetooth-text">Disconnected</span></div>
+          </div>
+
+          <!-- Location Status -->
+          <div class="status-item location-status" id="location-status">
+            <div class="connection-indicator" id="location-indicator"></div>
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z"/>
+              </svg>
+            </div>
+            <div class="status-text">Location<br>OFF</div>
+          </div>
+
+          <!-- SIM Status -->
+          <div class="status-item sim-status" id="sim-status">
+            <div class="connection-indicator" id="sim-indicator"></div>
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M19,2H9A2,2 0 0,0 7,4V6H5V8H7V10H5V12H7V14H5V16H7V18H5V20H19A2,2 0 0,0 21,18V4A2,2 0 0,0 19,2M11,4H17V18H11V4Z"/>
+              </svg>
+            </div>
+            <div class="status-text">SIM<br>Active</div>
+          </div>
+
+          <!-- Network Status -->
+          <div class="status-item network-status" id="network-status">
+            <div class="connection-indicator" id="network-indicator"></div>
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M1,9L3,11H5V13H3V15H5V17H3V19H5V21H7V19H9V21H11V19H13V21H15V19H17V21H19V19H21V17H19V15H21V13H19V11H21V9H19V7H17V9H15V7H13V9H11V7H9V9H7V7H5V9H3V11H1V9M15,15H17V17H15V15M11,15H13V17H11V15M7,15H9V17H7V15M15,11H17V13H15V11M11,11H13V13H11V11M7,11H9V13H7V11Z"/>
+              </svg>
+            </div>
+            <div class="status-text">Network<br>4G</div>
+          </div>
+
+          <!-- Account Status -->
+          <div class="status-item account-status" id="account-status">
+            <div class="connection-indicator" id="account-indicator"></div>
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+              </svg>
+            </div>
+            <div class="status-text">Account<br><span id="account-text">Signed Out</span></div>
+          </div>
+
+          <!-- Internet Status -->
+          <div class="status-item internet-status" id="internet-status">
+            <div class="connection-indicator" id="internet-indicator"></div>
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M16.36,14C17.65,13.08 18.85,11.45 19.07,10H4.93C5.15,11.45 6.35,13.08 7.64,14C6.35,14.92 5.15,16.55 4.93,18H19.07C18.85,16.55 17.65,14.92 16.36,14M12,18A2,2 0 0,0 10,20H14A2,2 0 0,0 12,18M12,2A8,8 0 0,0 4,10H20A8,8 0 0,0 12,2Z"/>
+              </svg>
+            </div>
+            <div class="status-text">Internet<br>Connected</div>
+          </div>
+
+          <!-- Hotspot Status -->
+          <div class="status-item hotspot-status" id="hotspot-status">
+            <div class="connection-indicator" id="hotspot-indicator"></div>
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M3.53,12.29C4.24,10.25 5.54,8.46 7.27,7.2C6.87,8.76 7.17,10.67 8.47,12.29C7.17,13.91 6.87,15.82 7.27,17.38C5.54,16.12 4.24,14.33 3.53,12.29M12,4C8.07,4 4.55,6.13 2.63,9.47C3.21,10.46 4,11.31 5,12C4,12.69 3.21,13.54 2.63,14.53C4.55,17.87 8.07,20 12,20C15.93,20 19.45,17.87 21.37,14.53C20.79,13.54 20,12.69 19,12C20,11.31 20.79,10.46 21.37,9.47C19.45,6.13 15.93,4 12,4Z"/>
+              </svg>
+            </div>
+            <div class="status-text">Hotspot<br>OFF</div>
+          </div>
+
+          <!-- Storage Status -->
+          <div class="status-item storage-status" id="storage-status">
+            <div class="connection-indicator" id="storage-indicator"></div>
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M2,6H4V18H2V6M5,6H6V18H5V6M7,6H22V9H7V6M7,18H22V15H7V18Z"/>
+              </svg>
+            </div>
+            <div class="status-text">Storage<br><span id="storage-level">60%</span></div>
+          </div>
+
+          <!-- VPN Status -->
+          <div class="status-item vpn-status" id="vpn-status">
+            <div class="connection-indicator" id="vpn-indicator"></div>
+            <div class="status-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M19,5V19H5V5H19M21,3H3V21H21V3M12,17A1.5,1.5 0 0,1 10.5,15.5A1.5,1.5 0 0,1 12,14A1.5,1.5 0 0,1 13.5,15.5A1.5,1.5 0 0,1 12,17M15,12H13.5V9H10.5V12H9L12,7L15,12Z"/>
+              </svg>
+            </div>
+            <div class="status-text">VPN<br>OFF</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IoT Smartphone -->
+  <div class="iot-smartphone" id="iot-smartphone">
+    <div class="smartphone-body">
+      <div class="smartphone-close" id="smartphone-close">×</div>
+      <div class="smartphone-screen">
+        <div class="smartphone-info">
+          <div><span>Device:</span> Smartphone</div>
+          <div><span>Status:</span> Connected</div>
+          <div><span>Battery:</span> <span id="phone-battery">85%</span></div>
+          <div><span>Network:</span> 4G</div>
+          <div><span>WiFi:</span> Connected</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IoT Router -->
+  <div class="iot-router" id="iot-router">
+    <div class="router-base"></div>
+    <div class="router-body">
+      <div class="router-antennas">
+        <div class="router-antenna"></div>
+        <div class="router-antenna"></div>
+      </div>
+      <div class="router-close" id="router-close">×</div>
+      <div class="router-screen">
+        <div class="router-info">
+          <div><span>Router:</span> Online</div>
+          <div><span>WiFi:</span> 2.4GHz & 5GHz</div>
+          <div><span>Connected Devices:</span> 3</div>
+          <div><span>Signal Strength:</span> Strong</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <!-- IoT Globe (replacing browser) -->
+  <div class="iot-globe" id="iot-globe">
+    <div class="globe-container">
+      <div class="globe-sphere">
+        <div class="globe-meridian"></div>
+        <div class="globe-meridian"></div>
+        <div class="globe-meridian"></div>
+        <div class="globe-meridian"></div>
+        <div class="globe-continent"></div>
+        <div class="globe-continent"></div>
+        <div class="globe-continent"></div>
+      </div>
+      <div class="globe-close" id="globe-close">×</div>
+    </div>
+  </div>
+  
+  <!-- Browser Interface -->
+    <div class="browser" id="browser">
+        <div class="browser-header">
+           <div class="browser-close" id="browser-close">×</div>
+            <div class="browser-controls">
+                <button class="browser-btn minimize-btn"></button>
+                <button class="browser-btn maximize-btn"></button>
+            </div>
+
+            <div class="address-bar">
+                <div class="url-segments">
+                    <span class="url-segment protocol">https://</span>
+                    <span class="url-segment subdomain">www.</span>
+                    <span class="url-segment domain">hostinger.com</span>
+                    <span class="url-segment path">/tutorials/what-is-...</span>
+                </div>
+            </div>
+
+            <div class="nav-controls">
+                <button class="nav-btn">+</button>
+                <button class="nav-btn">⋯</button>
+            </div>
+        </div>
+
+        <div class="browser-content">
+            <div class="content-visual">
+                <div class="domain-visual">
+                    <div class="domain-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z"/>
+                        </svg>
+                    </div>
+                    <div class="domain-info">
+                        <h3>Domain Name Tutorial</h3>
+                        <p>hostinger.com/tutorials/what-is-a-domain-name</p>
+                    </div>
+                </div>
+
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span class="status-text">Connection Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+  <script src="script.js"></script>
+</body>
+</html>
