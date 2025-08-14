@@ -216,40 +216,6 @@ const getRelatedVideos = async (videoId) => {
     });
 }
 
-// Function to get song lyrics (using multiple APIs as fallback)
-const getLyrics = async (query) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let response = {}
-            
-            // Try to parse artist and song from query
-            const { artist, song } = parseArtistAndSong(query);
-            
-            // Try multiple lyrics APIs
-            const lyricsResult = await tryMultipleLyricsAPIs(artist, song, query);
-            
-            if (lyricsResult) {
-                response.result = {
-                    title: lyricsResult.title || song || query,
-                    artist: lyricsResult.artist || artist || 'Unknown',
-                    album: lyricsResult.album || null,
-                    lyrics: lyricsResult.lyrics ? lyricsResult.lyrics.substring(0, 300) : null, // Limited for copyright
-                    thumbnail: lyricsResult.thumbnail || null,
-                    url: lyricsResult.url || null,
-                    source: lyricsResult.source || 'Multiple sources'
-                };
-                resolve(response);
-            } else {
-                response.error = 'No lyrics found for this song';
-                reject(response);
-            }
-
-        } catch (err) {
-            console.log(`API getLyrics - ${err.message}`);
-            reject({ error: 'There was an error searching for lyrics.' });
-        }
-    });
-}
 
 // Helper function to parse artist and song from query
 const parseArtistAndSong = (query) => {
@@ -355,28 +321,6 @@ const tryLyristAPI = async (artist, song) => {
     return null;
 }
 
-// YouTube Music search as fallback
-const tryYouTubeMusicSearch = async (query) => {
-    try {
-        const searchResults = await Youtube.search(query + ' lyrics', { limit: 1, type: 'video' });
-        
-        if (searchResults && searchResults.length > 0) {
-            const video = searchResults[0];
-            return {
-                title: video.title,
-                artist: video.channel ? video.channel.name : 'Unknown',
-                lyrics: null, // We don't extract lyrics from video description for copyright reasons
-                thumbnail: video.thumbnail ? video.thumbnail.url : null,
-                url: `https://youtube.com/watch?v=${video.id}`,
-                source: 'YouTube Music'
-            };
-        }
-    } catch (error) {
-        throw new Error('YouTube Music search failed');
-    }
-    
-    return null;
-}
 
 // Function to get YouTube video in MP4 format
 const getYoutubeMP4 = async (text, progressCallback) => {  
