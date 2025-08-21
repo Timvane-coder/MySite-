@@ -1,0 +1,249 @@
+// Spreadsheet handler functions
+const handleSpreadsheetStart = async (sock: any, from: string) => {
+    const sendMessageWithTyping = async (msg: AnyMessageContent) => {
+        await sock.presenceSubscribe(from);
+        await delay(500);
+        await sock.sendPresenceUpdate('composing', from);
+        await delay(1500);
+        await sock.sendPresenceUpdate('paused', from);
+        await sock.sendMessage(from, msg);
+    };
+
+    const session = getUserSession(from);
+    session.awaitingSpreadsheetType = true;
+    session.lastActivity = Date.now();
+
+    const spreadsheetMenu = `📊 *Spreadsheet Calculator Menu*
+
+Choose a calculation type:
+1. 📈 *Betting Analysis* - Comprehensive betting probability
+2. 📉 *Linear Function* - Analyze y = mx + b
+3. 🔄 *Custom Linear* - Parse custom linear equation
+4. 📐 *Quadratic Formula* - Solve ax² + bx + c = 0
+5. 🔄 *Custom Quadratic* - Parse custom quadratic equation
+6. 💰 *Compound Interest* - Calculate future value
+7. 🛒 *Shopping List* - Comprehensive shopping list with calculations
+8. 🛍️ *Custom Shopping* - Custom shopping list with your items
+
+Reply with number (1-8) or type:
+• bet_analysis
+• linearfunction
+• customlinear
+• quadraticformula
+• customquadratic
+• compoundinterest
+• shopping_list
+• custom_shopping
+
+❌ Reply "cancel" to exit`;
+
+    await sendMessageWithTyping({ text: spreadsheetMenu }, from);
+}
+
+const handleSpreadsheetType = async (sock: any, from: string, text: string) => {
+    const sendMessageWithTyping = async (msg: AnyMessageContent) => {
+        await sock.presenceSubscribe(from);
+        await delay(500);
+        await sock.sendPresenceUpdate('composing', from);
+        await delay(1500);
+        await sock.sendPresenceUpdate('paused', from);
+        await sock.sendMessage(from, msg);
+    };
+
+    const session = getUserSession(from);
+    const cleanText = text.toLowerCase().trim();
+
+    const typeMap = {
+        '1': 'bet_analysis',
+        '2': 'linearfunction',
+        '3': 'customlinear',
+        '4': 'quadraticformula',
+        '5': 'customquadratic',
+        '6': 'compoundinterest',
+        '7': 'shopping_list',
+        '8': 'custom_shopping',
+        'bet_analysis': 'bet_analysis',
+        'betting': 'bet_analysis',
+        'linearfunction': 'linearfunction',
+        'linear': 'linearfunction',
+        'customlinear': 'customlinear',
+        'quadraticformula': 'quadraticformula',
+        'quadratic': 'quadraticformula',
+        'customquadratic': 'customquadratic',
+        'compoundinterest': 'compoundinterest',
+        'interest': 'compoundinterest',
+        'shopping_list': 'shopping_list',
+        'shopping': 'shopping_list',
+        'custom_shopping': 'custom_shopping',
+        'customshop': 'custom_shopping'
+    };
+
+    const selectedType = typeMap[cleanText];
+
+    if (selectedType) {
+        session.spreadsheetType = selectedType;
+        session.awaitingSpreadsheetType = false;
+        session.awaitingSpreadsheetParams = true;
+        session.lastActivity = Date.now();
+
+        let paramsPrompt = `📝 *Enter parameters for ${selectedType.toUpperCase()}:*\n\n`;
+
+        switch (selectedType) {
+            case 'bet_analysis':
+                paramsPrompt += `Format: betAmount:100, odds:2.5, oddsFormat:decimal, winProbability:0.45, bankroll:1000\n\nExample: betAmount:50, odds:1.8, oddsFormat:decimal, winProbability:0.55, bankroll:500\n\n❌ Reply "cancel" to exit`;
+                break;
+            case 'linearfunction':
+                paramsPrompt += `Format: m:2, b:3\n\nExample: m:1.5, b:-2\n\n❌ Reply "cancel" to exit`;
+                break;
+            case 'customlinear':
+                paramsPrompt += `Format: equation:y=2x+3\n\nExample: equation:3x - y = 6\n\n❌ Reply "cancel" to exit`;
+                break;
+            case 'quadraticformula':
+                paramsPrompt += `Format: a:1, b:-5, c:6\n\nExample: a:2, b:3, c:-4\n\n❌ Reply "cancel" to exit`;
+                break;
+            case 'customquadratic':
+                paramsPrompt += `Format: equation:y=x^2-4x+3\n\nExample: equation:2x^2 + 3x - 4 = 0\n\n❌ Reply "cancel" to exit`;
+                break;
+            case 'compoundinterest':
+                paramsPrompt += `Format: P:1000, r:0.05, n:12, t:5\n\nExample: P:5000, r:0.03, n:4, t:10\n\n❌ Reply "cancel" to exit`;
+                break;
+            case 'shopping_list':
+                paramsPrompt += `Format: items:[{"name":"Rice","quantity":2,"unitPrice":12.00}], currency:USD, taxRate:0.08, discountRate:0.05\n\nExample: items:[{"name":"Rice","quantity":2,"unitPrice":12.00},{"name":"Oil","quantity":3,"unitPrice":5.00}], currency:USD\n\nOR use text format:\nRice | 2 | 12.00\nOil | 3 | 5.00\n\n❌ Reply "cancel" to exit`;
+                break;
+            case 'custom_shopping':
+                paramsPrompt += `Format: itemsData:[{"name":"Rice","quantity":2,"unitPrice":12.00,"category":"Grains"}], currency:USD, taxRate:0.08, discountRate:0.05\n\nExample: itemsData:[{"name":"Rice","quantity":2,"unitPrice":12.00,"category":"Grains"},{"name":"Oil","quantity":3,"unitPrice":5.00,"category":"Cooking"}], currency:USD\n\nOR use text format:\nRice | 2 | 12.00 | Grains\nOil | 3 | 5.00 | Cooking\n\n❌ Reply "cancel" to exit`;
+                break;
+        }
+
+        await sendMessageWithTyping({ text: paramsPrompt }, from);
+    } else if (cleanText === 'cancel') {
+        resetUserSession(from);
+        await sendMessageWithTyping({ text: '❌ Spreadsheet operation cancelled.' }, from);
+    } else {
+        await sendMessageWithTyping({ text: '❌ Invalid selection. Please choose 1-8 or a valid type.' }, from);
+    }
+}
+
+const parseParamsString = (paramsStr: string): any => {
+    const params: any = {};
+    const pairs = paramsStr.split(',');
+
+    pairs.forEach(pair => {
+        const [key, value] = pair.split(':').map(s => s.trim());
+        if (key && value) {
+            try {
+                params[key] = JSON.parse(value); // Try parsing as JSON for arrays/objects
+            } catch (e) {
+                params[key] = isNaN(parseFloat(value)) ? value : parseFloat(value); // Fallback to string or number
+            }
+        }
+    });
+
+    return params;
+}
+
+const handleSpreadsheetParams = async (sock: any, from: string, text: string) => {
+    const sendMessageWithTyping = async (msg: AnyMessageContent) => {
+        await sock.presenceSubscribe(from);
+        await delay(500);
+        await sock.sendPresenceUpdate('composing', from);
+        await delay(1500);
+        await sock.sendPresenceUpdate('paused', from);
+        await sock.sendMessage(from, msg);
+    };
+
+    const session = getUserSession(from);
+    const cleanText = text.toLowerCase().trim();
+
+    if (cleanText === 'cancel') {
+        resetUserSession(from);
+        await sendMessageWithTyping({ text: '❌ Spreadsheet operation cancelled.' }, from);
+        return;
+    }
+
+    const params = parseParamsString(text);
+    session.spreadsheetParams = params;
+    session.awaitingSpreadsheetParams = false;
+    session.lastActivity = Date.now();
+
+    let isValid = true;
+    switch (session.spreadsheetType) {
+        case 'bet_analysis':
+            isValid = params.betAmount && params.odds && params.oddsFormat && params.winProbability && params.bankroll;
+            break;
+        case 'linearfunction':
+            isValid = params.m !== undefined && params.b !== undefined;
+            break;
+        case 'customlinear':
+            isValid = params.equation;
+            break;
+        case 'quadraticformula':
+            isValid = params.a !== undefined && params.b !== undefined && params.c !== undefined;
+            break;
+        case 'customquadratic':
+            isValid = params.equation;
+            break;
+        case 'compoundinterest':
+            isValid = params.P !== undefined && params.r !== undefined && params.n !== undefined && params.t !== undefined;
+            break;
+        case 'shopping_list':
+            isValid = params.items && Array.isArray(params.items) && params.items.length > 0;
+            if (params.currency) session.spreadsheetParams.currency = params.currency;
+            if (params.taxRate) session.spreadsheetParams.taxRate = parseFloat(params.taxRate);
+            if (params.discountRate) session.spreadsheetParams.discountRate = parseFloat(params.discountRate);
+            break;
+        case 'custom_shopping':
+            isValid = params.itemsData && Array.isArray(params.itemsData) && params.itemsData.length > 0;
+            if (params.currency) session.spreadsheetParams.currency = params.currency;
+            if (params.taxRate) session.spreadsheetParams.taxRate = parseFloat(params.taxRate);
+            if (params.discountRate) session.spreadsheetParams.discountRate = parseFloat(params.discountRate);
+            break;
+    }
+
+    if (!isValid) {
+        await sendMessageWithTyping({ text: '❌ Invalid or missing parameters. Please check the format and try again.' }, from);
+        session.awaitingSpreadsheetParams = true;
+        return;
+    }
+
+    await sendMessageWithTyping({ text: '🔄 Processing your calculation...' }, from);
+
+    try {
+        const calc = new SpreadsheetCalculator();
+        const spreadsheet = calc.generateSpreadsheet(session.spreadsheetType, session.spreadsheetParams);
+
+        const pngPath = createTempFilePath('png');
+        const xlsxPath = createTempFilePath('xlsx');
+
+        calc.renderSpreadsheet(pngPath);
+        calc.exportToXLSX(xlsxPath);
+
+        await sock.sendMessage(from, {
+            image: fs.readFileSync(pngPath),
+            caption: `📊 Spreadsheet for ${session.spreadsheetType.toUpperCase()}`
+        });
+
+        await sock.sendMessage(from, {
+            document: fs.readFileSync(xlsxPath),
+            mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            fileName: `${session.spreadsheetType}_spreadsheet.xlsx`
+        });
+
+        const stats = calc.generateStatistics();
+        const statsText = `📈 *Calculation Statistics:*\n\n${stats.join('\n')}`;
+        await sendMessageWithTyping({ text: statsText }, from);
+
+        await new Promise(resolve => setTimeout(() => {
+            cleanupTempFile(pngPath);
+            cleanupTempFile(xlsxPath);
+            resolve(null);
+        }, 5000));
+
+        resetUserSession(from);
+        await sendMessageWithTyping({ text: '✅ Calculation complete! Start a new one with "spreadsheet".' }, from);
+    } catch (error) {
+        console.error('Error processing spreadsheet:', error);
+        await sendMessageWithTyping({ text: `❌ Error processing calculation: ${error.message}. Please try again or use "cancel" to exit.` }, from);
+        resetUserSession(from);
+    }
+}
