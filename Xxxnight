@@ -1,0 +1,616 @@
+import { Boom } from '@hapi/boom'
+import NodeCache from '@cacheable/node-cache'
+import readline from 'readline'
+import makeWASocket, {
+    AnyMessageContent,
+    delay,
+    DisconnectReason,
+    fetchLatestBaileysVersion,
+    makeCacheableSignalKeyStore,
+    useMultiFileAuthState,
+    WAMessageContent,
+    WAMessageKey,
+    downloadMediaMessage,
+    proto
+} from '../src'
+import * as QRCode from 'qrcode-terminal'
+import P from 'pino'
+import fs from 'fs'
+import path from 'path'
+import axios from 'axios'
+import https from 'https'
+
+// Import YouTube functions
+import {
+    getYoutubeVideoInfo,
+    getYoutubeMP4,
+    getYoutubeMP3,
+    getRelatedVideos,
+    getYoutubeTrending,
+    getYoutubeThumbnail
+} from '../lib/youtube.js'
+
+// Import GraphingCalculatorGame
+import GraphingCalculatorGame from './graphingCalculatorGame.js'
+
+// Logger setup
+const logger = P({ timestamp: () => `,"time":"${new Date().toJSON()}"` }, P.destination('./wa-logs.txt'))
+logger.level = 'trace'
+
+// Enhanced User session interface with Calculator support
+interface UserSession {
+    // YouTube session states
+    awaitingYouTubeQuery: boolean
+    youtubeContext: any
+    awaitingYouTubeAction: boolean
+    awaitingRelatedSelection: boolean
+
+    // Calculator session states
+    awaitingCalculatorInput: boolean
+    calculatorInstance: GraphingCalculatorGame | null
+    calculatorMode: 'equation' | 'triangle' | 'vector' | 'command' | null
+    calculatorContext: any
+
+    // Session metadata
+    lastActivity: number
+    sessionId: string
+    createdAt: number
+}
+
+// Enhanced User session management with Calculator support
+const userSessions = new Map<string, UserSession>()
+
+const createUserSession = (phoneNumber: string): UserSession => {
+    return {
+        // YouTube session states
+        awaitingYouTubeQuery: false,
+        youtubeContext: null,
+        awaitingYouTubeAction: false,
+        awaitingRelatedSelection: false,
+        
+        // Calculator session states
+        awaitingCalculatorInput: false,
+        calculatorInstance: null,
+        calculatorMode: null,
+        calculatorContext: null,
+        
+        // Session metadata
+        lastActivity: Date.now(),
+        sessionId: `${phoneNumber}_${Date.now()}`,
+        createdAt: Date.now()
+    }
+}
+
+const getUserSession = (phoneNumber: string): UserSession => {
+    if (!userSessions.has(phoneNumber)) {
+        userSessions.set(phoneNumber, createUserSession(phoneNumber))
+        console.log(`📱 New session created for: ${phoneNumber.slice(-4)}`)
+    }
+    return userSessions.get(phoneNumber)!
+}
+
+const resetUserSession = (phoneNumber: string): void => {
+    const session = getUserSession(phoneNumber)
+
+    // Reset YouTube states
+    session.awaitingYouTubeQuery = false
+    session.youtubeContext = null
+    session.awaitingYouTubeAction = false
+    session.awaitingRelatedSelection = false
+
+    // Reset Calculator states
+    session.awaitingCalculatorInput = false
+    session.calculatorInstance = null
+    session.calculatorMode = null
+    session.calculatorContext = null
+
+    // Update activity
+    session.lastActivity = Date.now()
+
+    console.log(`🔄 Session reset for: ${phoneNumber.slice(-4)}`)
+}
+
+// Directory setup
+const downloadsDir = './downloads'
+const tempDir = './temp'
+
+// Create directories if they don't exist
+if (!fs.existsSync(downloadsDir)) {
+    fs.mkdirSync(downloadsDir, { recursive: true })
+}
+if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true })
+}
+
+const doReplies = process.argv.includes('--do-reply')
+const usePairingCode = process.argv.includes('--use-pairing-code')
+
+// Cache for message retry counts
+const msgRetryCounterCache = new NodeCache()
+
+// Readline interface for input
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+const question = (text: string) => new Promise<string>((resolve) => rl.question(text, resolve))
+
+// Calculator-specific helper functions
+const createTempGraphPath = (type: string, identifier: string): string => {
+    const timestamp = Date.now()
+    const random = Math.random().toString(36).substring(7)
+    return path.join(tempDir, `${type}_${identifier}_${timestamp}_${random}.png`)
+}
+
+const cleanupTempFiles = (filePaths: string[], delay: number = 30000): void => {
+    setTimeout(() => {
+        filePaths.forEach(filePath => {
+            if (fs.existsSync(filePath)) {
+                try {
+                    fs.unlinkSync(filePath)
+                    console.log(`🧹 Cleaned up temp file: ${path.basename(filePath)}`)
+                } catch (error) {
+                    console.error(`❌ Failed to cleanup temp file ${filePath}:`, error)
+                }
+            }
+        })
+    }, delay)
+}
+
+// Calculator session handlers
+const startCalculatorSession = async (sock: any, from: string, sendMessageWithTyping: Function) => {
+    const session = getUserSession(from)
+    
+    // Initialize calculator instance
+    session.calculatorInstance = new GraphingCalculatorGame()
+    session.awaitingCalculatorInput = true
+    session.calculatorMode = 'command'
+    session.lastActivity = Date.now()
+
+    const welcomeMessage = `🧮 *Advanced Graphing Calculator*
+
+📊 *Available Operations:*
+
+📈 *Equations:* Enter any mathematical function
+• Linear: y=2x+3, y=-x+5
+• Quadratic: y=x**2+2x+1, y=-2x**2+4x
+• Trigonometric: y=sin(x), y=cos(2x)
+• Exponential: y=2**x, y=e**(-x)
+• And many more!
+
+🔺 *Triangles:* Analyze geometric properties
+• triangle A(0,0) B(4,0) C(2,3)
+• triangle (1,1) (5,1) (3,4)
+• Complete geometric analysis included
+
+➡️ *Vectors:* Vector operations and analysis
+• vector A(1,2) B(5,4) - displacement
+• vector <3,4> - component form
+• vectors A(1,1) B(4,3) C(6,5) - multiple vectors
+
+🎛️ *Commands:*
+• *formulas* - Show all available functions
+• *help* - Calculator help menu
+• *status* - Current calculator status
+• *history* - Show equation/triangle/vector history
+• *clear* - Clear all data
+• *exit* - Exit calculator
+
+💡 *Examples:*
+• y=x**2 (parabola)
+• triangle A(0,0) B(3,0) C(1.5,2.6)
+• vector A(2,1) B(5,4)
+
+🎯 *Just type your equation, triangle, or vector to get started!*
+📊 *Each input generates detailed analysis + graph image*
+
+✨ Reply with your mathematical input or command:`
+
+    await sendMessageWithTyping({ text: welcomeMessage }, from)
+}
+
+const handleCalculatorInput = async (sock: any, from: string, input: string, sendMessageWithTyping: Function): Promise<boolean> => {
+    const session = getUserSession(from)
+    
+    if (!session.calculatorInstance || !session.awaitingCalculatorInput) {
+        return false
+    }
+
+    const cleanInput = input.trim().toLowerCase()
+    
+    // Handle calculator commands first
+    if (cleanInput === 'exit' || cleanInput === 'quit') {
+        session.awaitingCalculatorInput = false
+        session.calculatorInstance = null
+        session.calculatorMode = null
+        
+        await sendMessageWithTyping({
+            text: '👋 Calculator session ended. Type *calculator* to start again.'
+        }, from)
+        return true
+    }
+
+    if (cleanInput === 'formulas') {
+        const formulasText = generateFormulasText()
+        await sendMessageWithTyping({ text: formulasText }, from)
+        return true
+    }
+
+    if (cleanInput === 'help') {
+        const helpText = generateCalculatorHelpText()
+        await sendMessageWithTyping({ text: helpText }, from)
+        return true
+    }
+
+    if (cleanInput === 'status') {
+        const statusText = generateCalculatorStatus(session.calculatorInstance)
+        await sendMessageWithTyping({ text: statusText }, from)
+        return true
+    }
+
+    if (cleanInput === 'history') {
+        const historyText = generateCalculatorHistory(session.calculatorInstance)
+        await sendMessageWithTyping({ text: historyText }, from)
+        return true
+    }
+
+    if (cleanInput === 'clear') {
+        session.calculatorInstance = new GraphingCalculatorGame()
+        await sendMessageWithTyping({
+            text: '🗑️ Calculator cleared! All equations, triangles, and vectors removed.'
+        }, from)
+        return true
+    }
+
+    // Process mathematical input
+    await sendMessageWithTyping({
+        text: '🔄 Processing your input... Generating analysis and graph...'
+    }, from)
+
+    try {
+        let result: CalculatorResult | null = null
+
+        // Try to parse as vector first
+        if (input.toLowerCase().includes('vector')) {
+            result = await processVectorInput(session.calculatorInstance, input, from)
+        }
+        // Then try triangle
+        else if (input.toLowerCase().includes('triangle')) {
+            result = await processTriangleInput(session.calculatorInstance, input, from)
+        }
+        // Finally try equation
+        else {
+            result = await processEquationInput(session.calculatorInstance, input, from)
+        }
+
+        if (result && result.success) {
+            // Send analysis text
+            await sendMessageWithTyping({ text: result.analysisText }, from)
+            
+            // Send graph image if available
+            if (result.imagePath && fs.existsSync(result.imagePath)) {
+                await sock.sendMessage(from, {
+                    image: fs.readFileSync(result.imagePath),
+                    caption: `📊 ${result.type} Graph Generated\n🎯 ${result.description}`
+                })
+
+                // Schedule cleanup
+                cleanupTempFiles([result.imagePath])
+            }
+
+            session.lastActivity = Date.now()
+        } else {
+            await sendMessageWithTyping({
+                text: result?.error || '❌ Invalid input! Please check your format and try again.\n\n💡 Type *help* for examples or *formulas* for available functions.'
+            }, from)
+        }
+
+    } catch (error) {
+        console.error('Calculator processing error:', error)
+        await sendMessageWithTyping({
+            text: '❌ Error processing your input. Please check the format and try again.'
+        }, from)
+    }
+
+    return true
+}
+
+// Calculator processing functions
+interface CalculatorResult {
+    success: boolean
+    type: 'equation' | 'triangle' | 'vector'
+    analysisText: string
+    imagePath?: string
+    description: string
+    error?: string
+}
+
+const processEquationInput = async (calculator: GraphingCalculatorGame, input: string, userPhone: string): Promise<CalculatorResult> => {
+    try {
+        // Create a temporary file path
+        const tempImagePath = createTempGraphPath('equation', userPhone.slice(-4))
+        
+        // Mock the calculator's saveIndividualGraph method to use our temp path
+        const originalSaveMethod = calculator.saveIndividualGraph
+        calculator.saveIndividualGraph = async (equation: string, calc: any) => {
+            const buffer = await calc.buffer('image/png')
+            fs.writeFileSync(tempImagePath, buffer)
+            console.log(`📊 Equation graph saved to temp: ${path.basename(tempImagePath)}`)
+        }
+
+        const success = calculator.addEquation(input)
+        
+        // Restore original method
+        calculator.saveIndividualGraph = originalSaveMethod
+
+        if (success) {
+            // Generate analysis text
+            const analysisText = generateEquationAnalysis(calculator, input)
+            
+            return {
+                success: true,
+                type: 'equation',
+                analysisText,
+                imagePath: tempImagePath,
+                description: `Mathematical function: ${input}`
+            }
+        } else {
+            return {
+                success: false,
+                type: 'equation',
+                analysisText: '',
+                description: '',
+                error: '❌ Invalid equation format! Please check your syntax.\n\n💡 Examples: y=x**2, y=sin(x), y=2x+3'
+            }
+        }
+    } catch (error) {
+        return {
+            success: false,
+            type: 'equation',
+            analysisText: '',
+            description: '',
+            error: `❌ Error processing equation: ${error}`
+        }
+    }
+}
+
+const processTriangleInput = async (calculator: GraphingCalculatorGame, input: string, userPhone: string): Promise<CalculatorResult> => {
+    try {
+        const tempImagePath = createTempGraphPath('triangle', userPhone.slice(-4))
+        
+        // Mock the triangle save method
+        const originalSaveMethod = calculator.saveIndividualTriangle
+        calculator.saveIndividualTriangle = async (triangleProps: any) => {
+            const buffer = await calculator.createTriangleGraph(triangleProps)
+            fs.writeFileSync(tempImagePath, buffer)
+            console.log(`🔺 Triangle graph saved to temp: ${path.basename(tempImagePath)}`)
+        }
+
+        const success = calculator.addTriangle(input)
+        
+        // Restore original method
+        calculator.saveIndividualTriangle = originalSaveMethod
+
+        if (success) {
+            const analysisText = generateTriangleAnalysis(calculator)
+            
+            return {
+                success: true,
+                type: 'triangle',
+                analysisText,
+                imagePath: tempImagePath,
+                description: `Geometric triangle analysis`
+            }
+        } else {
+            return {
+                success: false,
+                type: 'triangle',
+                analysisText: '',
+                description: '',
+                error: '❌ Invalid triangle format!\n\n💡 Examples:\n• triangle A(0,0) B(4,0) C(2,3)\n• triangle (1,1) (5,1) (3,4)'
+            }
+        }
+    } catch (error) {
+        return {
+            success: false,
+            type: 'triangle',
+            analysisText: '',
+            description: '',
+            error: `❌ Error processing triangle: ${error}`
+        }
+    }
+}
+
+const processVectorInput = async (calculator: GraphingCalculatorGame, input: string, userPhone: string): Promise<CalculatorResult> => {
+    try {
+        const tempImagePath = createTempGraphPath('vector', userPhone.slice(-4))
+        
+        // Mock the vector save method
+        const originalSaveMethod = calculator.saveVectorGraph
+        calculator.saveVectorGraph = async (vectorData: any) => {
+            const canvas = calculator.calculator.createCanvas(480, 480)
+            const ctx = canvas.getContext('2d')
+            calculator.drawVectorAnalysis(ctx, vectorData)
+            const buffer = canvas.toBuffer('image/png')
+            fs.writeFileSync(tempImagePath, buffer)
+            console.log(`➡️ Vector graph saved to temp: ${path.basename(tempImagePath)}`)
+        }
+
+        const success = calculator.addVector(input)
+        
+        // Restore original method
+        calculator.saveVectorGraph = originalSaveMethod
+
+        if (success) {
+            const analysisText = generateVectorAnalysis(calculator)
+            
+            return {
+                success: true,
+                type: 'vector',
+                analysisText,
+                imagePath: tempImagePath,
+                description: `Vector analysis and operations`
+            }
+        } else {
+            return {
+                success: false,
+                type: 'vector',
+                analysisText: '',
+                description: '',
+                error: '❌ Invalid vector format!\n\n💡 Examples:\n• vector A(1,2) B(5,4)\n• vector <3,4>\n• vectors A(1,1) B(4,3) C(6,5)'
+            }
+        }
+    } catch (error) {
+        return {
+            success: false,
+            type: 'vector',
+            analysisText: '',
+            description: '',
+            error: `❌ Error processing vector: ${error}`
+        }
+    }
+}
+
+// Analysis text generators
+const generateEquationAnalysis = (calculator: GraphingCalculatorGame, equation: string): string => {
+    const description = calculator.getFormulaDescription(equation)
+    
+    return `📊 *Equation Analysis*
+
+🔢 *Function:* ${equation}
+📝 *Description:* ${description}
+📈 *Graph Generated:* ✅
+🎯 *Equation #:* ${calculator.equationCounter}
+
+✨ *Key Features:*
+• Coordinate points marked
+• Mathematical analysis included
+• Individual graph created
+
+💡 *Tip:* Try more equations like y=sin(x), y=x**3, y=2**x`
+}
+
+const generateTriangleAnalysis = (calculator: GraphingCalculatorGame): string => {
+    const lastTriangle = calculator.triangleHistory[calculator.triangleHistory.length - 1]
+    if (!lastTriangle) return "No triangle data found"
+
+    const props = lastTriangle.properties
+    
+    return `🔺 *Triangle Analysis*
+
+📍 *Vertices:*
+• A: (${props.vertices.A.x}, ${props.vertices.A.y})
+• B: (${props.vertices.B.x}, ${props.vertices.B.y})
+• C: (${props.vertices.C.x}, ${props.vertices.C.y})
+
+📏 *Side Lengths:*
+• AB = ${props.sides.AB.toFixed(3)} units
+• BC = ${props.sides.BC.toFixed(3)} units
+• CA = ${props.sides.CA.toFixed(3)} units
+
+📐 *Angles:*
+• ∠A = ${props.angles.A.toFixed(1)}°
+• ∠B = ${props.angles.B.toFixed(1)}°
+• ∠C = ${props.angles.C.toFixed(1)}°
+
+📊 *Properties:*
+• Area: ${props.area.toFixed(3)} sq units
+• Perimeter: ${props.perimeter.toFixed(3)} units
+• Type: ${props.classifications.full} Triangle
+
+🎯 *Triangle #:* ${calculator.triangleCounter}`
+}
+
+const generateVectorAnalysis = (calculator: GraphingCalculatorGame): string => {
+    const lastVector = calculator.vectorHistory[calculator.vectorHistory.length - 1]
+    if (!lastVector) return "No vector data found"
+
+    const vectorData = lastVector.data
+    const vector = vectorData.vectors[0]
+    
+    let analysisText = `➡️ *Vector Analysis*
+
+📐 *Components:* <${vector.components.x.toFixed(3)}, ${vector.components.y.toFixed(3)}>
+📏 *Magnitude:* ${vector.magnitude.toFixed(4)} units
+📊 *Direction:* ${vector.direction.angle?.toFixed(1)}°`
+
+    if (vector.direction.bearing) {
+        analysisText += `\n🧭 *Bearing:* ${vector.direction.bearing}`
+    }
+
+    if (vectorData.operations && Object.keys(vectorData.operations).length > 0) {
+        analysisText += `\n\n🔧 *Operations:*`
+        Object.entries(vectorData.operations).forEach(([op, result]) => {
+            if (typeof result === 'object' && result.x !== undefined) {
+                analysisText += `\n• ${op}: <${result.x.toFixed(3)}, ${result.y.toFixed(3)}>`
+            } else if (typeof result === 'number') {
+                analysisText += `\n• ${op}: ${result.toFixed(3)}${op.includes('Angle') ? '°' : ''}`
+            } else if (typeof result === 'boolean') {
+                analysisText += `\n• ${op}: ${result ? '✅ Yes' : '❌ No'}`
+            }
+        })
+    }
+
+    analysisText += `\n\n🎯 *Vector #:* ${calculator.vectorCounter}`
+    return analysisText
+}
+
+const generateFormulasText = (): string => {
+    return `📊 *Mathematical Formulas Reference*
+
+📏 *Linear Functions:*
+• y=2x+3, y=x+1, y=-x+5
+
+📈 *Quadratic Functions:*
+• y=x**2, y=-x**2, y=x**2+2x+1
+
+🌊 *Trigonometric:*
+• y=sin(x), y=cos(x), y=tan(x)
+
+📊 *Exponential:*
+• y=2**x, y=e**x, y=e**(-x)
+
+📉 *Logarithmic:*
+• y=log(x), y=log(x,2)
+
+🔺 *Triangle Examples:*
+• triangle A(0,0) B(4,0) C(2,3)
+• triangle (1,1) (5,1) (3,4)
+
+➡️ *Vector Examples:*
+• vector A(1,2) B(5,4)
+• vector <3,4>
+• vectors A(1,1) B(4,3) C(6,5)
+
+💡 *Just type any equation, triangle, or vector!*`
+}
+
+const generateCalculatorHelpText = (): string => {
+    return `🧮 *Calculator Help*
+
+📊 *Commands:*
+• *formulas* - Show available functions
+• *status* - Calculator statistics  
+• *history* - Show all entries
+• *clear* - Reset calculator
+• *exit* - End session
+
+📈 *Input Examples:*
+• y=x**2+2x+1
+• triangle A(0,0) B(3,0) C(1.5,2.6)
+• vector A(2,1) B(5,4)
+
+✨ *Features:*
+• Real-time graph generation
+• Detailed mathematical analysis
+• Coordinate point marking
+• Geometric property calculations
+• Vector operations
+
+🎯 *Just type your mathematical expression!*`
+}
+
+const generateCalculatorStatus = (calculator: GraphingCalculatorGame): string => {
+    return `📊 *Calculator Status*
+
+📈 *Equations:* ${calculator.equationCounter}
+🔺 *Triangles:* ${calculator.triangleCounter}  
+➡️ *Vectors:* ${calculator.vectorCounter}
+📊 *Total Operations:* ${calculator.equationCounter + calculator.triangleCounter + calculator.vect
