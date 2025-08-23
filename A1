@@ -1,0 +1,525 @@
+import { Boom } from '@hapi/boom'
+import NodeCache from '@cacheable/node-cache'
+import readline from 'readline'
+import makeWASocket, {
+    AnyMessageContent,
+    delay,
+    DisconnectReason,
+    fetchLatestBaileysVersion,
+    makeCacheableSignalKeyStore,
+    useMultiFileAuthState,
+    WAMessageContent,
+    WAMessageKey,
+    downloadMediaMessage,
+    proto
+} from '../src'
+import * as QRCode from 'qrcode-terminal'
+import P from 'pino'
+import fs from 'fs'
+import path from 'path'
+import axios from 'axios'
+import https from 'https'
+import csv from 'csv-parser'
+import fetch from 'node-fetch'
+import { Readable } from 'stream'
+import { createCanvas } from '@napi-rs/canvas';
+import * as math from 'mathjs';
+import XLSX from 'xlsx';
+
+import { SpreadsheetCalculator } from '../lib/spreadsheet.js'
+import { GraphingCalculatorGame } from '../lib/graph.js'
+
+// Import YouTube functions
+import {
+    getYoutubeVideoInfo,
+    getYoutubeMP4,
+    getYoutubeMP3,
+    getRelatedVideos,
+    getYoutubeTrending,
+    getYoutubeThumbnail
+} from '../lib/youtube.js'
+
+// Import Football classes
+import { FootballDataExplorer } from '../lib/football.js'
+
+// Logger setup
+const logger = P({ timestamp: () => `,"time":"${new Date().toJSON()}"` }, P.destination('./wa-logs.txt'))
+logger.level = 'trace'
+
+// User session interface for YouTube, Football, and Graphing functionality
+interface UserSession {
+    // YouTube session states
+    awaitingYouTubeQuery: boolean
+    youtubeContext: any
+    awaitingYouTubeAction: boolean
+    awaitingRelatedSelection: boolean
+
+    // Spreadsheet session states
+    awaitingSpreadsheetType: boolean
+    awaitingSpreadsheetParams: boolean
+    spreadsheetType: string | null
+    spreadsheetParams: any
+
+    // Football session states
+    footballExplorer: FootballDataExplorer | null
+    awaitingFootballInput: boolean
+    pendingResolve: ((value: string) => void) | null
+    outputLines: string[]
+    
+    // Graphing Calculator session states
+    awaitingGraphInput: boolean
+    graphingCalculator: GraphingCalculatorGame | null
+    graphOutputLines: string[]
+    graphPendingResolve: ((value: string) => void) | null
+    
+    lastActivity: number
+    sessionId: string
+    createdAt: number
+}
+
+// Enhanced User session management
+const userSessions = new Map<string, UserSession>()
+const createUserSession = (phoneNumber: string): UserSession => {
+    return {
+        // YouTube session states
+        awaitingYouTubeQuery: false,
+        youtubeContext: null,
+        awaitingYouTubeAction: false,
+        awaitingRelatedSelection: false,
+
+        // Spreadsheet session states
+        awaitingSpreadsheetType: false,
+        awaitingSpreadsheetParams: false,
+        spreadsheetType: null,
+        spreadsheetParams: null,
+
+        // Football session states
+        footballExplorer: null,
+        awaitingFootballInput: false,
+        pendingResolve: null,
+        outputLines: [],
+
+        // Graphing Calculator states
+        awaitingGraphInput: false,
+        graphingCalculator: null,
+        graphOutputLines: [],
+        graphPendingResolve: null,
+        
+        lastActivity: Date.now(),
+        sessionId: `${phoneNumber}_${Date.now()}`,
+        createdAt: Date.now()
+    }
+}
+
+const getUserSession = (phoneNumber: string): UserSession => {
+    if (!userSessions.has(phoneNumber)) {
+        userSessions.set(phoneNumber, createUserSession(phoneNumber))
+        console.log(`📱 New session created for: ${phoneNumber.slice(-4)}`)
+    }
+    return userSessions.get(phoneNumber)!
+}
+
+const resetUserSession = (phoneNumber: string): void => {
+    const session = getUserSession(phoneNumber)
+
+    // Reset YouTube states
+    session.awaitingYouTubeQuery = false
+    session.youtubeContext = null
+    session.awaitingYouTubeAction = false
+    session.awaitingRelatedSelection = false
+
+    // Reset Spreadsheet states
+    session.awaitingSpreadsheetType = false
+    session.awaitingSpreadsheetParams = false
+    session.spreadsheetType = null
+    session.spreadsheetParams = null
+
+    // Reset Football states
+    session.footballExplorer = null
+    session.awaitingFootballInput = false
+    session.pendingResolve = null
+    session.outputLines = []
+
+    // Reset Graphing Calculator states
+    session.awaitingGraphInput = false
+    session.graphingCalculator = null
+    session.graphOutputLines = []
+    session.graphPendingResolve = null
+
+    session.lastActivity = Date.now()
+    console.log(`🔄 Session reset for: ${phoneNumber.slice(-4)}`)
+}
+
+// Directory setup
+const downloadsDir = './downloads'
+const tempDir = './temp'
+if (!fs.existsSync(downloadsDir)) {
+    fs.mkdirSync(downloadsDir, { recursive: true })
+}
+if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true })
+}
+
+const doReplies = process.argv.includes('--do-reply')
+const usePairingCode = process.argv.includes('--use-pairing-code')
+const msgRetryCounterCache = new NodeCache()
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+const question = (text: string) => new Promise<string>((resolve) => rl.question(text, resolve))
+
+const downloadFromUrl = async (url: string, filename?: string): Promise<Buffer> => {
+    try {
+        const response = await axios.get(url, { responseType: 'arraybuffer' })
+        return Buffer.from(response.data)
+    } catch (error) {
+        console.error(`Failed to download from ${url}:`, error)
+        throw error
+    }
+}
+
+const createTempFilePath = (extension: string) => {
+    const timestamp = Date.now()
+    const random = Math.random().toString(36).substring(7)
+    return path.join(tempDir, `${timestamp}_${random}.${extension}`)
+}
+
+const cleanupTempFile = (filePath: string) => {
+    setTimeout(() => {
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath)
+    }, 10000)
+}
+
+const downloadImage = (url: string, filepath: string) => {
+    return new Promise((resolve, reject) => {
+        const file = fs.createWriteStream(filepath)
+        https.get(url, (response) => {
+            response.pipe(file)
+            file.on('finish', () => {
+                file.close()
+                resolve(filepath)
+            })
+        }).on('error', (err) => {
+            fs.unlink(filepath, () => {})
+            reject(err)
+        })
+    })
+}
+
+// Graph-related functions
+const sendGraphImages = async (sock: any, from: string, calculator: GraphingCalculatorGame) => {
+    const tempDir = './temp'
+    
+    if (!fs.existsSync(tempDir)) {
+        return
+    }
+    
+    // Check for new graph files and send them
+    const files = fs.readdirSync(tempDir).filter(file => 
+        file.endsWith('.png') && 
+        (file.includes('equation_') || file.includes('triangle_') || file.includes('vector_'))
+    )
+    
+    for (const file of files) {
+        const filePath = path.join(tempDir, file)
+        
+        try {
+            // Read the image file
+            const imageBuffer = fs.readFileSync(filePath)
+            
+            // Send as image message
+            await sock.sendMessage(from, {
+                image: imageBuffer,
+                caption: `📊 ${file.replace(/_/g, ' ').replace('.png', '')}`
+            })
+            
+            console.log(`📨 Sent graph image: ${file}`)
+            
+            // Clean up the file after sending
+            fs.unlinkSync(filePath)
+            
+        } catch (error) {
+            console.error(`Error sending graph image ${file}:`, error)
+        }
+    }
+}
+
+const processGraphInput = async (sock: any, from: string, input: string) => {
+    const session = getUserSession(from)
+    const calculator = session.graphingCalculator
+    
+    if (!calculator) return
+    
+    const cleanInput = input.trim().toLowerCase()
+    
+    // Handle quit command
+    if (cleanInput === 'quit' || cleanInput === 'exit') {
+        resetUserSession(from)
+        await sendMessageWithTyping({
+            text: '👋 Exited Graphing Calculator. All graph images have been sent!'
+        }, from)
+        return
+    }
+    
+    // Handle help command
+    if (cleanInput === 'help') {
+        await sendMessageWithTyping({
+            text: `🧮 *Graphing Calculator Commands:*\n\n` +
+                  `📊 *Equations:* y=x**2, y=sin(x), y=2x+3\n` +
+                  `🔺 *Triangles:* triangle A(0,0) B(4,0) C(2,3)\n` +
+                  `➡️ *Vectors:* vector A(1,2) B(5,4) or vector <3,4>\n\n` +
+                  `🎛️ *Commands:*\n` +
+                  `• help - Show this menu\n` +
+                  `• graph - Show current graph info\n` +
+                  `• formulas - Show available formulas\n` +
+                  `• history - Show equation/triangle/vector history\n` +
+                  `• status - Show calculator status\n` +
+                  `• clear - Clear all equations/triangles/vectors\n` +
+                  `• undo - Remove last item\n` +
+                  `• theme [name] - Change theme (standard/dark/scientific)\n` +
+                  `• zoom xmin xmax ymin ymax - Set viewing window\n` +
+                  `• quit - Exit calculator\n\n` +
+                  `📁 Graphs are automatically saved and sent!`
+        }, from)
+        return
+    }
+    
+    // Process the input through the graphing calculator
+    session.graphOutputLines = []
+    
+    try {
+        // Store original console.log
+        const originalLog = console.log
+        console.log = (...args) => {
+            session.graphOutputLines.push(args.join(' '))
+        }
+
+        // Try to parse as vector
+        if (input.toLowerCase().includes('vector')) {
+            if (calculator.addVector(input)) {
+                session.graphOutputLines.push("✅ Vector added successfully!")
+            } else {
+                session.graphOutputLines.push("❌ Failed to add vector. Check format.")
+            }
+        }
+        // Try to parse as triangle
+        else if (input.toLowerCase().includes('triangle')) {
+            if (calculator.addTriangle(input)) {
+                session.graphOutputLines.push("✅ Triangle added successfully!")
+            } else {
+                session.graphOutputLines.push("❌ Failed to add triangle. Check format.")
+            }
+        }
+        // Try to parse as equation or command
+        else {
+            if (calculator.addEquation(input)) {
+                session.graphOutputLines.push("✅ Equation added successfully!")
+            } else {
+                // Handle other commands
+                switch (cleanInput) {
+                    case 'graph':
+                        calculator.displayCurrentGraph()
+                        break
+                    case 'formulas':
+                        calculator.displayAllFormulas()
+                        break
+                    case 'history':
+                        console.log("\n📜 Equation History:")
+                        calculator.equationHistory.forEach(eq => console.log(`  ${eq}`))
+                        console.log("\n🔺 Triangle History:")
+                        calculator.triangleHistory.forEach(tri => console.log(`  ${tri.id}. ${tri.input}`))
+                        console.log("\n➡️ Vector History:")
+                        calculator.vectorHistory.forEach(vec => console.log(`  ${vec.id}. ${vec.input}`))
+                        break
+                    case 'status':
+                        console.log(`\n📊 ${calculator.getCalculatorStatus()}`)
+                        break
+                    case 'clear':
+                        calculator.calculator.clearEquations()
+                        calculator.equationHistory = []
+                        calculator.triangleHistory = []
+                        calculator.vectorHistory = []
+                        calculator.equationCounter = 0
+                        calculator.triangleCounter = 0
+                        calculator.vectorCounter = 0
+                        console.log("🗑️ All equations, triangles and vectors cleared!")
+                        break
+                    case 'undo':
+                        if (calculator.equationHistory.length === 0 && calculator.triangleHistory.length === 0 && calculator.vectorHistory.length === 0) {
+                            console.log("❌ Nothing to undo!")
+                        } else {
+                            const lastEquationId = calculator.equationHistory.length > 0 ? parseInt(calculator.equationHistory[calculator.equationHistory.length - 1].split('.')[0]) : 0;
+                            const lastTriangleId = calculator.triangleHistory.length > 0 ? calculator.triangleHistory[calculator.triangleHistory.length - 1].id : 0;
+                            const lastVectorId = calculator.vectorHistory.length > 0 ? calculator.vectorHistory[calculator.vectorHistory.length - 1].id : 0;
+
+                            if (lastVectorId > Math.max(lastEquationId, lastTriangleId)) {
+                                const removed = calculator.vectorHistory.pop();
+                                calculator.vectorCounter--;
+                                console.log(`⬅️ Removed vector: ${removed.input}`);
+                            } else if (lastTriangleId > lastEquationId) {
+                                const removed = calculator.triangleHistory.pop();
+                                calculator.triangleCounter--;
+                                console.log(`⬅️ Removed triangle: ${removed.input}`);
+                            } else if (calculator.equationHistory.length > 0) {
+                                const removed = calculator.equationHistory.pop();
+                                calculator.equationCounter--;
+                                console.log(`⬅️ Removed equation: ${removed}`);
+                            }
+                        }
+                        break
+                    default:
+                        if (cleanInput.startsWith('theme ')) {
+                            const themeName = cleanInput.replace('theme ', '')
+                            if (calculator.changeTheme(themeName)) {
+                                console.log(`🎨 Theme changed to: ${themeName}`)
+                            } else {
+                                console.log("❌ Invalid theme! Available: standard, dark, scientific")
+                            }
+                        } else if (cleanInput.startsWith('zoom ')) {
+                            const zoomParams = cleanInput.replace('zoom ', '').split(' ')
+                            if (zoomParams.length === 4) {
+                                const [xMin, xMax, yMin, yMax] = zoomParams.map(parseFloat)
+                                if (calculator.setViewingWindow(xMin, xMax, yMin, yMax)) {
+                                    console.log(`📏 Viewing window updated: x[${xMin}, ${xMax}], y[${yMin}, ${yMax}]`)
+                                } else {
+                                    console.log("❌ Invalid zoom parameters!")
+                                }
+                            } else {
+                                console.log("❌ Invalid zoom format! Use: zoom xMin xMax yMin yMax")
+                            }
+                        } else {
+                            console.log("❌ Invalid input! Type 'help' for available commands.")
+                        }
+                }
+            }
+        }
+        
+        // Restore console.log
+        console.log = originalLog
+        
+        // Send any text output
+        if (session.graphOutputLines.length > 0) {
+            await sendMessageWithTyping({ text: session.graphOutputLines.join('\n') }, from)
+            session.graphOutputLines = []
+        }
+        
+        // Send generated graph images
+        await sendGraphImages(sock, from, calculator)
+        
+        // Prompt for next input
+        await sendMessageWithTyping({ text: '🎯 Enter next equation, triangle, vector, or command:' }, from)
+        
+    } catch (error) {
+        console.error('Error processing graph input:', error)
+        await sendMessageWithTyping({
+            text: '❌ Error processing input. Please check the format and try again.'
+        }, from)
+    }
+}
+
+const handleGraphCommand = async (sock: any, from: string, input: string) => {
+    const session = getUserSession(from)
+    
+    if (!session.graphingCalculator) {
+        session.graphingCalculator = new GraphingCalculatorGame()
+        
+        // Initialize with WhatsApp-friendly settings
+        session.graphingCalculator.calculator.xMin = -10
+        session.graphingCalculator.calculator.xMax = 10
+        session.graphingCalculator.calculator.yMin = -10
+        session.graphingCalculator.calculator.yMax = 10
+        
+        await sendMessageWithTyping({
+            text: `🧮 *Graphing Calculator Started!*\n\n` +
+                  `📈 Enter mathematical equations to plot them\n` +
+                  `🔺 Enter triangles to analyze geometric properties\n` +
+                  `➡️ Enter vectors to analyze vector operations\n\n` +
+                  `📊 Type "help" for available commands\n` +
+                  `🚪 Type "quit" to exit calculator\n\n` +
+                  `*Examples:*\n` +
+                  `• y=x**2\n` +
+                  `• triangle A(0,0) B(4,0) C(2,3)\n` +
+                  `• vector <3,4>\n` +
+                  `• zoom -10 10 -10 10`
+        }, from)
+        
+        session.awaitingGraphInput = true
+        
+        // Process initial input if provided
+        if (input.trim()) {
+            await processGraphInput(sock, from, input)
+        } else {
+            await sendMessageWithTyping({ text: '🎯 Enter your first equation, triangle, or vector:' }, from)
+        }
+    } else {
+        // Process input if calculator already exists
+        await processGraphInput(sock, from, input)
+    }
+}
+
+// ... (All the existing YouTube, Football, Spreadsheet functions remain the same) ...
+// ... (The rest of the existing code including startSock, handleCommand, etc.) ...
+
+// Update the validCommands array to include graph commands
+const validCommands = [
+    'help', 'menu', 'time', 'echo', 'info', 'status', 'random', 'ping',
+    'sticker', 'contact', 'image', 'video', 'audio', 'document', 'file',
+    'location', 'poll', 'download', 'gallery', 'media', 'welcome', 'demo',
+    'youtube', 'yt', 'ytdl', 'music', 'songs', 'football',
+    'spreadsheet', 'calc', 'sheet',
+    'graph', 'calculator', 'math', 'plot', 'function', 'equation', 'triangle', 'vector'
+]
+
+// Update the handleCommand function to include graph command handling
+const handleCommand = async (text: string, from: string, msg: any, sock: any, sendMessageWithTyping: Function): Promise<boolean> => {
+    const cleanText = text.toLowerCase().trim()
+    const command = cleanText.startsWith('/') ? cleanText.split(' ')[0] : cleanText.split(' ')[0]
+    const args = text.split(' ').slice(1)
+
+    // Get user session
+    const session = getUserSession(from)
+
+    // Handle pending resolves for Football questions first
+    if (session.pendingResolve) {
+        session.pendingResolve(text)
+        session.pendingResolve = null
+        return true
+    }
+
+    // Handle Graph input if awaiting
+    if (session.awaitingGraphInput) {
+        await processGraphInput(sock, from, text)
+        return true
+    }
+
+    // Handle YouTube session states
+    if (session.awaitingYouTubeQuery) {
+        await handleYouTubeSearch(sock, from, text)
+        return true
+    }
+
+    if (session.awaitingYouTubeAction) {
+        // ... existing YouTube action handling ...
+    }
+
+    if (session.awaitingRelatedSelection) {
+        // ... existing related selection handling ...
+    }
+
+    // Handle spreadsheet session states
+    if (session.awaitingSpreadsheetType) {
+        // ... existing spreadsheet handling ...
+    }
+
+    if (session.awaitingSpreadsheetParams) {
+        // ... existing spreadsheet handling ...
+    }
+
+    // Handle Football input if awaiting
+    if (session.awaitingFootballInput) {
+        // ... existing football handling ...
+    }
+
+    // Check if it's a valid command
+    const isValidCommand = validCommands.includes(command.replace('/', ''))
+
+    if (!isValidCommand) {
+       
