@@ -1,0 +1,2404 @@
+// Missing Functions for Enhanced Multi-Distribution Statistical Workbook
+// These functions should be added to the existing EnhancedStatisticalWorkbook class
+
+// =============================================================================
+// DISTRIBUTION-SPECIFIC PARAMETER CONFIDENCE INTERVALS
+// =============================================================================
+
+calculateParameterConfidenceIntervals() {
+    const dist = DistributionRegistry.getDistribution(this.selectedDistribution);
+    const confidenceLevels = [0.90, 0.95, 0.99];
+    this.parameterConfidenceIntervals = {};
+
+    confidenceLevels.forEach(level => {
+        this.parameterConfidenceIntervals[level] = this.calculateParameterCIForLevel(level);
+    });
+}
+
+calculateParameterCIForLevel(confidence) {
+    const alpha = 1 - confidence;
+    const n = this.statistics.n;
+
+    switch(this.selectedDistribution) {
+        case 'normal':
+            return this.calculateNormalParameterCI(confidence, alpha, n);
+        case 't':
+            return this.calculateTParameterCI(confidence, alpha, n);
+        case 'exponential':
+            return this.calculateExponentialParameterCI(confidence, alpha, n);
+        case 'gamma':
+            return this.calculateGammaParameterCI(confidence, alpha, n);
+        case 'beta':
+            return this.calculateBetaParameterCI(confidence, alpha, n);
+        case 'chisquare':
+            return this.calculateChiSquareParameterCI(confidence, alpha, n);
+        case 'f':
+            return this.calculateFParameterCI(confidence, alpha, n);
+        default:
+            return this.calculateBootstrapParameterCI(confidence, alpha, n);
+    }
+}
+
+calculateNormalParameterCI(confidence, alpha, n) {
+    const mean = this.statistics.mean;
+    const std = this.statistics.standardDeviation;
+    const tCritical = StatisticalDistributions.tInverse(1 - alpha/2, n - 1);
+    
+    const meanSE = std / Math.sqrt(n);
+    const varSE = std * Math.sqrt(2 / (n - 1)); // Approximate
+    
+    return {
+        parameters: {
+            mean: {
+                estimate: mean,
+                lowerBound: mean - tCritical * meanSE,
+                upperBound: mean + tCritical * meanSE,
+                standardError: meanSE
+            },
+            standardDeviation: {
+                estimate: std,
+                lowerBound: std * Math.sqrt((n - 1) / StatisticalDistributions.chiSquareInverse(1 - alpha/2, n - 1)),
+                upperBound: std * Math.sqrt((n - 1) / StatisticalDistributions.chiSquareInverse(alpha/2, n - 1)),
+                standardError: varSE
+            }
+        }
+    };
+}
+
+calculateExponentialParameterCI(confidence, alpha, n) {
+    const lambda = this.distributionParams[0];
+    const mean = this.statistics.mean;
+    
+    // For exponential, MLE of λ = 1/sample_mean
+    // CI for λ using chi-square distribution
+    const lowerBound = (2 * n) / StatisticalDistributions.chiSquareInverse(1 - alpha/2, 2 * n) / mean;
+    const upperBound = (2 * n) / StatisticalDistributions.chiSquareInverse(alpha/2, 2 * n) / mean;
+    
+    return {
+        parameters: {
+            lambda: {
+                estimate: lambda,
+                lowerBound: lowerBound,
+                upperBound: upperBound,
+                standardError: lambda / Math.sqrt(n),
+                interpretation: `Rate parameter: ${lambda.toFixed(4)} events per unit time`
+            },
+            meanTime: {
+                estimate: 1/lambda,
+                lowerBound: 1/upperBound,
+                upperBound: 1/lowerBound,
+                standardError: (1/lambda) / Math.sqrt(n),
+                interpretation: `Average time between events: ${(1/lambda).toFixed(4)} time units`
+            }
+        }
+    };
+}
+
+calculateGammaParameterCI(confidence, alpha, n) {
+    const [shape, scale] = this.distributionParams;
+    
+    // Approximate confidence intervals using asymptotic theory
+    // These are simplified - full implementation would use more sophisticated methods
+    const shapeSE = shape / Math.sqrt(n);
+    const scaleSE = scale / Math.sqrt(n);
+    const zCritical = StatisticalDistributions.normalInverse(1 - alpha/2, 0, 1);
+    
+    return {
+        parameters: {
+            shape: {
+                estimate: shape,
+                lowerBound: Math.max(0.01, shape - zCritical * shapeSE),
+                upperBound: shape + zCritical * shapeSE,
+                standardError: shapeSE,
+                interpretation: `Shape parameter α = ${shape.toFixed(3)} determines distribution shape`
+            },
+            scale: {
+                estimate: scale,
+                lowerBound: Math.max(0.01, scale - zCritical * scaleSE),
+                upperBound: scale + zCritical * scaleSE,
+                standardError: scaleSE,
+                interpretation: `Scale parameter β = ${scale.toFixed(3)} stretches the distribution`
+            }
+        }
+    };
+}
+
+calculateBetaParameterCI(confidence, alpha, n) {
+    const [alphaParam, betaParam] = this.distributionParams;
+    
+    // Use delta method for approximate confidence intervals
+    const alphaSE = Math.sqrt(alphaParam * (alphaParam + betaParam + n) / (n * (alphaParam + betaParam)));
+    const betaSE = Math.sqrt(betaParam * (alphaParam + betaParam + n) / (n * (alphaParam + betaParam)));
+    const zCritical = StatisticalDistributions.normalInverse(1 - alpha/2, 0, 1);
+    
+    return {
+        parameters: {
+            alpha: {
+                estimate: alphaParam,
+                lowerBound: Math.max(0.01, alphaParam - zCritical * alphaSE),
+                upperBound: alphaParam + zCritical * alphaSE,
+                standardError: alphaSE,
+                interpretation: `Shape parameter α = ${alphaParam.toFixed(3)}`
+            },
+            beta: {
+                estimate: betaParam,
+                lowerBound: Math.max(0.01, betaParam - zCritical * betaSE),
+                upperBound: betaParam + zCritical * betaSE,
+                standardError: betaSE,
+                interpretation: `Shape parameter β = ${betaParam.toFixed(3)}`
+            }
+        }
+    };
+}
+
+
+/ T-Distribution Parameter CI (missing)
+calculateTParameterCI(confidence, alpha, n) {
+    const df = this.distributionParams[0];
+    const sampleMean = this.statistics.mean;
+    const sampleStd = this.statistics.standardDeviation;
+    
+    // Approximate CI for degrees of freedom parameter
+    const dfSE = Math.sqrt(2 * df); // Approximate standard error
+    const zCritical = StatisticalDistributions.normalInverse(1 - alpha/2, 0, 1);
+    
+    return {
+        parameters: {
+            degreesOfFreedom: {
+                estimate: df,
+                lowerBound: Math.max(1, df - zCritical * dfSE),
+                upperBound: df + zCritical * dfSE,
+                standardError: dfSE,
+                interpretation: `Degrees of freedom = ${df}, affects tail behavior`
+            }
+        }
+    };
+}
+
+// Chi-Square Parameter CI (missing)
+calculateChiSquareParameterCI(confidence, alpha, n) {
+    const df = this.distributionParams[0];
+    const sampleMean = this.statistics.mean;
+    
+    // For chi-square, mean = df, so we can estimate df from sample mean
+    // CI based on gamma distribution properties
+    const dfSE = Math.sqrt(2 * df / n);
+    const zCritical = StatisticalDistributions.normalInverse(1 - alpha/2, 0, 1);
+    
+    return {
+        parameters: {
+            degreesOfFreedom: {
+                estimate: df,
+                lowerBound: Math.max(1, df - zCritical * dfSE),
+                upperBound: df + zCritical * dfSE,
+                standardError: dfSE,
+                interpretation: `df = ${df.toFixed(1)}, determines distribution shape and spread`
+            }
+        }
+    };
+}
+
+// F-Distribution Parameter CI (missing)
+calculateFParameterCI(confidence, alpha, n) {
+    const [df1, df2] = this.distributionParams;
+    
+    // F-distribution parameters are typically fixed by design
+    // Provide informational CI based on theoretical properties
+    return {
+        parameters: {
+            numeratorDF: {
+                estimate: df1,
+                lowerBound: df1,
+                upperBound: df1,
+                standardError: 0,
+                interpretation: `Numerator df = ${df1}, typically determined by study design`
+            },
+            denominatorDF: {
+                estimate: df2,
+                lowerBound: df2,
+                upperBound: df2,
+                standardError: 0,
+                interpretation: `Denominator df = ${df2}, typically determined by study design`
+            }
+        }
+    };
+}
+
+// =============================================================================
+// DISTRIBUTION-SPECIFIC TARGET ANALYSIS
+// =============================================================================
+
+// =============================================================================
+// DISTRIBUTION-SPECIFIC TARGET ANALYSIS - COMPLETE
+// =============================================================================
+
+calculateDistributionSpecificTargetAnalysis() {
+    if (this.targetValue === null) return;
+
+    switch(this.selectedDistribution) {
+        case 'normal':
+            this.targetAnalysis = this.calculateNormalTargetAnalysis();
+            break;
+        case 't':
+            this.targetAnalysis = this.calculateTTargetAnalysis();
+            break;
+        case 'exponential':
+            this.targetAnalysis = this.calculateExponentialTargetAnalysis();
+            break;
+        case 'gamma':
+            this.targetAnalysis = this.calculateGammaTargetAnalysis();
+            break;
+        case 'beta':
+            this.targetAnalysis = this.calculateBetaTargetAnalysis();
+            break;
+        case 'chisquare':
+            this.targetAnalysis = this.calculateChiSquareTargetAnalysis();
+            break;
+        case 'f':
+            this.targetAnalysis = this.calculateFTargetAnalysis();
+            break;
+        default:
+            this.targetAnalysis = this.calculateGenericTargetAnalysis();
+    }
+}
+
+calculateExponentialTargetAnalysis() {
+    const lambda = this.distributionParams[0];
+    const target = this.targetValue;
+    const sampleMean = this.statistics.mean;
+    
+    // For exponential, analyze target rate or target time
+    const isRateTarget = this.targetAnalysisType === 'rate';
+    const actualTarget = isRateTarget ? target : 1/target;
+    
+    // Probability calculations
+    const probGreaterThan = target > 0 ? Math.exp(-lambda * target) : 1;
+    const probLessThan = 1 - probGreaterThan;
+    
+    // Effect size for exponential
+    const effectSize = Math.abs(Math.log(sampleMean / (1/lambda)));
+    
+    return {
+        targetValue: target,
+        targetType: isRateTarget ? 'Rate Parameter' : 'Time Value',
+        sampleEstimate: isRateTarget ? lambda : sampleMean,
+        probabilities: {
+            greaterThan: probGreaterThan,
+            lessThan: probLessThan,
+            interpretation: `P(X > ${target}) = ${probGreaterThan.toFixed(4)}`
+        },
+        effectSize: effectSize,
+        practicalSignificance: this.assessExponentialPracticalSignificance(effectSize),
+        recommendation: this.generateExponentialRecommendation(effectSize, probGreaterThan),
+        distributionContext: {
+            expectedValue: 1/lambda,
+            variance: 1/(lambda * lambda),
+            medianValue: Math.log(2)/lambda
+        }
+    };
+}
+
+calculateGammaTargetAnalysis() {
+    const [shape, scale] = this.distributionParams;
+    const target = this.targetValue;
+    
+    const dist = DistributionRegistry.getDistribution('gamma');
+    const probLessThan = dist.cdf(target, this.distributionParams);
+    const probGreaterThan = 1 - probLessThan;
+    
+    const expectedValue = shape * scale;
+    const effectSize = Math.abs(target - expectedValue) / Math.sqrt(shape * scale * scale);
+    
+    return {
+        targetValue: target,
+        targetType: 'Value',
+        expectedValue: expectedValue,
+        probabilities: {
+            lessThan: probLessThan,
+            greaterThan: probGreaterThan,
+            interpretation: `P(X ≤ ${target}) = ${probLessThan.toFixed(4)}`
+        },
+        effectSize: effectSize,
+        practicalSignificance: this.assessGammaPracticalSignificance(effectSize),
+        recommendation: this.generateGammaRecommendation(effectSize, probLessThan),
+        distributionContext: {
+            expectedValue: expectedValue,
+            variance: shape * scale * scale,
+            mode: shape > 1 ? (shape - 1) * scale : 0
+        }
+    };
+}
+
+
+// Normal Target Analysis (missing)
+calculateNormalTargetAnalysis() {
+    const [mean, std] = this.distributionParams;
+    const target = this.targetValue;
+    
+    const zScore = (target - mean) / std;
+    const probLessThan = StatisticalDistributions.normalCDF(target, mean, std);
+    const probGreaterThan = 1 - probLessThan;
+    
+    const effectSize = Math.abs(zScore);
+    
+    return {
+        targetValue: target,
+        targetType: 'Value',
+        zScore: zScore,
+        probabilities: {
+            lessThan: probLessThan,
+            greaterThan: probGreaterThan,
+            interpretation: `P(X ≤ ${target}) = ${probLessThan.toFixed(4)}`
+        },
+        effectSize: effectSize,
+        practicalSignificance: this.assessNormalPracticalSignificance(effectSize),
+        recommendation: this.generateNormalRecommendation(effectSize, zScore),
+        distributionContext: {
+            mean: mean,
+            standardDeviation: std,
+            standardizedValue: zScore
+        }
+    };
+}
+
+// T-Distribution Target Analysis (missing)
+calculateTTargetAnalysis() {
+    const df = this.distributionParams[0];
+    const target = this.targetValue;
+    
+    const probLessThan = StatisticalDistributions.tCDF(target, df);
+    const probGreaterThan = 1 - probLessThan;
+    
+    // Effect size compared to standard normal
+    const normalEquivalent = StatisticalDistributions.normalInverse(probLessThan);
+    const effectSize = Math.abs(normalEquivalent);
+    
+    return {
+        targetValue: target,
+        targetType: 'T-Value',
+        degreesOfFreedom: df,
+        probabilities: {
+            lessThan: probLessThan,
+            greaterThan: probGreaterThan,
+            interpretation: `P(T ≤ ${target}) = ${probLessThan.toFixed(4)} with df=${df}`
+        },
+        effectSize: effectSize,
+        practicalSignificance: this.assessTPracticalSignificance(effectSize, df),
+        recommendation: this.generateTRecommendation(effectSize, target, df),
+        distributionContext: {
+            degreesOfFreedom: df,
+            normalEquivalent: normalEquivalent,
+            tailBehavior: df > 30 ? 'Similar to normal' : 'Heavy tails'
+        }
+    };
+}
+
+// Beta Target Analysis (missing but referenced)
+calculateBetaTargetAnalysis() {
+    const [alpha, beta] = this.distributionParams;
+    const target = this.targetValue;
+    
+    if (target < 0 || target > 1) {
+        return {
+            error: 'Target value must be between 0 and 1 for Beta distribution'
+        };
+    }
+    
+    const probLessThan = StatisticalDistributions.betaCDF(target, alpha, beta);
+    const probGreaterThan = 1 - probLessThan;
+    
+    const mean = alpha / (alpha + beta);
+    const effectSize = Math.abs(target - mean) / Math.sqrt((alpha * beta) / ((alpha + beta)^2 * (alpha + beta + 1)));
+    
+    return {
+        targetValue: target,
+        targetType: 'Proportion/Probability',
+        probabilities: {
+            lessThan: probLessThan,
+            greaterThan: probGreaterThan,
+            interpretation: `P(X ≤ ${target}) = ${probLessThan.toFixed(4)}`
+        },
+        effectSize: effectSize,
+        practicalSignificance: this.assessBetaPracticalSignificance(effectSize),
+        recommendation: this.generateBetaRecommendation(effectSize, target, mean),
+        distributionContext: {
+            expectedValue: mean,
+            mode: alpha > 1 && beta > 1 ? (alpha - 1)/(alpha + beta - 2) : null,
+            variance: (alpha * beta) / ((alpha + beta)^2 * (alpha + beta + 1))
+        }
+    };
+}
+
+// F-Distribution Target Analysis (missing)
+calculateFTargetAnalysis() {
+    const [df1, df2] = this.distributionParams;
+    const target = this.targetValue;
+    
+    if (target < 0) {
+        return {
+            error: 'Target value must be positive for F distribution'
+        };
+    }
+    
+    const probLessThan = StatisticalDistributions.fCDF(target, df1, df2);
+    const probGreaterThan = 1 - probLessThan;
+    
+    // Critical values for common significance levels
+    const criticalValues = {
+        '0.10': StatisticalDistributions.fInverse(0.90, df1, df2),
+        '0.05': StatisticalDistributions.fInverse(0.95, df1, df2),
+        '0.01': StatisticalDistributions.fInverse(0.99, df1, df2)
+    };
+    
+    return {
+        targetValue: target,
+        targetType: 'F-Statistic',
+        degreesOfFreedom: { df1, df2 },
+        probabilities: {
+            lessThan: probLessThan,
+            greaterThan: probGreaterThan,
+            interpretation: `P(F ≤ ${target}) = ${probLessThan.toFixed(4)} with df1=${df1}, df2=${df2}`
+        },
+        criticalValues: criticalValues,
+        statisticalSignificance: {
+            '0.10': target > criticalValues['0.10'],
+            '0.05': target > criticalValues['0.05'],
+            '0.01': target > criticalValues['0.01']
+        },
+        recommendation: this.generateFRecommendation(target, criticalValues),
+        distributionContext: {
+            numeratorDF: df1,
+            denominatorDF: df2,
+            expectedValue: df2 > 2 ? df2 / (df2 - 2) : 'Undefined'
+        }
+    };
+}
+
+
+// =============================================================================
+// BOOTSTRAP PARAMETER CONFIDENCE INTERVALS
+// =============================================================================
+
+calculateBootstrapParameterCI(confidence, alpha, n, bootstrapSamples = 1000) {
+    const dist = DistributionRegistry.getDistribution(this.selectedDistribution);
+    if (!dist.estimateParams) return null;
+    
+    const bootstrapEstimates = [];
+    
+    // Generate bootstrap samples
+    for (let i = 0; i < bootstrapSamples; i++) {
+        const bootstrapSample = this.generateBootstrapSample();
+        const bootstrapParams = dist.estimateParams(bootstrapSample);
+        bootstrapEstimates.push(bootstrapParams);
+    }
+    
+    // Calculate percentile confidence intervals for each parameter
+    const parameterCIs = {};
+    
+    dist.params.forEach((paramName, paramIndex) => {
+        const paramValues = bootstrapEstimates.map(params => params[paramIndex]).sort((a, b) => a - b);
+        const lowerIndex = Math.floor((alpha / 2) * bootstrapSamples);
+        const upperIndex = Math.ceil((1 - alpha / 2) * bootstrapSamples) - 1;
+        
+        parameterCIs[paramName] = {
+            estimate: this.distributionParams[paramIndex],
+            lowerBound: paramValues[lowerIndex],
+            upperBound: paramValues[upperIndex],
+            standardError: this.calculateBootstrapSE(paramValues),
+            interpretation: this.getParameterInterpretation(paramName, this.distributionParams[paramIndex])
+        };
+    });
+    
+    return {
+        parameters: parameterCIs,
+        bootstrapSamples: bootstrapSamples,
+        method: 'Bootstrap Percentile Method'
+    };
+}
+
+generateBootstrapSample() {
+    const n = this.rawSamples.length;
+    const bootstrapSample = [];
+    
+    for (let i = 0; i < n; i++) {
+        const randomIndex = Math.floor(Math.random() * n);
+        bootstrapSample.push(this.rawSamples[randomIndex]);
+    }
+    
+    return bootstrapSample;
+}
+
+calculateBootstrapSE(values) {
+    const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
+    const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (values.length - 1);
+    return Math.sqrt(variance);
+}
+
+// =============================================================================
+// ENHANCED DISTRIBUTION-SPECIFIC HYPOTHESIS TESTING
+// =============================================================================
+
+
+
+
+
+performGammaHypothesisTest(testConfig) {
+    const { nullShape, nullScale, testParameter = 'shape', alternative = 'two-sided', alpha = 0.05 } = testConfig;
+    const [observedShape, observedScale] = this.distributionParams;
+    const n = this.statistics.n;
+    
+    if (testParameter === 'shape') {
+        // Test for shape parameter using likelihood ratio test
+        const logL1 = this.calculateLogLikelihood(); // Full model
+        const logL0 = this.calculateLogLikelihoodUnderNull([nullShape, observedScale]); // Null model
+        
+        const lrStatistic = 2 * (logL1 - logL0);
+        const pValue = 1 - StatisticalDistributions.chiSquareCDF(lrStatistic, 1);
+        
+        return {
+            testType: 'Gamma Shape Parameter Test (Likelihood Ratio)',
+            nullHypothesis: `α = ${nullShape}`,
+            alternative: alternative,
+            testStatistic: lrStatistic,
+            pValue: pValue,
+            degreesOfFreedom: 1,
+            observedShape: observedShape,
+            nullShape: nullShape,
+            reject: pValue < alpha,
+            conclusion: pValue < alpha ? 
+                `Reject H₀: Evidence suggests shape parameter ≠ ${nullShape}` : 
+                `Fail to reject H₀: Data consistent with shape parameter = ${nullShape}`,
+            method: 'Likelihood Ratio Test'
+        };
+    } else if (testParameter === 'scale') {
+        // Similar test for scale parameter
+        const logL1 = this.calculateLogLikelihood();
+        const logL0 = this.calculateLogLikelihoodUnderNull([observedShape, nullScale]);
+        
+        const lrStatistic = 2 * (logL1 - logL0);
+        const pValue = 1 - StatisticalDistributions.chiSquareCDF(lrStatistic, 1);
+        
+        return {
+            testType: 'Gamma Scale Parameter Test (Likelihood Ratio)',
+            nullHypothesis: `β = ${nullScale}`,
+            alternative: alternative,
+            testStatistic: lrStatistic,
+            pValue: pValue,
+            degreesOfFreedom: 1,
+            observedScale: observedScale,
+            nullScale: nullScale,
+            reject: pValue < alpha,
+            conclusion: pValue < alpha ? 
+                `Reject H₀: Evidence suggests scale parameter ≠ ${nullScale}` : 
+                `Fail to reject H₀: Data consistent with scale parameter = ${nullScale}`,
+            method: 'Likelihood Ratio Test'
+        };
+    }
+}
+
+calculateLogLikelihoodUnderNull(nullParams) {
+    const dist = DistributionRegistry.getDistribution(this.selectedDistribution);
+    let logLikelihood = 0;
+
+    this.rawSamples.forEach(x => {
+        const pdf = dist.pdf(x, nullParams);
+        if (pdf > 0) {
+            logLikelihood += Math.log(pdf);
+        }
+    });
+
+    return logLikelihood;
+}
+
+performChiSquareHypothesisTest(testConfig) {
+    const { nullDF, alternative = 'two-sided', alpha = 0.05 } = testConfig;
+    const observedDF = this.distributionParams[0];
+    const n = this.statistics.n;
+    
+    // For chi-square, we can test if the degrees of freedom parameter matches expected value
+    // Using the sample mean (which equals df for chi-square) and its sampling distribution
+    const sampleMean = this.statistics.mean;
+    const expectedMean = nullDF;
+    const standardError = Math.sqrt(2 * nullDF / n); // Approximate SE for chi-square mean
+    
+    // Z-test approximation for large samples
+    const zStatistic = (sampleMean - expectedMean) / standardError;
+    
+    let pValue;
+    if (alternative === 'two-sided') {
+        pValue = 2 * (1 - StatisticalDistributions.normalCDF(Math.abs(zStatistic), 0, 1));
+    } else if (alternative === 'greater') {
+        pValue = 1 - StatisticalDistributions.normalCDF(zStatistic, 0, 1);
+    } else {
+        pValue = StatisticalDistributions.normalCDF(zStatistic, 0, 1);
+    }
+    
+    return {
+        testType: 'Chi-Square Degrees of Freedom Test',
+        nullHypothesis: `df = ${nullDF}`,
+        alternative: alternative,
+        testStatistic: zStatistic,
+        pValue: pValue,
+        sampleMean: sampleMean,
+        expectedMean: expectedMean,
+        standardError: standardError,
+        observedDF: observedDF,
+        nullDF: nullDF,
+        reject: pValue < alpha,
+        conclusion: pValue < alpha ? 
+            `Reject H₀: Evidence suggests degrees of freedom ≠ ${nullDF}` : 
+            `Fail to reject H₀: Data consistent with df = ${nullDF}`,
+        method: 'Large Sample Z-Test Approximation'
+    };
+}
+
+performFHypothesisTest(testConfig) {
+    const { sample2, nullRatio = 1, alternative = 'two-sided', alpha = 0.05 } = testConfig;
+    
+    if (!sample2 || sample2.length === 0) {
+        throw new Error('F-test requires a second sample for variance comparison');
+    }
+    
+    // Calculate sample variances
+    const var1 = this.statistics.variance;
+    const n1 = this.statistics.n;
+    
+    const mean2 = sample2.reduce((sum, val) => sum + val, 0) / sample2.length;
+    const var2 = sample2.reduce((sum, val) => sum + Math.pow(val - mean2, 2), 0) / (sample2.length - 1);
+    const n2 = sample2.length;
+    
+    // F-test statistic
+    const fStatistic = var1 / var2;
+    const df1 = n1 - 1;
+    const df2 = n2 - 1;
+    
+    let pValue;
+    if (alternative === 'two-sided') {
+        const pLower = StatisticalDistributions.fCDF(fStatistic, df1, df2);
+        const pUpper = 1 - StatisticalDistributions.fCDF(fStatistic, df1, df2);
+        pValue = 2 * Math.min(pLower, pUpper);
+    } else if (alternative === 'greater') {
+        pValue = 1 - StatisticalDistributions.fCDF(fStatistic, df1, df2);
+    } else {
+        pValue = StatisticalDistributions.fCDF(fStatistic, df1, df2);
+    }
+    
+    return {
+        testType: 'F-Test for Equality of Variances',
+        nullHypothesis: `σ₁²/σ₂² = ${nullRatio}`,
+        alternative: alternative,
+        testStatistic: fStatistic,
+        pValue: pValue,
+        df1: df1,
+        df2: df2,
+        variance1: var1,
+        variance2: var2,
+        sampleSize1: n1,
+        sampleSize2: n2,
+        reject: pValue < alpha,
+        conclusion: pValue < alpha ? 
+            'Reject H₀: Evidence suggests variances are not equal' : 
+            'Fail to reject H₀: No evidence of unequal variances',
+        method: 'F-Test'
+    };
+}
+
+performDistributionSpecificHypothesisTests(testConfig) {
+    switch(this.selectedDistribution) {
+        case 'normal':
+            return this.performNormalHypothesisTest(testConfig);
+        case 't':
+            return this.performTHypothesisTest(testConfig);
+        case 'exponential':
+            return this.performExponentialHypothesisTest(testConfig);
+        case 'gamma':
+            return this.performGammaHypothesisTest(testConfig);
+        case 'beta':
+            return this.performBetaHypothesisTest(testConfig);
+        case 'chisquare':
+            return this.performChiSquareHypothesisTest(testConfig);
+        case 'f':
+            return this.performFHypothesisTest(testConfig);
+        default:
+            return this.performGenericDistributionTest(testConfig);
+    }
+}
+
+performExponentialHypothesisTest(testConfig) {
+    const { nullRate, alternative = 'two-sided', alpha = 0.05 } = testConfig;
+    const n = this.statistics.n;
+    const sampleMean = this.statistics.mean;
+    const observedRate = 1 / sampleMean;
+    
+    // Test statistic: 2nλ₀X̄ ~ χ²(2n) under null hypothesis
+    const testStatistic = 2 * n * nullRate * sampleMean;
+    const df = 2 * n;
+    
+    let pValue;
+    if (alternative === 'two-sided') {
+        const lower = StatisticalDistributions.chiSquareCDF(testStatistic, df);
+        const upper = 1 - StatisticalDistributions.chiSquareCDF(testStatistic, df);
+        pValue = 2 * Math.min(lower, upper);
+    } else if (alternative === 'greater') {
+        pValue = 1 - StatisticalDistributions.chiSquareCDF(testStatistic, df);
+    } else {
+        pValue = StatisticalDistributions.chiSquareCDF(testStatistic, df);
+    }
+    
+    return {
+        testType: 'Exponential Rate Test',
+        nullHypothesis: `λ = ${nullRate}`,
+        alternative: alternative,
+        testStatistic: testStatistic,
+        degreesOfFreedom: df,
+        pValue: pValue,
+        observedRate: observedRate,
+        expectedMeanTime: 1/nullRate,
+        observedMeanTime: sampleMean,
+        reject: pValue < alpha,
+        conclusion: pValue < alpha ? 
+            `Reject H₀: Evidence suggests rate ≠ ${nullRate}` : 
+            `Fail to reject H₀: Data consistent with rate = ${nullRate}`,
+        confidenceInterval: this.calculateExponentialRateCI(1 - alpha)
+    };
+}
+
+// Normal Distribution Hypothesis Test (missing)
+performNormalHypothesisTest(testConfig) {
+    const { nullMean = 0, nullStd = null, testParameter = 'mean', alternative = 'two-sided', alpha = 0.05 } = testConfig;
+    const [observedMean, observedStd] = this.distributionParams;
+    const n = this.statistics.n;
+    
+    if (testParameter === 'mean') {
+        // One-sample t-test for mean
+        const standardError = observedStd / Math.sqrt(n);
+        const testStatistic = (observedMean - nullMean) / standardError;
+        const df = n - 1;
+        
+        let pValue;
+        if (alternative === 'two-sided') {
+            pValue = 2 * (1 - StatisticalDistributions.tCDF(Math.abs(testStatistic), df));
+        } else if (alternative === 'greater') {
+            pValue = 1 - StatisticalDistributions.tCDF(testStatistic, df);
+        } else {
+            pValue = StatisticalDistributions.tCDF(testStatistic, df);
+        }
+        
+        return {
+            testType: 'Normal Mean Test (One-Sample t-test)',
+            nullHypothesis: `μ = ${nullMean}`,
+            alternative: alternative,
+            testStatistic: testStatistic,
+            pValue: pValue,
+            degreesOfFreedom: df,
+            observedMean: observedMean,
+            nullMean: nullMean,
+            standardError: standardError,
+            reject: pValue < alpha,
+            conclusion: pValue < alpha ?
+                `Reject H₀: Evidence suggests mean ≠ ${nullMean}` :
+                `Fail to reject H₀: Data consistent with mean = ${nullMean}`,
+            method: 'One-Sample t-test'
+        };
+    } else if (testParameter === 'variance' && nullStd !== null) {
+        // Chi-square test for variance
+        const nullVariance = nullStd * nullStd;
+        const observedVariance = observedStd * observedStd;
+        const testStatistic = (n - 1) * observedVariance / nullVariance;
+        const df = n - 1;
+        
+        let pValue;
+        if (alternative === 'two-sided') {
+            const lower = StatisticalDistributions.chiSquareCDF(testStatistic, df);
+            const upper = 1 - StatisticalDistributions.chiSquareCDF(testStatistic, df);
+            pValue = 2 * Math.min(lower, upper);
+        } else if (alternative === 'greater') {
+            pValue = 1 - StatisticalDistributions.chiSquareCDF(testStatistic, df);
+        } else {
+            pValue = StatisticalDistributions.chiSquareCDF(testStatistic, df);
+        }
+        
+        return {
+            testType: 'Normal Variance Test (Chi-square)',
+            nullHypothesis: `σ² = ${nullVariance}`,
+            alternative: alternative,
+            testStatistic: testStatistic,
+            pValue: pValue,
+            degreesOfFreedom: df,
+            observedVariance: observedVariance,
+            nullVariance: nullVariance,
+            reject: pValue < alpha,
+            conclusion: pValue < alpha ?
+                `Reject H₀: Evidence suggests variance ≠ ${nullVariance}` :
+                `Fail to reject H₀: Data consistent with variance = ${nullVariance}`,
+            method: 'Chi-square test for variance'
+        };
+    }
+}
+
+// T-Distribution Hypothesis Test (missing)
+performTHypothesisTest(testConfig) {
+    const { nullDF, alternative = 'two-sided', alpha = 0.05 } = testConfig;
+    const observedDF = this.distributionParams[0];
+    const n = this.statistics.n;
+    
+    // Test if degrees of freedom matches expected value
+    // Using sample-based approximation
+    const sampleMean = this.statistics.mean;
+    const sampleVar = this.statistics.variance;
+    
+    // For t-distribution, theoretical variance = df/(df-2) for df > 2
+    if (observedDF <= 2) {
+        return {
+            error: 'Hypothesis testing for t-distribution requires df > 2'
+        };
+    }
+    
+    const theoreticalVar = observedDF / (observedDF - 2);
+    const standardError = Math.sqrt(2 * theoreticalVar / n);
+    const testStatistic = (sampleVar - theoreticalVar) / standardError;
+    
+    let pValue;
+    if (alternative === 'two-sided') {
+        pValue = 2 * (1 - StatisticalDistributions.normalCDF(Math.abs(testStatistic), 0, 1));
+    } else if (alternative === 'greater') {
+        pValue = 1 - StatisticalDistributions.normalCDF(testStatistic, 0, 1);
+    } else {
+        pValue = StatisticalDistributions.normalCDF(testStatistic, 0, 1);
+    }
+    
+    return {
+        testType: 'T-Distribution Degrees of Freedom Test',
+        nullHypothesis: `df = ${nullDF}`,
+        alternative: alternative,
+        testStatistic: testStatistic,
+        pValue: pValue,
+        observedDF: observedDF,
+        nullDF: nullDF,
+        theoreticalVariance: theoreticalVar,
+        sampleVariance: sampleVar,
+        reject: pValue < alpha,
+        conclusion: pValue < alpha ?
+            `Reject H₀: Evidence suggests df ≠ ${nullDF}` :
+            `Fail to reject H₀: Data consistent with df = ${nullDF}`,
+        method: 'Large Sample Approximation'
+    };
+}
+
+// Beta Distribution Hypothesis Test (missing)
+performBetaHypothesisTest(testConfig) {
+    const { nullAlpha, nullBeta, testParameter = 'both', alternative = 'two-sided', alpha = 0.05 } = testConfig;
+    const [observedAlpha, observedBeta] = this.distributionParams;
+    const n = this.statistics.n;
+    
+    // Likelihood ratio test for beta parameters
+    const logL1 = this.calculateLogLikelihood(); // Full model
+    let logL0;
+    
+    if (testParameter === 'alpha') {
+        logL0 = this.calculateLogLikelihoodUnderNull([nullAlpha, observedBeta]);
+    } else if (testParameter === 'beta') {
+        logL0 = this.calculateLogLikelihoodUnderNull([observedAlpha, nullBeta]);
+    } else {
+        logL0 = this.calculateLogLikelihoodUnderNull([nullAlpha, nullBeta]);
+    }
+    
+    const lrStatistic = 2 * (logL1 - logL0);
+    const df = testParameter === 'both' ? 2 : 1;
+    const pValue = 1 - StatisticalDistributions.chiSquareCDF(lrStatistic, df);
+    
+    return {
+        testType: 'Beta Distribution Parameter Test (Likelihood Ratio)',
+        nullHypothesis: testParameter === 'both' ? 
+            `α = ${nullAlpha}, β = ${nullBeta}` : 
+            testParameter === 'alpha' ? `α = ${nullAlpha}` : `β = ${nullBeta}`,
+        alternative: alternative,
+        testStatistic: lrStatistic,
+        pValue: pValue,
+        degreesOfFreedom: df,
+        observedParameters: { alpha: observedAlpha, beta: observedBeta },
+        nullParameters: { alpha: nullAlpha, beta: nullBeta },
+        reject: pValue < alpha,
+        conclusion: pValue < alpha ?
+            'Reject H₀: Evidence against null parameter values' :
+            'Fail to reject H₀: Data consistent with null parameter values',
+        method: 'Likelihood Ratio Test'
+    };
+}
+
+// =============================================================================
+// DETAILED CALCULATION WALKTHROUGHS
+// =============================================================================
+
+generateDistributionCalculationWalkthrough() {
+    switch(this.selectedDistribution) {
+        case 'normal':
+            return this.generateNormalCalculationWalkthrough();
+        case 't':
+            return this.generateTCalculationWalkthrough();
+        case 'exponential':
+            return this.generateExponentialCalculationWalkthrough();
+        case 'gamma':
+            return this.generateGammaCalculationWalkthrough();
+        case 'beta':
+            return this.generateBetaCalculationWalkthrough();
+        case 'chisquare':
+            return this.generateChiSquareCalculationWalkthrough();
+        case 'f':
+            return this.generateFCalculationWalkthrough();
+        default:
+            return this.generateGenericCalculationWalkthrough();
+    }
+}
+
+generateExponentialCalculationWalkthrough() {
+    const lambda = this.distributionParams[0];
+    const n = this.statistics.n;
+    const sampleMean = this.statistics.mean;
+    
+    return {
+        parameterEstimation: {
+            title: "Maximum Likelihood Estimation for Exponential Distribution",
+            steps: [
+                {
+                    step: "Step 1: Likelihood Function",
+                    formula: "L(λ) = λⁿ × exp(-λ × Σxᵢ)",
+                    explanation: `For n = ${n} observations, the likelihood function depends on λ and the sum of observations.`
+                },
+                {
+                    step: "Step 2: Log-Likelihood Function", 
+                    formula: "ℓ(λ) = n×ln(λ) - λ×Σxᵢ",
+                    explanation: `Taking natural log: ℓ(λ) = ${n}×ln(λ) - λ×${this.statistics.sum.toFixed(3)}`
+                },
+                {
+                    step: "Step 3: Differentiate and Set to Zero",
+                    formula: "dℓ/dλ = n/λ - Σxᵢ = 0",
+                    explanation: `Setting derivative to zero: ${n}/λ - ${this.statistics.sum.toFixed(3)} = 0`
+                },
+                {
+                    step: "Step 4: Solve for λ",
+                    formula: "λ̂ = n/Σxᵢ = 1/x̄",
+                    explanation: `λ̂ = ${n}/${this.statistics.sum.toFixed(3)} = 1/${sampleMean.toFixed(3)} = ${lambda.toFixed(4)}`
+                }
+            ],
+            result: `Maximum likelihood estimate: λ̂ = ${lambda.toFixed(4)} events per time unit`
+        },
+        confidenceInterval: this.generateExponentialCIWalkthrough(),
+        interpretation: {
+            rateParameter: `λ = ${lambda.toFixed(4)} represents the rate of occurrence`,
+            meanTime: `Expected time between events = 1/λ = ${(1/lambda).toFixed(3)} time units`,
+            probability: `P(X > t) = exp(-λt) = exp(-${lambda.toFixed(4)}×t)`
+        }
+    };
+}
+
+generateExponentialCIWalkthrough() {
+    const lambda = this.distributionParams[0];
+    const n = this.statistics.n;
+    const alpha = 0.05; // 95% CI
+    
+    return {
+        title: "95% Confidence Interval for Exponential Rate Parameter",
+        steps: [
+            {
+                step: "Step 1: Sampling Distribution",
+                explanation: `Under exponential distribution, 2nλX̄ ~ χ²(2n)`,
+                formula: `2 × ${n} × λ × ${this.statistics.mean.toFixed(3)} ~ χ²(${2*n})`
+            },
+            {
+                step: "Step 2: Chi-Square Critical Values",
+                explanation: `For 95% CI with df = ${2*n}:`,
+                formula: `χ²₀.₀₂₅,${2*n} and χ²₀.₉₇₅,${2*n}`
+            },
+            {
+                step: "Step 3: Confidence Interval Formula",
+                explanation: "Rearranging the inequality for λ:",
+                formula: `[χ²₀.₀₂₅/(2n×x̄), χ²₀.₉₇₅/(2n×x̄)]`
+            },
+            {
+                step: "Step 4: Calculate Bounds",
+                calculation: this.calculateExponentialCIBounds(alpha),
+                interpretation: "We are 95% confident the true rate parameter lies in this interval"
+            }
+        ]
+    };
+}
+
+// Normal Calculation Walkthrough (missing)
+generateNormalCalculationWalkthrough() {
+    const [mean, std] = this.distributionParams;
+    const n = this.statistics.n;
+    
+    return {
+        parameterEstimation: {
+            title: "Maximum Likelihood Estimation for Normal Distribution",
+            steps: [
+                {
+                    step: "Step 1: Sample Mean",
+                    formula: "x̄ = (1/n) × Σxᵢ",
+                    explanation: `x̄ = (1/${n}) × ${this.statistics.sum.toFixed(3)} = ${mean.toFixed(4)}`
+                },
+                {
+                    step: "Step 2: Sample Standard Deviation",
+                    formula: "s = √[(1/(n-1)) × Σ(xᵢ - x̄)²]",
+                    explanation: `s = √[(1/${n-1}) × ${((n-1) * this.statistics.variance).toFixed(3)}] = ${std.toFixed(4)}`
+                },
+                {
+                    step: "Step 3: MLE Properties",
+                    formula: "μ̂ = x̄, σ̂ = s",
+                    explanation: "Sample mean and standard deviation are unbiased estimators"
+                }
+            ],
+            result: `Normal(μ = ${mean.toFixed(4)}, σ = ${std.toFixed(4)})`
+        },
+        standardization: {
+            title: "Standardization Process",
+            formula: "Z = (X - μ)/σ ~ N(0,1)",
+            explanation: `Any value x can be standardized: z = (x - ${mean.toFixed(4)})/${std.toFixed(4)}`
+        },
+        confidenceInterval: {
+            title: "Confidence Interval for Mean",
+            formula: `x̄ ± t_{α/2,${n-1}} × (s/√n)`,
+            calculation: this.calculateMeanConfidenceInterval(0.95)
+        }
+    };
+}
+
+// T-Distribution Calculation Walkthrough (missing)
+generateTCalculationWalkthrough() {
+    const df = this.distributionParams[0];
+    
+    return {
+        parameterEstimation: {
+            title: "T-Distribution Parameter Estimation",
+            steps: [
+                {
+                    step: "Step 1: Degrees of Freedom",
+                    formula: "df = n - 1 (for one-sample case)",
+                    explanation: `df = ${this.statistics.n} - 1 = ${df}`
+                },
+                {
+                    step: "Step 2: Distribution Properties",
+                    formula: "E[T] = 0 (for df > 1), Var[T] = df/(df-2) (for df > 2)",
+                    explanation: df > 2 ? `Variance = ${df}/(${df}-2) = ${(df/(df-2)).toFixed(4)}` : "Variance undefined for df ≤ 2"
+                }
+            ],
+            result: `t-distribution with df = ${df}`
+        },
+        comparison: {
+            title: "Comparison with Standard Normal",
+            explanation: df > 30 ? 
+                "With df > 30, t-distribution closely approximates standard normal" :
+                "With small df, t-distribution has heavier tails than normal"
+        },
+        criticalValues: this.calculateTCriticalValues(df)
+    };
+}
+
+// Beta Calculation Walkthrough (missing)
+generateBetaCalculationWalkthrough() {
+    const [alpha, beta] = this.distributionParams;
+    const n = this.statistics.n;
+    
+    return {
+        parameterEstimation: {
+            title: "Method of Moments for Beta Distribution",
+            steps: [
+                {
+                    step: "Step 1: Sample Mean and Variance",
+                    formula: "x̄ = sample mean, s² = sample variance",
+                    explanation: `x̄ = ${this.statistics.mean.toFixed(4)}, s² = ${this.statistics.variance.toFixed(6)}`
+                },
+                {
+                    step: "Step 2: Method of Moments Equations",
+                    formula: "μ = α/(α+β), σ² = αβ/[(α+β)²(α+β+1)]",
+                    explanation: "Solve for α and β using sample moments"
+                },
+                {
+                    step: "Step 3: Parameter Solutions",
+                    formula: "α = μ × [μ(1-μ)/σ² - 1], β = (1-μ) × [μ(1-μ)/σ² - 1]",
+                    explanation: `α = ${alpha.toFixed(4)}, β = ${beta.toFixed(4)}`
+                }
+            ],
+            result: `Beta(α = ${alpha.toFixed(4)}, β = ${beta.toFixed(4)})`
+        },
+        properties: {
+            title: "Distribution Properties",
+            mean: alpha / (alpha + beta),
+            variance: (alpha * beta) / ((alpha + beta)^2 * (alpha + beta + 1)),
+            mode: alpha > 1 && beta > 1 ? (alpha - 1)/(alpha + beta - 2) : 'Undefined',
+            shape: this.describeBetaShape(alpha, beta)
+        }
+    };
+}
+
+
+// =============================================================================
+// ENHANCED WORKBOOK TEMPLATE GENERATION
+// =============================================================================
+
+generateDistributionSpecificTemplate() {
+    const data = [];
+
+    // Base template sections
+    data.push(...this.generateHeaderSection());
+    data.push(...this.generateSampleDataSection());
+    data.push(...this.generateBasicStatisticsSection());
+    data.push(...this.generateParameterEstimationSection());
+    data.push(...this.generateParameterConfidenceIntervalsSection());
+    data.push(...this.generateDistributionAnalysisSection());
+
+    if (this.targetAnalysis && Object.keys(this.targetAnalysis).length > 0) {
+        data.push(...this.generateDistributionTargetAnalysisSection());
+    }
+
+    if (this.hypothesisTests && Object.keys(this.hypothesisTests).length > 0) {
+        data.push(...this.generateHypothesisTestSection()); // Fixed method name
+    }
+
+    data.push(...this.generateGoodnessOfFitSection());
+    data.push(...this.generateDistributionCalculationWalkthroughSection()); // Fixed method name
+    data.push(...this.generateConfidenceIntervalsSection());
+    data.push(...this.generatePracticalRecommendationsSection());
+
+    return data;
+}
+
+generateParameterEstimationSection() {
+    const data = [];
+    const dist = DistributionRegistry.getDistribution(this.selectedDistribution);
+    
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: `${dist.name.toUpperCase()} PARAMETER ESTIMATION`, type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+    
+    // Parameter estimates with interpretations
+    dist.params.forEach((param, index) => {
+        const paramValue = this.distributionParams[index];
+        const paramName = dist.paramNames[index];
+        const interpretation = this.getParameterInterpretation(param, paramValue);
+        
+        data.push([
+            { value: `${paramName}:`, type: 'label' },
+            { value: paramValue.toFixed(4), type: 'result' },
+            { value: interpretation, type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    });
+    
+    // Add distribution properties
+    const properties = this.calculateDistributionProperties();
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'DISTRIBUTION PROPERTIES', type: 'header' },
+        { value: '', type: 'header' },
+        { value: '', type: 'header' },
+        { value: '', type: 'header' }
+    ]);
+    
+    Object.entries(properties).forEach(([property, value]) => {
+        data.push([
+            { value: `${property}:`, type: 'label' },
+            { value: value.value, type: 'result' },
+            { value: value.interpretation || '', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    });
+    
+    return data;
+}
+
+generateParameterConfidenceIntervalsSection() {
+    if (!this.parameterConfidenceIntervals) return [];
+    
+    const data = [];
+    
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'PARAMETER CONFIDENCE INTERVALS', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+    
+    Object.entries(this.parameterConfidenceIntervals).forEach(([level, intervals]) => {
+        const percentage = Math.round(level * 100);
+        
+        data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+        data.push([
+            { value: `${percentage}% CONFIDENCE INTERVALS`, type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' }
+        ]);
+        
+        Object.entries(intervals.parameters).forEach(([paramName, paramCI]) => {
+            data.push([
+                { value: `${paramName}:`, type: 'label' },
+                { value: `[${paramCI.lowerBound.toFixed(4)}, ${paramCI.upperBound.toFixed(4)}]`, type: 'result' },
+                { value: paramCI.interpretation || '', type: 'data' },
+                { value: '', type: 'data' }
+            ]);
+        });
+    });
+    
+    return data;
+}
+
+// =============================================================================
+// UTILITY FUNCTIONS
+// =============================================================================
+
+getParameterInterpretation(paramName, paramValue) {
+    switch(this.selectedDistribution) {
+        case 'normal':
+            if (paramName === 'mean') return `Location parameter: ${paramValue.toFixed(4)} ${this.unitName}`;
+            if (paramName === 'std') return `Scale parameter: ${paramValue.toFixed(4)} ${this.unitName}`;
+            break;
+        case 't':
+            return `Degrees of freedom: ${paramValue.toFixed(0)}, controls tail behavior`;
+        case 'exponential':
+            return `Rate: ${paramValue.toFixed(4)} events per time unit`;
+        case 'gamma':
+            if (paramName === 'shape') {
+                return paramValue > 1 ? 'Distribution is right-skewed' : 'Distribution is highly right-skewed';
+            } else {
+                return `Scale stretches distribution by factor ${paramValue.toFixed(2)}`;
+            }
+        case 'beta':
+            if (paramName === 'alpha') {
+                return paramValue > 1 ? 'Favors higher values' : 'Favors lower values';
+            } else {
+                return paramValue > 1 ? 'Favors lower values' : 'Favors higher values';
+            }
+        case 'chisquare':
+            return `Degrees of freedom: ${paramValue.toFixed(0)}, determines shape and spread`;
+        case 'f':
+            if (paramName === 'df1') return `Numerator df: ${paramValue.toFixed(0)}`;
+            if (paramName === 'df2') return `Denominator df: ${paramValue.toFixed(0)}`;
+            break;
+        default:
+            return `Parameter value: ${paramValue.toFixed(4)}`;
+    }
+}
+
+
+assessExponentialPracticalSignificance(effectSize) {
+    if (effectSize < 0.2) return 'Negligible';
+    if (effectSize < 0.5) return 'Small';
+    if (effectSize < 0.8) return 'Medium';
+    return 'Large';
+}
+
+generateExponentialRecommendation(effectSize, probability) {
+    if (effectSize < 0.2) {
+        return "The data is consistent with the exponential model. No action needed.";
+    } else if (effectSize < 0.8) {
+        return "Moderate evidence suggests reviewing the exponential assumption or parameter values.";
+    } else {
+        return "Strong evidence against the current exponential model. Consider alternative distributions or parameter adjustment.";
+    }
+}
+
+// Complete calculateDistributionProperties() and remaining methods
+// Add to existing EnhancedStatisticalWorkbook class
+
+calculateDistributionProperties() {
+    switch(this.selectedDistribution) {
+        case 'normal':
+            const [mean, std] = this.distributionParams;
+            return {
+                'Expected Value': { value: `${mean.toFixed(4)} ${this.unitName}`, interpretation: 'Center of distribution' },
+                'Standard Deviation': { value: `${std.toFixed(4)} ${this.unitName}`, interpretation: 'Measure of spread' },
+                'Variance': { value: `${(std*std).toFixed(4)} ${this.unitName}²`, interpretation: 'Squared standard deviation' },
+                'Skewness': { value: '0.000', interpretation: 'Perfectly symmetric' },
+                'Kurtosis': { value: '3.000', interpretation: 'Mesokurtic (normal tail behavior)' }
+            };
+        case 't':
+            const df = this.distributionParams[0];
+            return {
+                'Degrees of Freedom': { value: df.toString(), interpretation: 'Parameter controlling tail behavior' },
+                'Expected Value': { value: '0.000', interpretation: 'Center at zero' },
+                'Variance': { value: df > 2 ? (df/(df-2)).toFixed(4) : 'Undefined', interpretation: df > 2 ? 'Decreases as df increases' : 'Undefined for df ≤ 2' },
+                'Skewness': { value: '0.000', interpretation: 'Symmetric distribution' },
+                'Tail Behavior': { value: df > 30 ? 'Normal-like' : 'Heavy tails', interpretation: 'Approaches normal as df → ∞' }
+            };
+        case 'exponential':
+            const lambda = this.distributionParams[0];
+            return {
+                'Expected Value': { value: `${(1/lambda).toFixed(4)} ${this.unitName}`, interpretation: 'Mean time between events' },
+                'Variance': { value: `${(1/(lambda*lambda)).toFixed(4)} ${this.unitName}²`, interpretation: 'Variability in timing' },
+                'Standard Deviation': { value: `${(1/lambda).toFixed(4)} ${this.unitName}`, interpretation: 'Same as expected value' },
+                'Median': { value: `${(Math.log(2)/lambda).toFixed(4)} ${this.unitName}`, interpretation: '50th percentile' },
+                'Mode': { value: `0 ${this.unitName}`, interpretation: 'Most likely value' },
+                'Skewness': { value: '2.000', interpretation: 'Highly right-skewed' },
+                'Kurtosis': { value: '9.000', interpretation: 'Heavy right tail' }
+            };
+        case 'gamma':
+            const [shape, scale] = this.distributionParams;
+            const meanG = shape * scale;
+            const varianceG = shape * scale * scale;
+            const skewnessG = 2 / Math.sqrt(shape);
+            const kurtosisG = 3 + 6/shape;
+            const modeG = shape > 1 ? (shape - 1) * scale : 0;
+            
+            return {
+                'Expected Value': { value: `${meanG.toFixed(4)} ${this.unitName}`, interpretation: 'Average value' },
+                'Variance': { value: `${varianceG.toFixed(4)} ${this.unitName}²`, interpretation: 'Spread increases with both parameters' },
+                'Standard Deviation': { value: `${Math.sqrt(varianceG).toFixed(4)} ${this.unitName}`, interpretation: 'Square root of variance' },
+                'Mode': { value: shape > 1 ? `${modeG.toFixed(4)} ${this.unitName}` : `0 ${this.unitName}`, interpretation: shape > 1 ? 'Most likely value' : 'Distribution starts at zero' },
+                'Median': { value: 'No closed form', interpretation: 'Approximately ' + (meanG * 0.9).toFixed(2) + ' ' + this.unitName },
+                'Skewness': { value: skewnessG.toFixed(4), interpretation: skewnessG > 1 ? 'Highly right-skewed' : 'Moderately right-skewed' },
+                'Kurtosis': { value: kurtosisG.toFixed(4), interpretation: 'Tail heaviness depends on shape parameter' }
+            };
+            
+        case 'beta':
+            const [alpha, beta] = this.distributionParams;
+            const meanB = alpha / (alpha + beta);
+            const varianceB = (alpha * beta) / ((alpha + beta) * (alpha + beta) * (alpha + beta + 1));
+            const modeB = (alpha > 1 && beta > 1) ? (alpha - 1) / (alpha + beta - 2) : null;
+            const skewnessB = (2 * (beta - alpha) * Math.sqrt(alpha + beta + 1)) / ((alpha + beta + 2) * Math.sqrt(alpha * beta));
+            
+            return {
+                'Expected Value': { value: meanB.toFixed(4), interpretation: 'Mean proportion/probability' },
+                'Variance': { value: varianceB.toFixed(6), interpretation: 'Variability in proportion' },
+                'Standard Deviation': { value: Math.sqrt(varianceB).toFixed(4), interpretation: 'Standard error of proportion' },
+                'Mode': { value: modeB ? modeB.toFixed(4) : 'N/A', interpretation: modeB ? 'Most likely proportion' : 'No unique mode (uniform or U-shaped)' },
+                'Median': { value: 'No closed form', interpretation: 'Approximately ' + meanB.toFixed(3) },
+                'Skewness': { value: skewnessB.toFixed(4), interpretation: this.interpretBetaSkewness(skewnessB) },
+                'Shape': { value: this.describeBetaShape(alpha, beta), interpretation: 'Overall distribution shape' }
+            };
+            
+        case 'chisquare':
+            const dfChi = this.distributionParams[0];
+            const meanChi = dfChi;
+            const varianceChi = 2 * dfChi;
+            const skewnessChi = Math.sqrt(8 / dfChi);
+            const kurtosisChi = 3 + 12 / dfChi;
+            
+            return {
+                'Expected Value': { value: `${meanChi.toFixed(4)} ${this.unitName}`, interpretation: 'Mean equals degrees of freedom' },
+                'Variance': { value: `${varianceChi.toFixed(4)} ${this.unitName}²`, interpretation: 'Variance is twice the degrees of freedom' },
+                'Standard Deviation': { value: `${Math.sqrt(varianceChi).toFixed(4)} ${this.unitName}`, interpretation: 'Square root of 2df' },
+                'Mode': { value: dfChi > 2 ? `${(dfChi - 2).toFixed(4)} ${this.unitName}` : `0 ${this.unitName}`, interpretation: dfChi > 2 ? 'Peak of distribution' : 'Mode at zero' },
+                'Skewness': { value: skewnessChi.toFixed(4), interpretation: dfChi > 10 ? 'Moderately right-skewed' : 'Highly right-skewed' },
+                'Kurtosis': { value: kurtosisChi.toFixed(4), interpretation: 'Approaches normal as df increases' }
+            };
+            
+        case 'f':
+            const [df1, df2] = this.distributionParams;
+            const meanF = df2 > 2 ? df2 / (df2 - 2) : 'Undefined';
+            const varianceF = df2 > 4 ? (2 * df2 * df2 * (df1 + df2 - 2)) / (df1 * (df2 - 2) * (df2 - 2) * (df2 - 4)) : 'Undefined';
+            const modeF = df1 > 2 ? ((df1 - 2) / df1) * (df2 / (df2 + 2)) : 0;
+            
+            return {
+                'Expected Value': { value: typeof meanF === 'number' ? `${meanF.toFixed(4)} ${this.unitName}` : meanF, interpretation: 'Mean exists only for df2 > 2' },
+                'Variance': { value: typeof varianceF === 'number' ? `${varianceF.toFixed(4)} ${this.unitName}²` : varianceF, interpretation: 'Variance exists only for df2 > 4' },
+                'Mode': { value: `${modeF.toFixed(4)} ${this.unitName}`, interpretation: 'Most likely F-statistic value' },
+                'Numerator DF': { value: df1.toString(), interpretation: 'Degrees of freedom in numerator' },
+                'Denominator DF': { value: df2.toString(), interpretation: 'Degrees of freedom in denominator' },
+                'Shape': { value: df1 > 5 && df2 > 5 ? 'Bell-shaped' : 'Right-skewed', interpretation: 'Shape depends on both df parameters' }
+            };
+            
+        default:
+            return {
+                'Distribution': { value: this.selectedDistribution, interpretation: 'Selected distribution type' },
+                'Parameters': { value: this.distributionParams.join(', '), interpretation: 'Estimated parameter values' }
+            };
+    }
+}
+
+describeBetaShape(alpha, beta) {
+    if (alpha < 1 && beta < 1) return 'U-shaped';
+    if (alpha === 1 && beta === 1) return 'Uniform';
+    if (alpha > 1 && beta > 1) return 'Bell-shaped';
+    if (alpha < 1 || beta < 1) return 'J-shaped';
+    return 'Unimodal';
+}
+
+interpretBetaSkewness(skewness) {
+    if (Math.abs(skewness) < 0.5) return 'Nearly symmetric';
+    if (skewness > 0) return 'Right-skewed (favors lower values)';
+    return 'Left-skewed (favors higher values)';
+}
+
+calculateTCriticalValues(df) {
+    return {
+        title: "Critical Values for Common Significance Levels",
+        values: {
+            '0.10': { 
+                oneTailed: StatisticalDistributions.tInverse(0.90, df).toFixed(4),
+                twoTailed: StatisticalDistributions.tInverse(0.95, df).toFixed(4)
+            },
+            '0.05': { 
+                oneTailed: StatisticalDistributions.tInverse(0.95, df).toFixed(4),
+                twoTailed: StatisticalDistributions.tInverse(0.975, df).toFixed(4)
+            },
+            '0.01': { 
+                oneTailed: StatisticalDistributions.tInverse(0.99, df).toFixed(4),
+                twoTailed: StatisticalDistributions.tInverse(0.995, df).toFixed(4)
+            }
+        }
+    };
+}
+
+calculateExponentialCIBounds(alpha) {
+    const lambda = this.distributionParams[0];
+    const n = this.statistics.n;
+    const mean = this.statistics.mean;
+    
+    const chiLower = StatisticalDistributions.chiSquareInverse(alpha/2, 2*n);
+    const chiUpper = StatisticalDistributions.chiSquareInverse(1 - alpha/2, 2*n);
+    
+    const lowerBound = chiLower / (2 * n * mean);
+    const upperBound = chiUpper / (2 * n * mean);
+    
+    return {
+        lowerBound: lowerBound.toFixed(6),
+        upperBound: upperBound.toFixed(6),
+        interpretation: `95% CI for rate parameter: [${lowerBound.toFixed(6)}, ${upperBound.toFixed(6)}]`
+    };
+}
+
+// Generate complete workbook sections
+generateHeaderSection() {
+    const data = [];
+    
+    data.push([
+        { value: 'ENHANCED STATISTICAL DISTRIBUTION ANALYSIS WORKBOOK', type: 'header' },
+        { value: '', type: 'header' },
+        { value: '', type: 'header' },
+        { value: '', type: 'header' }
+    ]);
+    
+    data.push([
+        { value: `Analysis Date: ${new Date().toLocaleDateString()}`, type: 'data' },
+        { value: `Distribution: ${DistributionRegistry.getDistribution(this.selectedDistribution).name}`, type: 'data' },
+        { value: `Sample Size: ${this.statistics.n}`, type: 'data' },
+        { value: '', type: 'data' }
+    ]);
+    
+    data.push([
+        { value: `Sample Name: ${this.sampleName}`, type: 'data' },
+        { value: `Variable: ${this.variableName}`, type: 'data' },
+        { value: `Units: ${this.unitName}`, type: 'data' },
+        { value: '', type: 'data' }
+    ]);
+    
+    if (this.scenarioDescription) {
+        data.push([
+            { value: `Description: ${this.scenarioDescription}`, type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    }
+    
+    return data;
+}
+
+generateSampleDataSection() {
+    const data = [];
+    
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'SAMPLE DATA (First 20 values)', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+    
+    const displayData = this.rawSamples.slice(0, 20);
+    for (let i = 0; i < displayData.length; i += 4) {
+        const row = [];
+        for (let j = 0; j < 4; j++) {
+            if (i + j < displayData.length) {
+                row.push({ value: displayData[i + j].toFixed(4), type: 'data' });
+            } else {
+                row.push({ value: '', type: 'data' });
+            }
+        }
+        data.push(row);
+    }
+    
+    if (this.rawSamples.length > 20) {
+        data.push([
+            { value: `... and ${this.rawSamples.length - 20} more values`, type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    }
+    
+    return data;
+}
+
+generateBasicStatisticsSection() {
+    const data = [];
+    
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'DESCRIPTIVE STATISTICS', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+    
+    const stats = [
+        ['Sample Size (n):', this.statistics.n, ''],
+        ['Mean:', this.statistics.mean.toFixed(4), this.unitName],
+        ['Median:', this.statistics.median.toFixed(4), this.unitName],
+        ['Standard Deviation:', this.statistics.standardDeviation.toFixed(4), this.unitName],
+        ['Variance:', this.statistics.variance.toFixed(4), this.unitName + '²'],
+        ['Minimum:', this.statistics.min.toFixed(4), this.unitName],
+        ['Maximum:', this.statistics.max.toFixed(4), this.unitName],
+        ['Range:', this.statistics.range.toFixed(4), this.unitName],
+        ['Q1 (25th percentile):', this.statistics.q1.toFixed(4), this.unitName],
+        ['Q3 (75th percentile):', this.statistics.q3.toFixed(4), this.unitName],
+        ['IQR:', this.statistics.iqr.toFixed(4), this.unitName],
+        ['Skewness:', this.statistics.skewness.toFixed(4), ''],
+        ['Kurtosis:', this.statistics.kurtosis.toFixed(4), '']
+    ];
+    
+    stats.forEach(([label, value, unit]) => {
+        data.push([
+            { value: label, type: 'label' },
+            { value: value.toString(), type: 'result' },
+            { value: unit, type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    });
+    
+    return data;
+}
+
+generateDistributionAnalysisSection() {
+    const data = [];
+    
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'DISTRIBUTION ANALYSIS', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+    
+    data.push([
+        { value: 'Distribution:', type: 'label' },
+        { value: this.distributionAnalysis.distribution, type: 'result' },
+        { value: DistributionRegistry.getDistribution(this.selectedDistribution).name, type: 'data' },
+        { value: '', type: 'data' }
+    ]);
+    
+    data.push([
+        { value: 'Log-Likelihood:', type: 'label' },
+        { value: this.distributionAnalysis.logLikelihood.toFixed(4), type: 'result' },
+        { value: 'Model fit measure', type: 'data' },
+        { value: '', type: 'data' }
+    ]);
+    
+    data.push([
+        { value: 'AIC:', type: 'label' },
+        { value: this.distributionAnalysis.aic.toFixed(4), type: 'result' },
+        { value: 'Lower is better', type: 'data' },
+        { value: '', type: 'data' }
+    ]);
+    
+    data.push([
+        { value: 'BIC:', type: 'label' },
+        { value: this.distributionAnalysis.bic.toFixed(4), type: 'result' },
+        { value: 'Lower is better', type: 'data' },
+        { value: '', type: 'data' }
+    ]);
+    
+    return data;
+}
+
+generateGoodnessOfFitSection() {
+    const data = [];
+    
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'GOODNESS OF FIT TESTS', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+    
+    // Kolmogorov-Smirnov Test
+    if (this.goodnessOfFit.kolmogorovSmirnov) {
+        const ks = this.goodnessOfFit.kolmogorovSmirnov;
+        data.push([
+            { value: 'KOLMOGOROV-SMIRNOV TEST', type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' }
+        ]);
+        
+        data.push([
+            { value: 'Test Statistic:', type: 'label' },
+            { value: ks.testStatistic.toFixed(6), type: 'result' },
+            { value: 'Maximum difference between CDFs', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+        
+        data.push([
+            { value: 'P-Value:', type: 'label' },
+            { value: ks.pValue.toFixed(6), type: 'result' },
+            { value: ks.pValue < 0.05 ? 'Reject H0 (poor fit)' : 'Fail to reject H0 (good fit)', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    }
+    
+    // Chi-square test
+    if (this.goodnessOfFit.chisquareTest) {
+        const chi = this.goodnessOfFit.chisquareTest;
+        data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+        data.push([
+            { value: 'CHI-SQUARE GOODNESS OF FIT', type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' }
+        ]);
+        
+        data.push([
+            { value: 'Test Statistic:', type: 'label' },
+            { value: chi.testStatistic.toFixed(4), type: 'result' },
+            { value: `df = ${chi.degreesOfFreedom}`, type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+        
+        data.push([
+            { value: 'P-Value:', type: 'label' },
+            { value: chi.pValue.toFixed(6), type: 'result' },
+            { value: chi.pValue < 0.05 ? 'Reject H0 (poor fit)' : 'Fail to reject H0 (good fit)', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    }
+    
+    return data;
+}
+
+generatePracticalRecommendationsSection() {
+    const data = [];
+    
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'PRACTICAL RECOMMENDATIONS', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+    
+    const recommendations = this.generatePracticalRecommendations();
+    
+    recommendations.forEach((rec, index) => {
+        data.push([
+            { value: `${index + 1}. ${rec}`, type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    });
+    
+    return data;
+}
+
+// Complete the remaining sections and fix missing distributions
+
+// Add missing distributions to practical recommendations
+generatePracticalRecommendations() {
+    const recommendations = [];
+    const dist = DistributionRegistry.getDistribution(this.selectedDistribution);
+
+    // Distribution-specific recommendations - Complete all distributions
+    switch(this.selectedDistribution) {
+        case 'normal':
+            recommendations.push("The normal distribution is appropriate for continuous data with symmetric, bell-shaped patterns.");
+            recommendations.push("Use for measurement errors, natural phenomena following the Central Limit Theorem.");
+            if (Math.abs(this.statistics.skewness) > 0.5) {
+                recommendations.push("Warning: Data shows significant skewness. Consider data transformation or alternative distributions.");
+            }
+            break;
+
+        case 't':
+            recommendations.push("T-distribution is appropriate for small sample hypothesis testing.");
+            const df = this.distributionParams[0];
+            if (df > 30) {
+                recommendations.push("With df > 30, results are very similar to normal distribution.");
+            } else {
+                recommendations.push("Heavy tails account for additional uncertainty with small samples.");
+            }
+            recommendations.push("Use for confidence intervals when population variance is unknown.");
+            break;
+
+        case 'exponential':
+            recommendations.push("Exponential distribution is ideal for modeling time between events in Poisson processes.");
+            recommendations.push(`Expected wait time: ${(1/this.distributionParams[0]).toFixed(2)} ${this.unitName}`);
+            recommendations.push("Use for reliability analysis, survival times, or queueing systems.");
+            recommendations.push("Memoryless property: P(X > s+t | X > s) = P(X > t)");
+            break;
+
+        case 'gamma':
+            recommendations.push("Gamma distribution models waiting times for multiple events.");
+            const [shape] = this.distributionParams;
+            if (shape < 1) {
+                recommendations.push("Shape < 1 indicates decreasing hazard rate over time.");
+            } else if (shape > 1) {
+                recommendations.push("Shape > 1 indicates increasing hazard rate over time.");
+            } else {
+                recommendations.push("Shape = 1 reduces to exponential distribution.");
+            }
+            recommendations.push("Use for modeling aggregate waiting times or continuous positive-valued data.");
+            break;
+
+        case 'beta':
+            recommendations.push("Beta distribution is ideal for modeling proportions, percentages, or probabilities.");
+            recommendations.push("Bounded between 0 and 1, making it perfect for rates and proportions.");
+            const [alpha, beta] = this.distributionParams;
+            if (alpha > 1 && beta > 1) {
+                recommendations.push("Bell-shaped: data concentrates around the mean.");
+            } else if (alpha < 1 && beta < 1) {
+                recommendations.push("U-shaped: data concentrates at extremes (0 and 1).");
+            } else if (alpha === 1 && beta === 1) {
+                recommendations.push("Uniform: all values between 0 and 1 equally likely.");
+            }
+            break;
+
+        case 'chisquare':
+            recommendations.push("Chi-square distribution is used for goodness-of-fit tests and variance testing.");
+            const dfChi = this.distributionParams[0];
+            recommendations.push(`With ${dfChi} degrees of freedom, mean = ${dfChi}, variance = ${2*dfChi}.`);
+            if (dfChi > 30) {
+                recommendations.push("Large df: distribution approaches normal shape.");
+            } else {
+                recommendations.push("Small df: highly right-skewed distribution.");
+            }
+            recommendations.push("Use for testing independence in contingency tables or variance tests.");
+            break;
+
+        case 'f':
+            const [df1, df2] = this.distributionParams;
+            recommendations.push("F-distribution is used for comparing variances and ANOVA.");
+            recommendations.push(`Numerator df = ${df1}, Denominator df = ${df2}`);
+            recommendations.push("Use for testing equality of variances between groups.");
+            if (df1 > 5 && df2 > 5) {
+                recommendations.push("Both df > 5: distribution is approximately bell-shaped.");
+            } else {
+                recommendations.push("Small df values: distribution is right-skewed.");
+            }
+            recommendations.push("Critical for ANOVA F-tests and regression analysis.");
+            break;
+
+        default:
+            recommendations.push(`${dist.name} distribution analysis completed.`);
+            recommendations.push("Refer to distribution-specific literature for detailed interpretation.");
+    }
+
+    // Goodness of fit recommendations
+    const ksTest = this.goodnessOfFit.kolmogorovSmirnov;
+    if (ksTest && ksTest.pValue < 0.05) {
+        recommendations.push("Goodness of fit tests suggest the distribution may not be appropriate. Consider alternative distributions.");
+    } else if (ksTest) {
+        recommendations.push("Goodness of fit tests support the chosen distribution.");
+    }
+
+    // Sample size recommendations
+    if (this.statistics.n < 30) {
+        recommendations.push("Small sample size: Results should be interpreted cautiously. Consider collecting more data.");
+    } else if (this.statistics.n > 100) {
+        recommendations.push("Large sample size provides reliable parameter estimates and test results.");
+    }
+
+    // Distribution comparison recommendations
+    if (Object.keys(this.comparisonResults).length > 0) {
+        const bestFit = this.comparisonResults.bestFit;
+        recommendations.push(`Among compared distributions, ${DistributionRegistry.getDistribution(bestFit).name} provides the best fit.`);
+    }
+
+    return recommendations;
+}
+
+// Complete the missing hypothesis tests section
+generateHypothesisTestsSection() {
+    const data = [];
+
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'HYPOTHESIS TESTS', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+
+    Object.entries(this.hypothesisTests).forEach(([testName, test]) => {
+        data.push([
+            { value: test.testType.toUpperCase(), type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' }
+        ]);
+
+        data.push([
+            { value: 'Null Hypothesis:', type: 'label' },
+            { value: test.nullHypothesis, type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+
+        data.push([
+            { value: 'Test Statistic:', type: 'label' },
+            { value: test.testStatistic.toFixed(4), type: 'result' },
+            { value: test.method || '', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+
+        data.push([
+            { value: 'P-Value:', type: 'label' },
+            { value: test.pValue.toFixed(6), type: 'result' },
+            { value: test.reject ? 'Reject H₀' : 'Fail to reject H₀', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+
+        data.push([
+            { value: 'Conclusion:', type: 'label' },
+            { value: test.conclusion, type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+
+        // Add additional test-specific information
+        if (test.degreesOfFreedom !== undefined) {
+            data.push([
+                { value: 'Degrees of Freedom:', type: 'label' },
+                { value: test.degreesOfFreedom.toString(), type: 'result' },
+                { value: '', type: 'data' },
+                { value: '', type: 'data' }
+            ]);
+        }
+
+        if (test.confidenceInterval) {
+            const ci = test.confidenceInterval;
+            data.push([
+                { value: `${Math.round((1-0.05)*100)}% CI:`, type: 'label' },
+                { value: `[${ci.lowerBound.toFixed(4)}, ${ci.upperBound.toFixed(4)}]`, type: 'result' },
+                { value: '', type: 'data' },
+                { value: '', type: 'data' }
+            ]);
+        }
+
+        // Add spacing between tests
+        data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    });
+
+    return data;
+}
+
+
+
+// Complete the comparison section
+generateComparisonSection() {
+    const data = [];
+
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'DISTRIBUTION COMPARISON', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+
+    // Summary
+    data.push([
+        { value: 'Best Fit Distribution:', type: 'label' },
+        { value: DistributionRegistry.getDistribution(this.comparisonResults.bestFit).name, type: 'result' },
+        { value: 'Based on AIC criteria', type: 'data' },
+        { value: '', type: 'data' }
+    ]);
+
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+
+    // Comparison table header
+    data.push([
+        { value: 'Distribution', type: 'header' },
+        { value: 'AIC', type: 'header' },
+        { value: 'BIC', type: 'header' },
+        { value: 'Rank', type: 'header' }
+    ]);
+
+    // Sort distributions by rank
+    const sortedDistributions = Object.entries(this.comparisonResults.distributions)
+        .sort((a, b) => a[1].rank - b[1].rank);
+
+    sortedDistributions.forEach(([distName, result]) => {
+        data.push([
+            { value: result.name, type: 'data' },
+            { value: result.aic.toFixed(2), type: 'result' },
+            { value: result.bic.toFixed(2), type: 'result' },
+            { value: result.rank.toString(), type: result.rank === 1 ? 'result' : 'data' }
+        ]);
+    });
+
+    // Recommendations
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'COMPARISON RECOMMENDATIONS', type: 'header' },
+        { value: '', type: 'header' },
+        { value: '', type: 'header' },
+        { value: '', type: 'header' }
+    ]);
+
+    this.comparisonResults.summary.recommendations.forEach((rec, index) => {
+        data.push([
+            { value: `${index + 1}. ${rec}`, type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    });
+
+    return data;
+}
+
+// Add target analysis section if exists
+generateDistributionTargetAnalysisSection() {
+    if (!this.targetAnalysis || Object.keys(this.targetAnalysis).length === 0) return [];
+
+    const data = [];
+    const target = this.targetAnalysis;
+
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'TARGET VALUE ANALYSIS', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+
+    data.push([
+        { value: 'Target Value:', type: 'label' },
+        { value: target.targetValue.toString(), type: 'result' },
+        { value: target.targetType || '', type: 'data' },
+        { value: '', type: 'data' }
+    ]);
+
+    if (target.probabilities) {
+        data.push([
+            { value: 'P(X ≤ target):', type: 'label' },
+            { value: target.probabilities.lessThan.toFixed(4), type: 'result' },
+            { value: `${(target.probabilities.lessThan * 100).toFixed(2)}%`, type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+
+        data.push([
+            { value: 'P(X > target):', type: 'label' },
+            { value: target.probabilities.greaterThan.toFixed(4), type: 'result' },
+            { value: `${(target.probabilities.greaterThan * 100).toFixed(2)}%`, type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    }
+
+    if (target.effectSize !== undefined) {
+        data.push([
+            { value: 'Effect Size:', type: 'label' },
+            { value: target.effectSize.toFixed(4), type: 'result' },
+            { value: target.practicalSignificance || '', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    }
+
+    if (target.recommendation) {
+        data.push([
+            { value: 'Recommendation:', type: 'label' },
+            { value: target.recommendation, type: 'data' },
+            { value: '', type: 'data' },
+            { value: '', type: 'data' }
+        ]);
+    }
+
+    return data;
+}
+
+// Add the missing calculation walkthrough section method
+generateDistributionCalculationWalkthroughSection() {
+    const data = [];
+    const walkthrough = this.generateDistributionCalculationWalkthrough();
+
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'CALCULATION WALKTHROUGH', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+
+    // Parameter Estimation Section
+    if (walkthrough.parameterEstimation) {
+        const paramEst = walkthrough.parameterEstimation;
+        
+        data.push([
+            { value: paramEst.title.toUpperCase(), type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' }
+        ]);
+
+        if (paramEst.steps) {
+            paramEst.steps.forEach((step, index) => {
+                data.push([
+                    { value: step.step, type: 'label' },
+                    { value: step.formula || '', type: 'formula' },
+                    { value: '', type: 'data' },
+                    { value: '', type: 'data' }
+                ]);
+                
+                if (step.explanation) {
+                    data.push([
+                        { value: '', type: 'data' },
+                        { value: step.explanation, type: 'data' },
+                        { value: '', type: 'data' },
+                        { value: '', type: 'data' }
+                    ]);
+                }
+                
+                data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+            });
+        }
+
+        if (paramEst.result) {
+            data.push([
+                { value: 'Result:', type: 'label' },
+                { value: paramEst.result, type: 'result' },
+                { value: '', type: 'data' },
+                { value: '', type: 'data' }
+            ]);
+        }
+    }
+
+    // Interpretation Section
+    if (walkthrough.interpretation) {
+        data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+        data.push([
+            { value: 'INTERPRETATION', type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' },
+            { value: '', type: 'header' }
+        ]);
+
+        Object.entries(walkthrough.interpretation).forEach(([key, value]) => {
+            data.push([
+                { value: `${key}:`, type: 'label' },
+                { value: value, type: 'data' },
+                { value: '', type: 'data' },
+                { value: '', type: 'data' }
+            ]);
+        });
+    }
+
+    return data;
+}
+
+// Enhanced confidence intervals section
+generateConfidenceIntervalsSection() {
+    const data = [];
+
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'DISTRIBUTION CONFIDENCE INTERVALS', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' },
+        { value: '', type: 'section' }
+    ]);
+
+    // Add explanation
+    data.push([
+        { value: 'Confidence intervals for distribution values', type: 'data' },
+        { value: '', type: 'data' },
+        { value: '', type: 'data' },
+        { value: '', type: 'data' }
+    ]);
+
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+
+    Object.entries(this.confidenceIntervals).forEach(([level, ci]) => {
+        const percentage = Math.round(level * 100);
+        data.push([
+            { value: `${percentage}% CI:`, type: 'label' },
+            { value: `[${ci.lowerBound.toFixed(4)}, ${ci.upperBound.toFixed(4)}]`, type: 'result' },
+            { value: `Width: ${ci.width.toFixed(4)}`, type: 'data' },
+            { value: this.unitName, type: 'data' }
+        ]);
+    });
+
+    // Add interpretation
+    data.push([{ value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }, { value: '', type: 'data' }]);
+    data.push([
+        { value: 'Interpretation:', type: 'label' },
+        { value: 'We can be X% confident that a new observation will fall within the given interval', type: 'data' },
+        { value: '', type: 'data' },
+        { value: '', type: 'data' }
+    ]);
+
+    return data;
+}
+
+// Enhanced Excel-style workbook creator with complete formatting
+createExcelStyleWorkbook(data) {
+    const canvas = createCanvas(this.width, this.height);
+    const ctx = canvas.getContext('2d');
+
+    // Set background
+    ctx.fillStyle = this.colors.background;
+    ctx.fillRect(0, 0, this.width, this.height);
+
+    // Draw grid and data
+    let yPosition = 20;
+    const leftMargin = 20;
+
+    data.forEach((row, rowIndex) => {
+        let xPosition = leftMargin;
+
+        row.forEach((cell, colIndex) => {
+            const cellWidth = colIndex === 0 ? this.rowLabelWidth : this.cellWidth;
+            const cellHeight = this.cellHeight;
+
+            // Cell background
+            let bgColor = this.colors.cellBg;
+            let textColor = this.colors.cellText;
+            let fontSize = this.fontSize;
+            let fontWeight = 'normal';
+
+            switch (cell.type) {
+                case 'header':
+                    bgColor = this.colors.headerBg;
+                    textColor = this.colors.headerText;
+                    fontWeight = 'bold';
+                    break;
+                case 'section':
+                    bgColor = this.colors.sectionBg;
+                    textColor = this.colors.sectionText;
+                    fontWeight = 'bold';
+                    fontSize = this.fontSize + 2;
+                    break;
+                case 'label':
+                    fontWeight = 'bold';
+                    break;
+                case 'result':
+                    bgColor = this.colors.resultBg;
+                    textColor = this.colors.resultText;
+                    fontWeight = 'bold';
+                    break;
+                case 'formula':
+                    bgColor = this.colors.formulaBg;
+                    textColor = this.colors.formulaText;
+                    break;
+            }
+
+            // Draw cell background
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(xPosition, yPosition, cellWidth, cellHeight);
+
+            // Draw cell border
+            ctx.strokeStyle = this.colors.gridColor;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(xPosition, yPosition, cellWidth, cellHeight);
+
+            // Draw text
+            if (cell.value !== '') {
+                ctx.fillStyle = textColor;
+                ctx.font = `${fontWeight} ${fontSize}px Arial`;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+
+                const textX = xPosition + 5;
+                const textY = yPosition + cellHeight / 2;
+                
+                // Handle text overflow
+                const maxWidth = cellWidth - 10;
+                let displayText = cell.value.toString();
+                if (ctx.measureText(displayText).width > maxWidth) {
+                    while (ctx.measureText(displayText + '...').width > maxWidth && displayText.length > 0) {
+                        displayText = displayText.slice(0, -1);
+                    }
+                    displayText += '...';
+                }
+
+                ctx.fillText(displayText, textX, textY);
+            }
+
+            xPosition += cellWidth;
+        });
+
+        yPosition += this.cellHeight;
+    });
+
+    // Add footer
+    ctx.fillStyle = this.colors.cellText;
+    ctx.font = 'italic 10px Arial';
+    ctx.fillText(`Generated by Enhanced Statistical Workbook - ${new Date().toLocaleString()}`, 
+                 leftMargin, this.height - 10);
+
+    return canvas.toBuffer('image/png');
+}
+
+// Complete performGenericDistributionTest method
+performGenericDistributionTest(testConfig) {
+    return {
+        testType: 'Generic Distribution Test',
+        error: `Hypothesis testing not implemented for ${this.selectedDistribution} distribution`,
+        recommendation: 'Consider using likelihood ratio tests or bootstrap methods for parameter testing'
+    };
+}
+
+// =============================================================================
+// MISSING ASSESSMENT AND RECOMMENDATION FUNCTIONS
+// =============================================================================
+
+// Add these methods to the EnhancedStatisticalWorkbook class
+
+assessNormalPracticalSignificance(effectSize) {
+    if (effectSize < 0.2) return 'Negligible';
+    if (effectSize < 0.5) return 'Small';
+    if (effectSize < 0.8) return 'Medium';
+    return 'Large';
+}
+
+generateNormalRecommendation(effectSize, zScore) {
+    if (effectSize < 0.2) {
+        return "The target value is close to the distribution mean. No significant practical difference.";
+    } else if (effectSize < 0.8) {
+        return `Moderate deviation from mean (z = ${zScore.toFixed(2)}). Consider if this difference is practically important.`;
+    } else {
+        return `Large deviation from mean (z = ${zScore.toFixed(2)}). This represents a practically significant difference.`;
+    }
+}
+
+assessTPracticalSignificance(effectSize, df) {
+    // Adjust thresholds based on degrees of freedom
+    const adjustment = df < 30 ? 1.1 : 1.0;
+    if (effectSize < 0.2 * adjustment) return 'Negligible';
+    if (effectSize < 0.5 * adjustment) return 'Small';
+    if (effectSize < 0.8 * adjustment) return 'Medium';
+    return 'Large';
+}
+
+generateTRecommendation(effectSize, target, df) {
+    if (effectSize < 0.2) {
+        return `Target t-value ${target} is within normal range for df=${df}.`;
+    } else if (effectSize < 0.8) {
+        return `Target t-value ${target} shows moderate deviation with df=${df}. Consider practical significance.`;
+    } else {
+        return `Target t-value ${target} shows large deviation with df=${df}. Strong evidence of practical significance.`;
+    }
+}
+
+assessGammaPracticalSignificance(effectSize) {
+    if (effectSize < 0.3) return 'Negligible';
+    if (effectSize < 0.6) return 'Small';
+    if (effectSize < 1.0) return 'Medium';
+    return 'Large';
+}
+
+generateGammaRecommendation(effectSize, probLessThan) {
+    if (effectSize < 0.3) {
+        return "Target value is consistent with the gamma distribution pattern.";
+    } else if (effectSize < 1.0) {
+        return `Target represents ${(probLessThan * 100).toFixed(1)}% percentile. Moderate practical significance.`;
+    } else {
+        return `Target represents ${(probLessThan * 100).toFixed(1)}% percentile. High practical significance for gamma process.`;
+    }
+}
+
+assessBetaPracticalSignificance(effectSize) {
+    if (effectSize < 0.1) return 'Negligible';
+    if (effectSize < 0.3) return 'Small';
+    if (effectSize < 0.6) return 'Medium';
+    return 'Large';
+}
+
+generateBetaRecommendation(effectSize, target, mean) {
+    const deviation = target - mean;
+    if (effectSize < 0.1) {
+        return "Target proportion is close to the expected value.";
+    } else if (effectSize < 0.6) {
+        return `Target proportion ${target.toFixed(3)} ${deviation > 0 ? 'exceeds' : 'falls below'} expected value ${mean.toFixed(3)} by a moderate amount.`;
+    } else {
+        return `Target proportion ${target.toFixed(3)} shows large deviation from expected value ${mean.toFixed(3)}. Practically significant difference.`;
+    }
+}
+
+generateFRecommendation(target, criticalValues) {
+    const cv05 = criticalValues['0.05'];
+    const cv01 = criticalValues['0.01'];
+    
+    if (target > cv01) {
+        return `F-statistic ${target.toFixed(3)} exceeds critical value at α=0.01. Very strong evidence of significance.`;
+    } else if (target > cv05) {
+        return `F-statistic ${target.toFixed(3)} exceeds critical value at α=0.05. Strong evidence of significance.`;
+    } else {
+        return `F-statistic ${target.toFixed(3)} does not exceed critical values. No evidence of significance.`;
+    }
+}
+
+calculateGenericTargetAnalysis() {
+    return {
+        targetValue: this.targetValue,
+        targetType: 'Generic Value',
+        note: 'Target analysis not specifically implemented for this distribution',
+        sampleComparison: {
+            sampleMean: this.statistics.mean,
+            difference: this.targetValue - this.statistics.mean,
+            standardizedDifference: (this.targetValue - this.statistics.mean) / this.statistics.standardDeviation
+        }
+    };
+}
+
+/ INITIALIZATION METHOD TO SET UP ALL REQUIRED PROPERTIES
+// =============================================================================
+
+initializeWorkbookProperties() {
+    // Initialize collections
+    this.hypothesisTests = {};
+    this.parameterConfidenceIntervals = {};
+    this.targetAnalysis = {};
+    
+    // Calculate parameter confidence intervals if not already done
+    if (Object.keys(this.parameterConfidenceIntervals).length === 0) {
+        this.calculateParameterConfidenceIntervals();
+    }
+    
+    // Calculate distribution-specific target analysis if target value exists
+    if (this.targetValue !== null && Object.keys(this.targetAnalysis).length === 0) {
+        this.calculateDistributionSpecificTargetAnalysis();
+    }
+}
+
+ HYPOTHESIS TESTS COLLECTION MANAGEMENT
+// =============================================================================
+
+// Add this method to initialize and store hypothesis tests
+initializeHypothesisTests() {
+    this.hypothesisTests = {};
+}
+
+// Add this method to store a hypothesis test result
+addHypothesisTest(testName, testResult) {
+    if (!this.hypothesisTests) {
+        this.hypothesisTests = {};
+    }
+    this.hypothesisTests[testName] = testResult;
+}
+
+// Update the performDistributionSpecificHypothesisTests to store results
+performAndStoreHypothesisTest(testConfig) {
+    const testResult = this.performDistributionSpecificHypothesisTests(testConfig);
+    if (testResult) {
+        const testName = testConfig.testName || testResult.testType || 'distributionTest';
+        this.addHypothesisTest(testName, testResult);
+    }
+    return testResult;
+}
