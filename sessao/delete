@@ -1,0 +1,417 @@
+// Method to render workbook to canvas - NO CHANGES NEEDED
+    renderToCanvas() {
+        if (!this.currentWorkbook) {
+            throw new Error('No workbook data to render. Generate a workbook first.');
+        }
+
+        const data = this.currentWorkbook.data;
+        const maxCols = Math.max(...data.map(row => row.length));
+
+        // Calculate canvas dimensions based on content
+        const canvasWidth = Math.max(this.width, maxCols * this.cellWidth + 50);
+        const canvasHeight = Math.max(this.height, data.length * this.cellHeight + 100);
+
+        const canvas = createCanvas(canvasWidth, canvasHeight);
+        const ctx = canvas.getContext('2d');
+
+        // Clear canvas with background color
+        ctx.fillStyle = this.colors.background;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        // Set default font
+        ctx.font = `${this.fontSize}px Arial`;
+
+        // Draw cells
+        data.forEach((row, rowIndex) => {
+            const y = rowIndex * this.cellHeight + 50; // Add top margin
+
+            row.forEach((cell, colIndex) => {
+                const x = colIndex * this.cellWidth + 25; // Add left margin
+
+                // Determine cell style based on type
+                let bgColor = this.colors.cellBg;
+                let textColor = this.colors.cellText;
+                let font = `${this.fontSize}px Arial`;
+
+                if (typeof cell === 'object' && cell.type) {
+                    switch (cell.type) {
+                        case 'header':
+                            bgColor = this.colors.headerBg;
+                            textColor = this.colors.headerText;
+                            font = `bold ${this.fontSize + 1}px Arial`;
+                            break;
+                        case 'section':
+                            bgColor = this.colors.sectionBg;
+                            textColor = this.colors.sectionText;
+                            font = `bold ${this.fontSize}px Arial`;
+                            break;
+                        case 'formula':
+                            bgColor = this.colors.formulaBg;
+                            textColor = this.colors.formulaText;
+                            break;
+                        case 'result':
+                            bgColor = this.colors.resultBg;
+                            textColor = this.colors.resultText;
+                            font = `bold ${this.fontSize}px Arial`;
+                            break;
+                        case 'label':
+                            font = `bold ${this.fontSize}px Arial`;
+                            break;
+                    }
+                }
+
+                // Draw cell background
+                ctx.fillStyle = bgColor;
+                ctx.fillRect(x, y, this.cellWidth, this.cellHeight);
+
+                // Draw cell border
+                ctx.strokeStyle = this.colors.gridColor;
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x, y, this.cellWidth, this.cellHeight);
+
+                // Draw cell text
+                ctx.fillStyle = textColor;
+                ctx.font = font;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+
+                const text = typeof cell === 'object' ? String(cell.value) : String(cell);
+                if (text !== '' && text !== 'undefined') {
+                    const textY = y + this.cellHeight / 2;
+                    const textX = x + 5; // Small padding
+
+                    // Handle text overflow
+                    const maxWidth = this.cellWidth - 10;
+                    if (ctx.measureText(text).width > maxWidth) {
+                        // Truncate text if too long
+                        let truncated = text;
+                        while (ctx.measureText(truncated + '...').width > maxWidth && truncated.length > 0) {
+                            truncated = truncated.slice(0, -1);
+                        }
+                        ctx.fillText(truncated + (truncated.length < text.length ? '...' : ''), textX, textY);
+                    } else {
+                        ctx.fillText(text, textX, textY);
+                    }
+                }
+            });
+        });
+
+        // Draw title - UPDATED for F/Exponential
+        ctx.fillStyle = this.colors.headerText;
+        ctx.font = `bold ${this.fontSize + 4}px Arial`;
+        ctx.textAlign = 'center';
+        const analysisTypeTitle = this.analysisType === 'exponential' ? 'Exponential Distribution' : 'F-Distribution';
+        const title = `${analysisTypeTitle} Analysis - Generated ${new Date().toLocaleDateString()}`;
+        ctx.fillText(title, canvasWidth / 2, 25);
+
+        return canvas;
+    }
+
+    // Method to export to various formats - NO CHANGES NEEDED
+    exportToBuffer(format = 'png') {
+        const canvas = this.renderToCanvas();
+        return canvas.toBuffer(`image/${format}`);
+    }
+
+    // Method to save to file - NO CHANGES NEEDED
+    saveToFile(filename, format = 'png') {
+        const buffer = this.exportToBuffer(format);
+        fs.writeFileSync(filename, buffer);
+        return filename;
+    }
+
+    // Method to export raw data as CSV - UPDATED for F/Exponential
+    exportToCSV() {
+        if (!this.currentWorkbook) {
+            throw new Error('No workbook data to export.');
+        }
+
+        const analysisTypeTitle = this.analysisType === 'exponential' ? 'Exponential Distribution' : 'F-Distribution';
+        let csv = `${this.sampleName} - ${analysisTypeTitle} Analysis Export\n`;
+        csv += `Generated: ${new Date().toISOString()}\n`;
+        csv += `Analysis Type: ${this.analysisType}\n\n`;
+
+        // Scenario description
+        if (this.scenarioDescription) {
+            csv += `Scenario Description\n`;
+            csv += `"${this.scenarioDescription}"\n\n`;
+        }
+
+        // Raw data
+        csv += `Raw Sample Data\n`;
+        const unitDisplay = this.analysisType === 'exponential' ? this.timeUnit : this.unitName;
+        csv += `Observation #,${this.variableName} (${unitDisplay})\n`;
+        this.rawSamples.forEach((sample, index) => {
+            csv += `${index + 1},${sample}\n`;
+        });
+
+        // Comparison samples if available
+        if (this.comparisonSamples && this.comparisonSamples.length > 0) {
+            csv += `\nComparison Sample Data\n`;
+            csv += `Observation #,Comparison ${this.variableName} (${unitDisplay})\n`;
+            this.comparisonSamples.forEach((sample, index) => {
+                csv += `${index + 1},${sample}\n`;
+            });
+        }
+
+        // Summary statistics
+        csv += `\nSummary Statistics\n`;
+        csv += `Metric,Value\n`;
+        csv += `Sample Size (n),${this.statistics.n}\n`;
+        csv += `Sample Mean,${this.statistics.mean.toFixed(6)}\n`;
+        csv += `Sample Std Dev,${this.statistics.sampleStd.toFixed(6)}\n`;
+        csv += `Sample Variance,${this.statistics.sampleVariance.toFixed(6)}\n`;
+        csv += `Standard Error,${this.statistics.standardError.toFixed(6)}\n`;
+        csv += `Minimum,${this.statistics.min.toFixed(6)}\n`;
+        csv += `Maximum,${this.statistics.max.toFixed(6)}\n`;
+        csv += `Median,${this.statistics.median.toFixed(6)}\n`;
+        csv += `Range,${this.statistics.range.toFixed(6)}\n`;
+        csv += `Skewness,${this.statistics.skewness.toFixed(6)}\n`;
+
+        // Analysis-specific statistics
+        if (this.analysisType === 'exponential') {
+            csv += `Estimated Rate Parameter (λ),${this.statistics.exponentialRateEstimate.toFixed(6)}\n`;
+            csv += `Geometric Mean,${this.statistics.geometricMean.toFixed(6)}\n`;
+            csv += `Harmonic Mean,${this.statistics.harmonicMean.toFixed(6)}\n`;
+        }
+
+        // Confidence intervals
+        csv += `\nConfidence Intervals\n`;
+        if (this.analysisType === 'exponential') {
+            csv += `Confidence Level,Parameter,Estimate,Lower Bound,Upper Bound,Margin of Error\n`;
+            Object.values(this.confidenceIntervals).forEach(ci => {
+                const level = Math.round(ci.level * 100);
+                csv += `${level}%,Rate (λ),${ci.rateParameter.estimate.toFixed(6)},${ci.rateParameter.lowerBound.toFixed(6)},${ci.rateParameter.upperBound.toFixed(6)},${ci.rateParameter.marginError.toFixed(6)}\n`;
+                csv += `${level}%,Mean (1/λ),${ci.meanParameter.estimate.toFixed(6)},${ci.meanParameter.lowerBound.toFixed(6)},${ci.meanParameter.upperBound.toFixed(6)},${ci.meanParameter.marginError.toFixed(6)}\n`;
+            });
+        } else {
+            csv += `Confidence Level,Parameter,Estimate,Lower Bound,Upper Bound,Margin of Error\n`;
+            Object.values(this.confidenceIntervals).forEach(ci => {
+                const level = Math.round(ci.level * 100);
+                csv += `${level}%,Variance,${ci.variance.estimate.toFixed(6)},${ci.variance.lowerBound.toFixed(6)},${ci.variance.upperBound.toFixed(6)},${ci.variance.marginError.toFixed(6)}\n`;
+                csv += `${level}%,Std Dev,${ci.standardDeviation.estimate.toFixed(6)},${ci.standardDeviation.lowerBound.toFixed(6)},${ci.standardDeviation.upperBound.toFixed(6)},${ci.standardDeviation.marginError.toFixed(6)}\n`;
+            });
+        }
+
+        // F-distribution tests (if available)
+        if (Object.keys(this.fDistributionTests).length > 0) {
+            const ft = this.fDistributionTests;
+            
+            if (ft.twoSample) {
+                csv += `\nTwo-Sample F-Test Results\n`;
+                csv += `Metric,Value\n`;
+                csv += `Sample 1 Size,${ft.twoSample.sample1Size}\n`;
+                csv += `Sample 2 Size,${ft.twoSample.sample2Size}\n`;
+                csv += `Sample 1 Variance,${ft.twoSample.sample1Variance.toFixed(6)}\n`;
+                csv += `Sample 2 Variance,${ft.twoSample.sample2Variance.toFixed(6)}\n`;
+                csv += `F-Statistic,${ft.twoSample.fStatistic.toFixed(6)}\n`;
+                csv += `Degrees of Freedom,"${ft.twoSample.df1}, ${ft.twoSample.df2}"\n`;
+                csv += `Interpretation,"${ft.twoSample.interpretation}"\n`;
+
+                csv += `\nF-Test Decisions\n`;
+                csv += `Alpha Level,F-Critical,Decision\n`;
+                ft.twoSample.criticalValues.forEach(test => {
+                    const decision = test.reject ? 'REJECT H0' : 'FAIL TO REJECT H0';
+                    csv += `${test.alpha},${test.fCritical.toFixed(4)},${decision}\n`;
+                });
+            }
+
+            if (ft.oneSample) {
+                csv += `\nOne-Sample Variance Test Results\n`;
+                csv += `Metric,Value\n`;
+                csv += `Sample Variance,${ft.oneSample.sampleVariance.toFixed(6)}\n`;
+                csv += `Target Variance,${ft.oneSample.targetVariance.toFixed(6)}\n`;
+                csv += `Chi-Square Statistic,${ft.oneSample.chiSquareStatistic.toFixed(6)}\n`;
+                csv += `Degrees of Freedom,${ft.oneSample.degreesOfFreedom}\n`;
+                csv += `Interpretation,"${ft.oneSample.interpretation}"\n`;
+            }
+        }
+
+        // Exponential analysis (if available)
+        if (Object.keys(this.exponentialAnalysis).length > 0) {
+            const ea = this.exponentialAnalysis;
+            
+            csv += `\nExponential Distribution Analysis\n`;
+            csv += `Metric,Value\n`;
+            csv += `Estimated Mean (1/λ),${ea.distributionProperties.mean.toFixed(6)}\n`;
+            csv += `Estimated Variance,${ea.distributionProperties.variance.toFixed(6)}\n`;
+            csv += `Theoretical Skewness,${ea.distributionProperties.skewness}\n`;
+            csv += `Theoretical Kurtosis,${ea.distributionProperties.kurtosis}\n`;
+
+            if (ea.goodnessOfFit) {
+                csv += `\nGoodness of Fit Test (Kolmogorov-Smirnov)\n`;
+                csv += `Test Statistic,${ea.goodnessOfFit.testStatistic.toFixed(6)}\n`;
+                csv += `Critical Value (95%),${ea.goodnessOfFit.criticalValue95.toFixed(6)}\n`;
+                csv += `Reject at 95%,${ea.goodnessOfFit.rejectAt95 ? 'Yes' : 'No'}\n`;
+                csv += `Interpretation,"${ea.goodnessOfFit.interpretation}"\n`;
+            }
+
+            if (ea.reliabilityAnalysis) {
+                csv += `\nReliability Analysis\n`;
+                csv += `Mean Time to Failure,${ea.reliabilityAnalysis.meanTime.toFixed(4)}\n`;
+                csv += `Median Time to Failure,${ea.reliabilityAnalysis.medianTime.toFixed(4)}\n`;
+                csv += `Constant Hazard Rate,${ea.reliabilityAnalysis.constantHazardRate.toFixed(6)}\n`;
+            }
+
+            if (ea.targetComparison) {
+                csv += `\nTarget Rate Comparison\n`;
+                csv += `Target Rate,${ea.targetComparison.targetRate.toFixed(6)}\n`;
+                csv += `Estimated Rate,${ea.targetComparison.estimatedRate.toFixed(6)}\n`;
+                csv += `Likelihood Ratio Test,${ea.targetComparison.likelihoodRatioTest.toFixed(4)}\n`;
+                csv += `Reject at 95%,${ea.targetComparison.rejectAt95 ? 'Yes' : 'No'}\n`;
+                csv += `Interpretation,"${ea.targetComparison.interpretation}"\n`;
+            }
+        }
+
+        // Distribution fitting analysis (if available)
+        if (Object.keys(this.distributionFitting).length > 0) {
+            const df = this.distributionFitting;
+            csv += `\nDistribution Fitting Comparison\n`;
+            csv += `Best Fitting Distribution,${df.bestFit}\n`;
+            csv += `Exponential AIC,${df.exponentialFit.aic.toFixed(2)}\n`;
+            csv += `Normal AIC,${df.normalFit.aic.toFixed(2)}\n`;
+            csv += `Exponential BIC,${df.exponentialFit.bic.toFixed(2)}\n`;
+            csv += `Normal BIC,${df.normalFit.bic.toFixed(2)}\n`;
+        }
+
+        return csv;
+    }
+
+    // Method to get workbook summary - UPDATED for F/Exponential
+    getSummary() {
+        if (!this.currentWorkbook) {
+            return null;
+        }
+
+        const summary = {
+            // Basic information
+            sampleName: this.sampleName,
+            variableName: this.variableName,
+            unitName: this.unitName,
+            timeUnit: this.timeUnit,
+            scenarioDescription: this.scenarioDescription,
+            analysisType: this.analysisType,
+            
+            // Sample statistics
+            sampleSize: this.statistics.n,
+            sampleMean: this.statistics.mean,
+            sampleStandardDeviation: this.statistics.sampleStd,
+            sampleVariance: this.statistics.sampleVariance,
+            standardError: this.statistics.standardError,
+            skewness: this.statistics.skewness,
+            
+            // Distribution information
+            distributionUsed: this.analysisType === 'exponential' ? 'exponential' : 'f-distribution',
+            
+            // Analysis-specific parameters
+            exponentialRateEstimate: this.statistics.exponentialRateEstimate,
+            geometricMean: this.statistics.geometricMean,
+            harmonicMean: this.statistics.harmonicMean,
+            
+            // F-distribution specific
+            comparisonSamplesCount: this.comparisonSamples ? this.comparisonSamples.length : 0,
+            knownVarianceRatio: this.knownVarianceRatio,
+            
+            // Exponential specific
+            knownExponentialRate: this.knownExponentialRate,
+            targetExponentialRate: this.targetExponentialRate,
+            
+            // Confidence intervals - adapted for both types
+            confidenceIntervals: this.getFormattedConfidenceIntervals(),
+            
+            // Analysis flags
+            hasFDistributionTests: Object.keys(this.fDistributionTests).length > 0,
+            hasExponentialAnalysis: Object.keys(this.exponentialAnalysis).length > 0,
+            hasDistributionFitting: Object.keys(this.distributionFitting).length > 0,
+            
+            // Generation information
+            generatedAt: this.currentWorkbook.generated,
+            theme: this.theme
+        };
+
+        // Add F-test summary if available
+        if (summary.hasFDistributionTests) {
+            summary.fDistributionTestSummary = this.getFDistributionTestSummary();
+        }
+
+        // Add exponential analysis summary if available
+        if (summary.hasExponentialAnalysis) {
+            summary.exponentialAnalysisSummary = this.getExponentialAnalysisSummary();
+        }
+
+        // Add distribution fitting summary if available
+        if (summary.hasDistributionFitting) {
+            summary.distributionFittingSummary = {
+                bestFit: this.distributionFitting.bestFit,
+                exponentialAIC: Number(this.distributionFitting.exponentialFit.aic.toFixed(2)),
+                normalAIC: Number(this.distributionFitting.normalFit.aic.toFixed(2))
+            };
+        }
+
+        return summary;
+    }
+
+    // Helper method for formatted confidence intervals
+    getFormattedConfidenceIntervals() {
+        if (this.analysisType === 'exponential') {
+            return Object.fromEntries(
+                Object.entries(this.confidenceIntervals).map(([level, ci]) => [
+                    `${Math.round(level * 100)}%`,
+                    {
+                        rateParameter: {
+                            estimate: Number(ci.rateParameter.estimate.toFixed(6)),
+                            lowerBound: Number(ci.rateParameter.lowerBound.toFixed(6)),
+                            upperBound: Number(ci.rateParameter.upperBound.toFixed(6)),
+                            marginOfError: Number(ci.rateParameter.marginError.toFixed(6))
+                        },
+                        meanParameter: {
+                            estimate: Number(ci.meanParameter.estimate.toFixed(4)),
+                            lowerBound: Number(ci.meanParameter.lowerBound.toFixed(4)),
+                            upperBound: Number(ci.meanParameter.upperBound.toFixed(4)),
+                            marginOfError: Number(ci.meanParameter.marginError.toFixed(4))
+                        }
+                    }
+                ])
+            );
+        } else {
+            return Object.fromEntries(
+                Object.entries(this.confidenceIntervals).map(([level, ci]) => [
+                    `${Math.round(level * 100)}%`,
+                    {
+                        variance: {
+                            estimate: Number(ci.variance.estimate.toFixed(6)),
+                            lowerBound: Number(ci.variance.lowerBound.toFixed(6)),
+                            upperBound: Number(ci.variance.upperBound.toFixed(6)),
+                            marginOfError: Number(ci.variance.marginError.toFixed(6))
+                        },
+                        standardDeviation: {
+                            estimate: Number(ci.standardDeviation.estimate.toFixed(4)),
+                            lowerBound: Number(ci.standardDeviation.lowerBound.toFixed(4)),
+                            upperBound: Number(ci.standardDeviation.upperBound.toFixed(4)),
+                            marginOfError: Number(ci.standardDeviation.marginError.toFixed(4))
+                        }
+                    }
+                ])
+            );
+        }
+    }
+
+    // Helper method for F-distribution test summary
+    getFDistributionTestSummary() {
+        const ft = this.fDistributionTests;
+        const summary = {};
+
+        if (ft.twoSample) {
+            summary.twoSampleTest = {
+                fStatistic: Number(ft.twoSample.fStatistic.toFixed(4)),
+                degreesOfFreedom: [ft.twoSample.df1, ft.twoSample.df2],
+                sample1Variance: Number(ft.twoSample.sample1Variance.toFixed(6)),
+                sample2Variance: Number(ft.twoSample.sample2Variance.toFixed(6)),
+                significantAt05: ft.twoSample.criticalValues.find(cv => cv.alpha === 0.05)?.reject || false,
+                significantAt01: ft.twoSample.criticalValues.find(cv => cv.alpha === 0.01)?.reject || false,
+                interpretation: ft.twoSample.interpretation
+            };
+        }
+
+        if (ft.oneSample) {
+            summ
