@@ -33,6 +33,7 @@ export class QuadraticMathematicalWorkbook {
         this.mathSymbols = this.initializeMathSymbols();
 
         this.setThemeColors();
+        initializeQuadraticLessons();
         this.initializeQuadraticSolvers();
     }
 
@@ -85,6 +86,610 @@ export class QuadraticMathematicalWorkbook {
         this.colors = themes[this.theme] || themes.excel;
     }
 
+    // 1. Initialize lesson system
+initializeQuadraticLessons() {
+    this.lessons = {
+        standard_form: {
+            title: "Standard Form Quadratics",
+            concepts: [
+                "General form: ax² + bx + c = 0 where a ≠ 0",
+                "Coefficient 'a' determines parabola opening (up if a>0, down if a<0)",
+                "Discriminant Δ = b² - 4ac determines root type",
+                "Quadratic formula: x = (-b ± √Δ) / (2a)"
+            ],
+            theory: "The standard form ax² + bx + c = 0 is the most general representation of a quadratic equation. The coefficient 'a' controls the width and direction of the parabola, 'b' affects the position of the axis of symmetry, and 'c' is the y-intercept.",
+            keyFormulas: {
+                "Quadratic Formula": "x = (-b ± √(b² - 4ac)) / (2a)",
+                "Discriminant": "Δ = b² - 4ac",
+                "Vertex x-coordinate": "x = -b / (2a)",
+                "Sum of roots": "r₁ + r₂ = -b/a",
+                "Product of roots": "r₁ × r₂ = c/a"
+            },
+            applications: [
+                "Projectile motion problems",
+                "Area optimization",
+                "Profit/cost analysis",
+                "Physics equations"
+            ]
+        },
+
+        quadratic_formula: {
+            title: "The Quadratic Formula",
+            concepts: [
+                "Universal method for solving any quadratic equation",
+                "Derived by completing the square on ax² + bx + c = 0",
+                "Works for all real coefficients where a ≠ 0",
+                "Provides both real and complex solutions"
+            ],
+            theory: "The quadratic formula is derived by completing the square on the general form ax² + bx + c = 0. It gives exact solutions regardless of whether the quadratic can be factored easily.",
+            keyFormulas: {
+                "Quadratic Formula": "x = (-b ± √(b² - 4ac)) / (2a)",
+                "Discriminant": "Δ = b² - 4ac"
+            },
+            derivationSteps: [
+                "Start with ax² + bx + c = 0",
+                "Divide by a: x² + (b/a)x + (c/a) = 0",
+                "Move constant: x² + (b/a)x = -(c/a)",
+                "Complete square: x² + (b/a)x + (b/2a)² = -(c/a) + (b/2a)²",
+                "Factor: (x + b/2a)² = (b² - 4ac)/(4a²)",
+                "Square root: x + b/2a = ±√(b² - 4ac)/(2a)",
+                "Solve: x = (-b ± √(b² - 4ac))/(2a)"
+            ]
+        },
+
+        completing_square: {
+            title: "Completing the Square",
+            concepts: [
+                "Method to convert ax² + bx + c to vertex form a(x-h)² + k",
+                "Reveals vertex coordinates directly",
+                "Foundation for deriving quadratic formula",
+                "Useful for optimization problems"
+            ],
+            theory: "Completing the square transforms a quadratic from standard form to vertex form by adding and subtracting the square of half the linear coefficient.",
+            keyFormulas: {
+                "Vertex Form": "y = a(x - h)² + k",
+                "Vertex coordinates": "(h, k) where h = -b/(2a), k = (4ac - b²)/(4a)",
+                "Completing term": "(b/2a)²"
+            },
+            process: [
+                "Factor out 'a' from x² and x terms if a ≠ 1",
+                "Take half of the x coefficient inside parentheses",
+                "Square this value to get completing term",
+                "Add and subtract this term",
+                "Factor the perfect square trinomial",
+                "Simplify the constant terms"
+            ]
+        },
+
+        factoring: {
+            title: "Factoring Quadratics",
+            concepts: [
+                "Express ax² + bx + c as product of linear factors",
+                "Only works when roots are rational numbers",
+                "Based on zero product property: if AB = 0, then A = 0 or B = 0",
+                "Fastest method when applicable"
+            ],
+            theory: "Factoring works by finding two numbers that multiply to give 'ac' and add to give 'b'. This method is most efficient for quadratics with rational roots.",
+            techniques: {
+                "Simple factoring": "Find two numbers that multiply to c and add to b",
+                "AC method": "Find factors of ac that add to b, then group",
+                "Difference of squares": "a² - b² = (a + b)(a - b)",
+                "Perfect square trinomial": "a² ± 2ab + b² = (a ± b)²"
+            },
+            limitations: [
+                "Only works for rational roots",
+                "May be difficult for large coefficients",
+                "Not applicable when discriminant is not a perfect square"
+            ]
+        },
+
+        vertex_form: {
+            title: "Vertex Form Analysis",
+            concepts: [
+                "Form: y = a(x - h)² + k where (h,k) is the vertex",
+                "Parameter 'a' controls width and opening direction",
+                "Vertex represents maximum or minimum point",
+                "Easy to identify transformations from parent function y = x²"
+            ],
+            theory: "Vertex form immediately reveals the vertex coordinates and transformations applied to the parent parabola y = x².",
+            transformations: {
+                "Horizontal shift": "h units (positive = right, negative = left)",
+                "Vertical shift": "k units (positive = up, negative = down)",
+                "Vertical stretch/compression": "|a| > 1 stretch, 0 < |a| < 1 compression",
+                "Reflection": "a < 0 reflects over x-axis"
+            },
+            applications: [
+                "Optimization problems",
+                "Graph analysis",
+                "Finding maximum/minimum values",
+                "Projectile motion vertex analysis"
+            ]
+        },
+
+        discriminant: {
+            title: "Discriminant Analysis",
+            concepts: [
+                "Discriminant Δ = b² - 4ac determines root nature",
+                "Δ > 0: Two distinct real roots",
+                "Δ = 0: One repeated real root (double root)",
+                "Δ < 0: No real roots (complex conjugate pair)"
+            ],
+            theory: "The discriminant is the expression under the square root in the quadratic formula. Its value determines the nature and number of solutions without actually solving the equation.",
+            interpretations: {
+                "Algebraic": "Determines solution type",
+                "Geometric": "Number of x-intercepts on graph",
+                "Factoring": "Whether rational factorization exists"
+            },
+            applications: [
+                "Determining solvability without calculation",
+                "Analyzing intersection problems",
+                "Parameter optimization",
+                "Geometric constraint problems"
+            ]
+        },
+
+        inequality: {
+            title: "Quadratic Inequalities",
+            concepts: [
+                "Solve ax² + bx + c > 0, <0, ≥0, or ≤0",
+                "Solution involves finding intervals where inequality holds",
+                "Sign analysis using test points between roots",
+                "Consider parabola opening direction"
+            ],
+            theory: "Quadratic inequalities are solved by finding where the parabola is above or below the x-axis, depending on the inequality direction.",
+            method: [
+                "Find roots of corresponding equation ax² + bx + c = 0",
+                "Plot roots on number line to create intervals",
+                "Test sign of expression in each interval",
+                "Select intervals that satisfy the inequality",
+                "Consider boundary points based on inequality type"
+            ],
+            considerations: [
+                "Include/exclude boundary points for ≤/≥ vs </> ",
+                "Account for parabola opening direction",
+                "Handle cases with no real roots",
+                "Verify solution intervals"
+            ]
+        },
+
+        projectile_motion: {
+            title: "Projectile Motion Applications",
+            concepts: [
+                "Height equation: h(t) = -16t² + v₀t + h₀ (feet) or h(t) = -4.9t² + v₀t + h₀ (meters)",
+                "Gravity acceleration: -32 ft/s² or -9.8 m/s²",
+                "Maximum height occurs at vertex",
+                "Object lands when h(t) = 0"
+            ],
+            theory: "Projectile motion follows a parabolic path due to constant gravitational acceleration. The quadratic model captures this relationship between height and time.",
+            keyQuestions: [
+                "When does the projectile reach maximum height?",
+                "What is the maximum height achieved?",
+                "When does the projectile land?",
+                "At what times is the projectile at a specific height?"
+            ],
+            realWorldExamples: [
+                "Ball thrown upward",
+                "Water fountain trajectory",
+                "Cannonball flight path",
+                "Dropped object from building"
+            ]
+        },
+
+        area_optimization: {
+            title: "Area Optimization Problems",
+            concepts: [
+                "Express area as quadratic function of one variable",
+                "Use constraints to eliminate other variables",
+                "Maximum/minimum area occurs at vertex",
+                "Consider realistic domain restrictions"
+            ],
+            theory: "Many optimization problems involve quadratic relationships. The vertex of the parabola gives the optimal value.",
+            commonProblems: [
+                "Maximum rectangular area with fixed perimeter",
+                "Fencing problems with area constraints",
+                "Box construction with volume optimization",
+                "Garden layout optimization"
+            ],
+            approach: [
+                "Define variables and constraints",
+                "Express objective function as quadratic",
+                "Find vertex for optimal value",
+                "Verify solution is within practical domain",
+                "Check that vertex gives maximum/minimum as expected"
+            ]
+        },
+
+        fractional_quadratic: {
+            title: "Fractional Quadratic Equations",
+            concepts: [
+                "Equations with reciprocal terms: a/x² + b/x + c = 0",
+                "Substitution method: let u = 1/x",
+                "Domain restriction: x ≠ 0",
+                "Solutions must be checked for validity"
+            ],
+            theory: "Fractional quadratics involve reciprocals of the variable. The substitution u = 1/x transforms them into standard quadratics.",
+            process: [
+                "Identify fractional form with reciprocal terms",
+                "Make substitution u = 1/x",
+                "Solve resulting quadratic in u",
+                "Convert back to x using x = 1/u",
+                "Verify solutions don't create zero denominators"
+            ],
+            applications: [
+                "Harmonic motion problems",
+                "Electrical circuit analysis",
+                "Rate and work problems",
+                "Economic models"
+            ]
+        },
+
+        parametric_quadratic: {
+            title: "Parametric Quadratic Analysis",
+            concepts: [
+                "Coefficients contain parameters (variables other than x)",
+                "Analyze how parameter values affect equation behavior",
+                "Find critical parameter values for special cases",
+                "Determine conditions for different root types"
+            ],
+            theory: "Parametric quadratics help analyze how changing coefficients affects the equation's solutions and behavior.",
+            analysis_types: [
+                "When does equation become linear?",
+                "For what parameter values are roots real?",
+                "When does equation have equal roots?",
+                "How do roots vary with parameter changes?"
+            ],
+            applications: [
+                "Engineering design optimization",
+                "Physics parameter studies",
+                "Economic sensitivity analysis",
+                "Mathematical modeling"
+            ]
+        },
+
+        linear_quadratic_system: {
+            title: "Linear-Quadratic Systems",
+            concepts: [
+                "System with one linear and one quadratic equation",
+                "Graphically represents line intersecting parabola",
+                "Can have 0, 1, or 2 solution points",
+                "Solved by substitution or elimination"
+            ],
+            theory: "Linear-quadratic systems model situations where linear and quadratic relationships intersect, such as break-even analysis or trajectory intersections.",
+            solution_types: [
+                "Two intersections: line crosses parabola",
+                "One intersection: line tangent to parabola",
+                "No intersections: line and parabola don't meet"
+            ],
+            applications: [
+                "Break-even analysis in business",
+                "Trajectory intersection problems",
+                "Supply and demand equilibrium",
+                "Optimization with linear constraints"
+            ]
+        }
+    };
+}
+
+// 6. Modified workbook generation to include lessons
+generateQuadraticWorkbook() {
+    if (!this.currentSolution || !this.currentProblem) return;
+
+    const workbook = this.createWorkbookStructure();
+    
+    // Standard sections
+    workbook.sections = [
+        this.createProblemSection(),
+        this.createLessonSection(), // NEW: Add lesson section
+        this.createSolutionSection(),
+        this.createAnalysisSection(),
+        this.createStepsSection(),
+        this.createVerificationSection(),
+        this.createRelatedProblemsSection() // NEW: Add related problems
+    ].filter(section => section !== null); // Remove null sections
+
+    if (this.graphData) {
+        workbook.sections.push(this.createGraphSection());
+    }
+
+    this.currentWorkbook = workbook;
+}
+
+// 7. Method to get just the lesson content for a specific problem type
+getLessonForProblemType(problemType) {
+    if (!this.lessons[problemType]) {
+        return null;
+    }
+
+    return {
+        title: this.lessons[problemType].title,
+        content: this.lessons[problemType],
+        relatedProblems: this.generateRelatedProblems(problemType, {})
+    };
+}
+    
+    
+// 2. Generate lesson section for workbook
+createLessonSection() {
+    if (!this.currentProblem?.type || !this.lessons[this.currentProblem.type]) {
+        return null;
+    }
+
+    const lesson = this.lessons[this.currentProblem.type];
+    const lessonData = [];
+
+    // Add lesson title and theory
+    lessonData.push(['Lesson Topic', lesson.title]);
+    lessonData.push(['Theory Overview', lesson.theory]);
+
+    // Add key concepts
+    lesson.concepts.forEach((concept, index) => {
+        lessonData.push([`Key Concept ${index + 1}`, concept]);
+    });
+
+    // Add key formulas if available
+    if (lesson.keyFormulas) {
+        Object.entries(lesson.keyFormulas).forEach(([name, formula]) => {
+            lessonData.push([`Formula: ${name}`, formula]);
+        });
+    }
+
+    // Add applications
+    if (lesson.applications) {
+        lessonData.push(['Applications', lesson.applications.join('; ')]);
+    }
+
+    return {
+        title: `📚 Lesson: ${lesson.title}`,
+        type: 'lesson',
+        data: lessonData
+    };
+}
+
+// 3. Create related problems section
+createRelatedProblemsSection() {
+    if (!this.currentProblem?.type) {
+        return null;
+    }
+
+    const relatedProblems = this.generateRelatedProblems(this.currentProblem.type, this.currentProblem.parameters);
+    
+    if (!relatedProblems || relatedProblems.length === 0) {
+        return null;
+    }
+
+    const problemData = [];
+    
+    relatedProblems.forEach((problem, index) => {
+        problemData.push([`Problem ${index + 1}`, problem.statement]);
+        if (problem.hint) {
+            problemData.push([`Hint ${index + 1}`, problem.hint]);
+        }
+        if (problem.answer) {
+            problemData.push([`Answer ${index + 1}`, problem.answer]);
+        }
+        if (index < relatedProblems.length - 1) {
+            problemData.push(['', '']); // Spacing between problems
+        }
+    });
+
+    return {
+        title: '🔗 Related Problems',
+        type: 'related_problems',
+        data: problemData
+    };
+}
+
+// 4. Generate related problems based on problem type
+generateRelatedProblems(problemType, parameters) {
+    const problemGenerators = {
+        standard_form: () => this.generateStandardFormProblems(parameters),
+        quadratic_formula: () => this.generateQuadraticFormulaProblems(parameters),
+        completing_square: () => this.generateCompletingSquareProblems(parameters),
+        factoring: () => this.generateFactoringProblems(parameters),
+        vertex_form: () => this.generateVertexFormProblems(parameters),
+        discriminant: () => this.generateDiscriminantProblems(parameters),
+        inequality: () => this.generateInequalityProblems(parameters),
+        projectile_motion: () => this.generateProjectileProblems(parameters),
+        area_optimization: () => this.generateAreaOptimizationProblems(parameters),
+        fractional_quadratic: () => this.generateFractionalProblems(parameters),
+        parametric_quadratic: () => this.generateParametricProblems(parameters),
+        linear_quadratic_system: () => this.generateSystemProblems(parameters)
+    };
+
+    const generator = problemGenerators[problemType];
+    return generator ? generator() : [];
+}
+
+// 5. Specific problem generators (sample implementations)
+generateStandardFormProblems(params) {
+    const { a, b, c } = params;
+    
+    return [
+        {
+            statement: `Solve: ${a + 1}x² + ${b - 2}x + ${c + 1} = 0`,
+            hint: "Use the quadratic formula or try factoring first",
+            answer: "Apply quadratic formula with modified coefficients"
+        },
+        {
+            statement: `Find the vertex of y = ${a}x² + ${b}x + ${c}`,
+            hint: "Use vertex formula: x = -b/(2a), then find y-coordinate",
+            answer: `Vertex at (-${b}/(2×${a}), evaluate at x-coordinate)`
+        },
+        {
+            statement: `Determine the discriminant of ${a}x² + ${b}x + ${c} = 0 and interpret`,
+            hint: "Δ = b² - 4ac, then analyze the result",
+            answer: `Δ = ${b*b - 4*a*c}, indicates ${b*b - 4*a*c > 0 ? 'two real roots' : b*b - 4*a*c === 0 ? 'one repeated root' : 'complex roots'}`
+        }
+    ];
+}
+
+generateVertexFormProblems(params) {
+    const { a = 1, h = 0, k = 0 } = params;
+    
+    return [
+        {
+            statement: `Convert y = ${a}(x - ${h})² + ${k} to standard form`,
+            hint: "Expand the squared term and simplify",
+            answer: "Expand (x - h)² and distribute 'a'"
+        },
+        {
+            statement: `Describe the transformations from y = x² to y = ${a}(x - ${h})² + ${k}`,
+            hint: "Consider horizontal shift, vertical shift, and stretch/compression",
+            answer: `${h !== 0 ? `Horizontal shift ${h > 0 ? 'right' : 'left'} ${Math.abs(h)} units; ` : ''}${k !== 0 ? `Vertical shift ${k > 0 ? 'up' : 'down'} ${Math.abs(k)} units; ` : ''}${Math.abs(a) !== 1 ? `Vertical ${Math.abs(a) > 1 ? 'stretch' : 'compression'} by factor ${Math.abs(a)}` : ''}${a < 0 ? '; Reflection over x-axis' : ''}`
+        },
+        {
+            statement: `Find the axis of symmetry and determine if the parabola opens up or down`,
+            hint: "Axis of symmetry is x = h, opening depends on sign of 'a'",
+            answer: `Axis: x = ${h}; Opens ${a > 0 ? 'upward' : 'downward'}`
+        }
+    ];
+}
+
+generateProjectileProblems(params) {
+    const { initialHeight = 0, initialVelocity = 0, gravity = -16 } = params;
+    
+    return [
+        {
+            statement: `A ball is thrown from height ${initialHeight + 5} feet with initial velocity ${initialVelocity + 10} ft/s. Find when it hits the ground.`,
+            hint: "Set h(t) = 0 and solve for t",
+            answer: "Use quadratic formula on height equation"
+        },
+        {
+            statement: `What is the maximum height reached by the projectile?`,
+            hint: "Find the vertex of the height parabola",
+            answer: "Maximum height occurs at t = -v₀/(2×gravity)"
+        },
+        {
+            statement: `At what time(s) is the projectile at height ${initialHeight + 20} feet?`,
+            hint: "Set h(t) = target height and solve",
+            answer: "Solve quadratic equation for specific height"
+        }
+    ];
+}
+
+generateFactoringProblems(params) {
+    const { a, b, c } = params;
+    
+    // Generate factorable examples
+    const examples = [
+        { a: 1, b: 7, c: 12, factored: "(x + 3)(x + 4)" },
+        { a: 1, b: -5, c: 6, factored: "(x - 2)(x - 3)" },
+        { a: 2, b: 7, c: 3, factored: "(2x + 1)(x + 3)" }
+    ];
+    
+    return examples.map((ex, index) => ({
+        statement: `Factor: ${ex.a}x² + ${ex.b}x + ${ex.c}`,
+        hint: index < 2 ? "Find two numbers that multiply to give c and add to give b" : "Use AC method: find factors of ac that add to b",
+        answer: ex.factored
+    }));
+}
+
+generateInequalityProblems(params) {
+    const { a, b, c } = params;
+    const operators = ['>', '<', '≥', '≤'];
+    
+    return operators.map((op, index) => ({
+        statement: `Solve: ${a}x² + ${b}x + ${c} ${op} 0`,
+        hint: "Find roots, create sign chart, test intervals",
+        answer: `Use test points between roots to determine solution intervals`
+    }));
+}
+
+generateDiscriminantProblems(params) {
+    const { a, b, c } = params;
+    
+    return [
+        {
+            statement: `For what values of k does kx² + ${b}x + ${c} = 0 have exactly one real solution?`,
+            hint: "Set discriminant equal to zero and solve for k",
+            answer: "Discriminant = 0 when b² - 4kc = 0"
+        },
+        {
+            statement: `Determine the nature of roots for ${a}x² + ${b}x + ${c} = 0 without solving`,
+            hint: "Calculate discriminant and interpret",
+            answer: `Δ = ${b*b - 4*a*c}, so ${b*b - 4*a*c > 0 ? 'two distinct real roots' : b*b - 4*a*c === 0 ? 'one repeated root' : 'no real roots'}`
+        },
+        {
+            statement: `If the roots are r₁ and r₂, find r₁ + r₂ and r₁ × r₂ without solving`,
+            hint: "Use Vieta's formulas",
+            answer: `Sum = -${b}/${a} = ${-b/a}; Product = ${c}/${a} = ${c/a}`
+        }
+    ];
+}
+
+// 6. Modified workbook generation to include lessons
+generateQuadraticWorkbook() {
+    if (!this.currentSolution || !this.currentProblem) return;
+
+    const workbook = this.createWorkbookStructure();
+    
+    // Standard sections
+    workbook.sections = [
+        this.createProblemSection(),
+        this.createLessonSection(), // NEW: Add lesson section
+        this.createSolutionSection(),
+        this.createAnalysisSection(),
+        this.createStepsSection(),
+        this.createVerificationSection(),
+        this.createRelatedProblemsSection() // NEW: Add related problems
+    ].filter(section => section !== null); // Remove null sections
+
+    if (this.graphData) {
+        workbook.sections.push(this.createGraphSection());
+    }
+
+    this.currentWorkbook = workbook;
+}
+
+// 7. Method to get just the lesson content for a specific problem type
+getLessonForProblemType(problemType) {
+    if (!this.lessons[problemType]) {
+        return null;
+    }
+
+    return {
+        title: this.lessons[problemType].title,
+        content: this.lessons[problemType],
+        relatedProblems: this.generateRelatedProblems(problemType, {})
+    };
+}
+
+// 8. Method to list all available lesson topics
+getAllLessonTopics() {
+    return Object.entries(this.lessons).map(([type, lesson]) => ({
+        type: type,
+        title: lesson.title,
+        description: lesson.theory.substring(0, 100) + "..."
+    }));
+}
+
+// 9. Method to enable/disable lessons in workbook
+toggleLessonsInWorkbook(includeLessons = true, includeRelatedProblems = true) {
+    this.includeLessonsInWorkbook = includeLessons;
+    this.includeRelatedProblemsInWorkbook = includeRelatedProblems;
+
+    // Regenerate workbook if we have current data
+    if (this.currentProblem && this.currentSolution) {
+        this.generateQuadraticWorkbook();
+    }
+
+    return this;
+}
+
+// 10. Method to customize lesson content for specific needs
+customizeLessonContent(problemType, customContent) {
+    if (this.lessons[problemType]) {
+        this.lessons[problemType] = {
+            ...this.lessons[problemType],
+            ...customContent
+        };
+    }
+    return this;
+}
+
+
+
+    
     initializeMathSymbols() {
         return {
             // Superscripts and powers
@@ -422,6 +1027,10 @@ export class QuadraticMathematicalWorkbook {
         };
     }
 
+
+
+
+    
     // Main solver method
     solveQuadraticProblem(config) {
         const { equation, scenario, parameters, problemType, context } = config;
