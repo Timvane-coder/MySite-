@@ -1,0 +1,101 @@
+📘 Excel Learning Roadmap
+
+🟢 Level 1: Beginner (Foundations)
+
+Goal: Get comfortable with the Excel environment and basic tasks.
+
+Introduction to Excel interface (ribbons, menus, worksheets).
+
+Cells, Rows, Columns (navigation, selection, resizing).
+
+Data entry (text, numbers, dates, auto-fill).
+
+Basic formatting (font, alignment, borders, colors, number/date formatting).
+
+Basic formulas (=A1+B1, order of operations).
+
+Basic functions (SUM, AVERAGE, MIN, MAX, COUNT).
+
+Charts (Intro): create simple column/line/pie charts.
+
+Saving, printing, and sharing a workbook.
+
+
+
+---
+
+🟡 Level 2: Intermediate (Practical Excel)
+
+Goal: Learn how to manage, organize, and analyze data effectively.
+
+Formatting tools: Conditional Formatting, Cell Styles, Format Painter.
+
+Sorting & Filtering: basic to advanced filtering.
+
+Data Validation: dropdown lists, restricting inputs.
+
+Tables: Excel Tables, structured references.
+
+Named ranges for formulas.
+
+Intermediate formulas:
+
+Logical (IF, AND, OR).
+
+Lookup (VLOOKUP, HLOOKUP, XLOOKUP).
+
+Reference (INDEX, MATCH).
+
+Text functions (LEFT, RIGHT, MID, TRIM, CONCAT).
+
+Date & time functions (TODAY, NOW, DATEDIF).
+
+
+Charts (Intermediate): customizing charts, combo charts.
+
+Page Layout & Print Setup.
+
+
+
+---
+
+🔵 Level 3: Advanced (Data Analysis & Automation)
+
+Goal: Become power users who can handle large datasets and automate tasks.
+
+PivotTables & PivotCharts (summarizing large data).
+
+Subtotals & Grouping.
+
+What-If Analysis: Goal Seek, Scenario Manager, Data Tables.
+
+Advanced formulas:
+
+Array formulas / Dynamic Arrays (UNIQUE, FILTER, SORT).
+
+Nested IF formulas, IFS.
+
+Advanced lookups (INDEX+MATCH combinations).
+
+
+Power Query: importing & cleaning data.
+
+Power Pivot / DAX basics: simple calculated columns and measures.
+
+Advanced charts: sparklines, waterfall, radar, dashboards.
+
+Macros & VBA basics: record simple macros, intro to automation.
+
+Protecting worksheets and workbooks.
+
+
+
+---
+
+🏆 Optional Extensions
+
+Excel for Finance (NPV, IRR, PMT, amortization schedules).
+
+Excel for Data Analysis (statistics, regression, correlation).
+
+Excel for Dashboards & Reporting (interactive dashboards with slicers).
