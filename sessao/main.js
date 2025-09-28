@@ -1698,10 +1698,10 @@ export class EnhancedFinancialWorkbook {
         return 'High revenue threshold - challenging market requirements';
     }
 
-    assessDividendValue(yield, growthRate) {
-        if (yield >= 0.06) return 'High dividend yield - attractive for income investors';
-        if (yield >= 0.04) return 'Reasonable dividend yield';
-        if (yield >= 0.02) return 'Moderate dividend yield';
+    assessDividendValue(dividendYield, growthRate) {
+        if (dividendYield >= 0.06) return 'High dividend yield - attractive for income investors';
+        if (dividendYield >= 0.04) return 'Reasonable dividend yield';
+        if (dividendYield >= 0.02) return 'Moderate dividend yield';
         return 'Low dividend yield - growth-focused investment';
     }
 
