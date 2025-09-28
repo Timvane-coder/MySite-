@@ -726,7 +726,351 @@ class FormulaRegistry {
                 'Margin of Safety': 'Actual sales above break-even point',
                 'Operating Leverage': 'Sensitivity of profits to sales changes'
             }
-        }
+        },
+
+        'breakEvenUnits': {
+            name: 'Break-Even Analysis',
+            category: 'Cost-Volume-Profit Analysis',
+            params: ['fixedCosts', 'pricePerUnit', 'variableCostPerUnit'],
+            paramNames: ['Fixed Costs ($)', 'Price per Unit ($)', 'Variable Cost per Unit ($)'],
+            defaultParams: [120000, 75, 45],
+            formula: 'Break-Even Units = Fixed Costs / (Price - Variable Cost per Unit)',
+            calculate: (params) => FinancialFunctions.breakEvenUnits(params[0], params[1], params[2]),
+            description: 'Determines the sales volume needed to cover all fixed and variable costs',
+            useCases: ['Production planning', 'Pricing decisions', 'Cost management', 'Business planning'],
+            industryBenchmarks: {
+                'Manufacturing': 'Typically 10,000-50,000 units',
+                'Retail': 'Varies by product category',
+                'Services': 'Based on billable hours/capacity',
+                'Technology': 'Lower break-even due to scalability'
+            },
+            keyMetrics: {
+                'Contribution Margin': 'Revenue per unit after variable costs',
+                'Margin of Safety': 'Actual sales above break-even point',
+                'Operating Leverage': 'Sensitivity of profits to sales changes'
+            }
+        },
+
+        'quickRatio': {
+            name: 'Quick Ratio (Acid Test)',
+            category: 'Liquidity Analysis',
+            params: ['quickAssets', 'currentLiabilities'],
+            paramNames: ['Quick Assets ($)', 'Current Liabilities ($)'],
+            defaultParams: [150000, 100000],
+            formula: 'Quick Ratio = Quick Assets / Current Liabilities',
+            calculate: (params) => FinancialFunctions.quickRatio(params[0], params[1]),
+            description: 'Measures ability to pay short-term obligations with most liquid assets',
+            useCases: ['Credit analysis', 'Liquidity assessment', 'Emergency cash planning'],
+            industryBenchmarks: {
+                'Manufacturing': '0.8 - 1.2',
+                'Technology': '1.5 - 3.0',
+                'Retail': '0.6 - 1.0',
+                'Healthcare': '1.0 - 2.0'
+            }
+        },
+
+        'debtToEquityRatio': {
+            name: 'Debt-to-Equity Ratio',
+            category: 'Leverage Analysis',
+            params: ['totalDebt', 'totalEquity'],
+            paramNames: ['Total Debt ($)', 'Total Equity ($)'],
+            defaultParams: [200000, 300000],
+            formula: 'D/E Ratio = Total Debt / Total Equity',
+            calculate: (params) => FinancialFunctions.debtToEquityRatio(params[0], params[1]),
+            description: 'Measures financial leverage and capital structure',
+            useCases: ['Credit risk assessment', 'Capital structure analysis', 'Investment decisions'],
+            industryBenchmarks: {
+                'Utilities': '1.0 - 2.0',
+                'Technology': '0.1 - 0.5',
+                'Real Estate': '2.0 - 4.0',
+                'Manufacturing': '0.5 - 1.5'
+            }
+        },
+
+        'returnOnAssets': {
+            name: 'Return on Assets (ROA)',
+            category: 'Profitability Analysis',
+            params: ['netIncome', 'averageAssets'],
+            paramNames: ['Net Income ($)', 'Average Total Assets ($)'],
+            defaultParams: [50000, 500000],
+            formula: 'ROA = Net Income / Average Total Assets',
+            calculate: (params) => FinancialFunctions.returnOnAssets(params[0], params[1]),
+            description: 'Measures how efficiently assets generate profits',
+            useCases: ['Performance evaluation', 'Asset management', 'Investment analysis'],
+            industryBenchmarks: {
+                'Banking': '0.8% - 1.5%',
+                'Technology': '5% - 15%',
+                'Retail': '3% - 8%',
+                'Manufacturing': '4% - 10%'
+            }
+        },
+
+        'futureValue': {
+            name: 'Future Value (FV)',
+            category: 'Time Value of Money',
+            params: ['presentValue', 'interestRate', 'periods', 'payment', 'type'],
+            paramNames: ['Present Value ($)', 'Interest Rate (%)', 'Number of Periods', 'Payment ($)', 'Type (0=end, 1=beginning)'],
+            defaultParams: [5000, 0.08, 5, 0, 0],
+            formula: 'FV = PV × (1 + r)^n + PMT × [((1 + r)^n - 1) / r]',
+            calculate: (params) => FinancialFunctions.futureValue(params[0], params[1], params[2], params[3], params[4]),
+            description: 'Calculates the future worth of a present sum of money or stream of cash flows',
+            useCases: ['Investment planning', 'Retirement savings', 'Goal setting', 'Compound growth analysis'],
+            industryBenchmarks: {
+                'Conservative Growth': '3-5% annually',
+                'Moderate Growth': '6-8% annually',
+                'Aggressive Growth': '9-12% annually'
+            }
+        },
+
+        'compoundInterest': {
+            name: 'Compound Interest',
+            category: 'Time Value of Money',
+            params: ['principal', 'rate', 'periods', 'compoundingFrequency'],
+            paramNames: ['Principal ($)', 'Annual Interest Rate (%)', 'Number of Years', 'Compounding Frequency (per year)'],
+            defaultParams: [10000, 0.06, 10, 12],
+            formula: 'A = P(1 + r/n)^(nt)',
+            calculate: (params) => FinancialFunctions.compoundInterest(params[0], params[1], params[2], params[3]),
+            description: 'Calculates compound interest with specified compounding frequency',
+            useCases: ['Savings growth', 'Investment returns', 'Loan interest', 'Retirement planning'],
+            compoundingTypes: {
+                'Annual': 1,
+                'Semi-Annual': 2,
+                'Quarterly': 4,
+                'Monthly': 12,
+                'Daily': 365
+            }
+        },
+
+        'effectiveInterestRate': {
+            name: 'Effective Interest Rate',
+            category: 'Time Value of Money',
+            params: ['nominalRate', 'compoundingFrequency'],
+            paramNames: ['Nominal Interest Rate (%)', 'Compounding Frequency (per year)'],
+            defaultParams: [0.06, 12],
+            formula: 'EIR = (1 + r/n)^n - 1',
+            calculate: (params) => FinancialFunctions.effectiveInterestRate(params[0], params[1]),
+            description: 'Calculates the effective annual rate accounting for compounding',
+            useCases: ['Loan comparison', 'Investment analysis', 'Rate standardization'],
+            keyInsight: 'Higher compounding frequency increases effective rate above nominal rate'
+        },
+
+        'internalRateOfReturn': {
+            name: 'Internal Rate of Return (IRR)',
+            category: 'Investment Analysis',
+            params: ['cashFlows', 'guess', 'maxIterations', 'tolerance'],
+            paramNames: ['Cash Flows Array', 'Initial Guess (%)', 'Max Iterations', 'Tolerance'],
+            defaultParams: [[-100000, 25000, 35000, 40000, 45000], 0.1, 100, 1e-10],
+            formula: 'IRR: Rate where NPV = 0',
+            calculate: (params) => FinancialFunctions.internalRateOfReturn(params[0], params[1], params[2], params[3]),
+            description: 'Finds the discount rate that makes NPV equal to zero',
+            useCases: ['Investment evaluation', 'Capital budgeting', 'Performance measurement'],
+            decisionRules: {
+                accept: 'IRR > Cost of Capital',
+                reject: 'IRR < Cost of Capital',
+                ranking: 'Higher IRR generally preferred'
+            }
+        },
+
+        'paybackPeriod': {
+            name: 'Payback Period',
+            category: 'Investment Analysis',
+            params: ['initialInvestment', 'cashFlows'],
+            paramNames: ['Initial Investment ($)', 'Annual Cash Flows Array'],
+            defaultParams: [100000, [25000, 30000, 35000, 40000]],
+            formula: 'Payback = Years until Cumulative Cash Flows = Initial Investment',
+            calculate: (params) => FinancialFunctions.paybackPeriod(params[0], params[1]),
+            description: 'Time required to recover initial investment from cash flows',
+            useCases: ['Quick investment screening', 'Liquidity assessment', 'Risk evaluation'],
+            limitations: 'Ignores time value of money and cash flows after payback'
+        },
+
+        'discountedPaybackPeriod': {
+            name: 'Discounted Payback Period',
+            category: 'Investment Analysis',
+            params: ['initialInvestment', 'cashFlows', 'discountRate'],
+            paramNames: ['Initial Investment ($)', 'Annual Cash Flows Array', 'Discount Rate (%)'],
+            defaultParams: [100000, [25000, 30000, 35000, 40000], 0.1],
+            formula: 'DPP = Years until Cumulative Discounted Cash Flows = Initial Investment',
+            calculate: (params) => FinancialFunctions.discountedPaybackPeriod(params[0], params[1], params[2]),
+            description: 'Payback period accounting for time value of money',
+            useCases: ['Enhanced investment screening', 'Risk-adjusted payback analysis'],
+            advantage: 'Considers time value of money unlike simple payback period'
+        },
+
+        'grossProfitMargin': {
+            name: 'Gross Profit Margin',
+            category: 'Profitability Analysis',
+            params: ['grossProfit', 'revenue'],
+            paramNames: ['Gross Profit ($)', 'Revenue ($)'],
+            defaultParams: [150000, 250000],
+            formula: 'Gross Margin = Gross Profit / Revenue',
+            calculate: (params) => FinancialFunctions.grossProfitMargin(params[0], params[1]),
+            description: 'Measures profitability after direct costs',
+            useCases: ['Pricing analysis', 'Cost management', 'Competitive positioning'],
+            industryBenchmarks: {
+                'Software': '70-90%',
+                'Retail': '20-50%',
+                'Manufacturing': '15-40%',
+                'Services': '50-80%'
+            }
+        },
+
+        'operatingMargin': {
+            name: 'Operating Margin',
+            category: 'Profitability Analysis',
+            params: ['operatingIncome', 'revenue'],
+            paramNames: ['Operating Income ($)', 'Revenue ($)'],
+            defaultParams: [75000, 250000],
+            formula: 'Operating Margin = Operating Income / Revenue',
+            calculate: (params) => FinancialFunctions.operatingMargin(params[0], params[1]),
+            description: 'Measures operational efficiency after all operating expenses',
+            useCases: ['Operational performance', 'Management effectiveness', 'Industry comparison'],
+            industryBenchmarks: {
+                'Technology': '15-30%',
+                'Healthcare': '10-20%',
+                'Retail': '3-8%',
+                'Manufacturing': '5-15%'
+            }
+        },
+
+        'netProfitMargin': {
+            name: 'Net Profit Margin',
+            category: 'Profitability Analysis',
+            params: ['netIncome', 'revenue'],
+            paramNames: ['Net Income ($)', 'Revenue ($)'],
+            defaultParams: [50000, 250000],
+            formula: 'Net Margin = Net Income / Revenue',
+            calculate: (params) => FinancialFunctions.netProfitMargin(params[0], params[1]),
+            description: 'Measures overall profitability after all expenses',
+            useCases: ['Overall performance', 'Investment analysis', 'Shareholder value'],
+            industryBenchmarks: {
+                'Software': '15-25%',
+                'Banking': '15-30%',
+                'Retail': '2-6%',
+                'Manufacturing': '3-8%'
+            }
+        },
+
+        'earningsPerShare': {
+            name: 'Earnings Per Share (EPS)',
+            category: 'Market Ratios',
+            params: ['netIncome', 'weightedAverageShares'],
+            paramNames: ['Net Income ($)', 'Weighted Average Shares Outstanding'],
+            defaultParams: [1000000, 100000],
+            formula: 'EPS = Net Income / Weighted Average Shares Outstanding',
+            calculate: (params) => FinancialFunctions.earningsPerShare(params[0], params[1]),
+            description: 'Net income attributable to each share of common stock',
+            useCases: ['Stock valuation', 'Performance measurement', 'Shareholder analysis'],
+            keyInsight: 'Higher EPS generally indicates better profitability per share'
+        },
+
+        'priceToEarningsRatio': {
+            name: 'Price-to-Earnings Ratio (P/E)',
+            category: 'Market Ratios',
+            params: ['marketPrice', 'earningsPerShare'],
+            paramNames: ['Market Price per Share ($)', 'Earnings Per Share ($)'],
+            defaultParams: [50, 2.5],
+            formula: 'P/E Ratio = Market Price per Share / Earnings per Share',
+            calculate: (params) => FinancialFunctions.priceToEarningsRatio(params[0], params[1]),
+            description: 'Valuation ratio comparing price to earnings',
+            useCases: ['Stock valuation', 'Investment decisions', 'Market comparison'],
+            industryBenchmarks: {
+                'Technology': '20-40',
+                'Utilities': '12-18',
+                'Banking': '8-15',
+                'Growth Stocks': '25-50+'
+            }
+        },
+
+        'workingCapital': {
+            name: 'Working Capital',
+            category: 'Liquidity Analysis',
+            params: ['currentAssets', 'currentLiabilities'],
+            paramNames: ['Current Assets ($)', 'Current Liabilities ($)'],
+            defaultParams: [300000, 150000],
+            formula: 'Working Capital = Current Assets - Current Liabilities',
+            calculate: (params) => FinancialFunctions.workingCapital(params[0], params[1]),
+            description: 'Measures short-term financial health and operational efficiency',
+            useCases: ['Cash flow management', 'Operational planning', 'Credit analysis'],
+            interpretation: {
+                positive: 'Company can meet short-term obligations',
+                negative: 'Potential liquidity problems',
+                optimal: 'Sufficient but not excessive working capital'
+            }
+        },
+
+        'breakEvenRevenue': {
+            name: 'Break-Even Revenue',
+            category: 'Cost-Volume-Profit Analysis',
+            params: ['fixedCosts', 'contributionMarginRatio'],
+            paramNames: ['Fixed Costs ($)', 'Contribution Margin Ratio (%)'],
+            defaultParams: [120000, 0.4],
+            formula: 'Break-Even Revenue = Fixed Costs / Contribution Margin Ratio',
+            calculate: (params) => FinancialFunctions.breakEvenRevenue(params[0], params[1]),
+            description: 'Revenue level needed to cover all fixed and variable costs',
+            useCases: ['Sales targeting', 'Business planning', 'Pricing strategy'],
+            keyInsight: 'Higher contribution margin ratio lowers break-even revenue requirement'
+        },
+
+        'dividendDiscountModel': {
+            name: 'Dividend Discount Model (DDM)',
+            category: 'Valuation Models',
+            params: ['dividend', 'growthRate', 'requiredReturn'],
+            paramNames: ['Expected Dividend per Share ($)', 'Growth Rate (%)', 'Required Return (%)'],
+            defaultParams: [2.5, 0.05, 0.12],
+            formula: 'DDM Value = Dividend / (Required Return - Growth Rate)',
+            calculate: (params) => FinancialFunctions.dividendDiscountModel(params[0], params[1], params[2]),
+            description: 'Values stock based on present value of expected dividends',
+            useCases: ['Stock valuation', 'Investment decisions', 'Dividend policy analysis'],
+            limitations: 'Assumes constant growth rate and requires required return > growth rate'
+        },
+
+        'economicValueAdded': {
+            name: 'Economic Value Added (EVA)',
+            category: 'Valuation Models',
+            params: ['nopat', 'wacc', 'investedCapital'],
+            paramNames: ['Net Operating Profit After Tax ($)', 'Weighted Average Cost of Capital (%)', 'Invested Capital ($)'],
+            defaultParams: [150000, 0.1, 1000000],
+            formula: 'EVA = NOPAT - (WACC × Invested Capital)',
+            calculate: (params) => FinancialFunctions.economicValueAdded(params[0], params[1], params[2]),
+            description: 'Measures value creation above cost of capital',
+            useCases: ['Performance measurement', 'Value-based management', 'Capital allocation'],
+            interpretation: {
+                positive: 'Creating shareholder value',
+                negative: 'Destroying shareholder value',
+                zero: 'Meeting but not exceeding cost of capital'
+            }
+        },
+
+        'calculatePayment': {
+            name: 'Loan Payment Calculator',
+            category: 'Amortization Analysis',
+            params: ['principal', 'rate', 'periods'],
+            paramNames: ['Principal Amount ($)', 'Interest Rate per Period (%)', 'Number of Periods'],
+            defaultParams: [200000, 0.005, 360],
+            formula: 'PMT = P × [r(1 + r)^n] / [(1 + r)^n - 1]',
+            calculate: (params) => FinancialFunctions.calculatePayment(params[0], params[1], params[2]),
+            description: 'Calculates periodic payment for a loan',
+            useCases: ['Mortgage analysis', 'Loan planning', 'Debt management'],
+            note: 'Rate should be per period (e.g., monthly rate for monthly payments)'
+        },
+
+        'cashConversionCycle': {
+            name: 'Cash Conversion Cycle (CCC)',
+            category: 'Working Capital Analysis',
+            params: ['daysInventoryOutstanding', 'daysReceivablesOutstanding', 'daysPayablesOutstanding'],
+            paramNames: ['Days Inventory Outstanding', 'Days Receivables Outstanding', 'Days Payables Outstanding'],
+            defaultParams: [45, 30, 35],
+            formula: 'CCC = DIO + DRO - DPO',
+            calculate: (params) => FinancialFunctions.cashConversionCycle(params[0], params[1], params[2]),
+            description: 'Time to convert investments in inventory and receivables into cash',
+            useCases: ['Working capital management', 'Cash flow optimization', 'Operational efficiency'],
+            interpretation: {
+                shorter: 'More efficient working capital management',
+                longer: 'Slower cash conversion, more working capital needed',
+                negative: 'Company gets paid before paying suppliers'
+            }
+         }
     };
 
     static getFormula(name) {
