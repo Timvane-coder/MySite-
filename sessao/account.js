@@ -728,29 +728,6 @@ class FormulaRegistry {
             }
         },
 
-        'breakEvenUnits': {
-            name: 'Break-Even Analysis',
-            category: 'Cost-Volume-Profit Analysis',
-            params: ['fixedCosts', 'pricePerUnit', 'variableCostPerUnit'],
-            paramNames: ['Fixed Costs ($)', 'Price per Unit ($)', 'Variable Cost per Unit ($)'],
-            defaultParams: [120000, 75, 45],
-            formula: 'Break-Even Units = Fixed Costs / (Price - Variable Cost per Unit)',
-            calculate: (params) => FinancialFunctions.breakEvenUnits(params[0], params[1], params[2]),
-            description: 'Determines the sales volume needed to cover all fixed and variable costs',
-            useCases: ['Production planning', 'Pricing decisions', 'Cost management', 'Business planning'],
-            industryBenchmarks: {
-                'Manufacturing': 'Typically 10,000-50,000 units',
-                'Retail': 'Varies by product category',
-                'Services': 'Based on billable hours/capacity',
-                'Technology': 'Lower break-even due to scalability'
-            },
-            keyMetrics: {
-                'Contribution Margin': 'Revenue per unit after variable costs',
-                'Margin of Safety': 'Actual sales above break-even point',
-                'Operating Leverage': 'Sensitivity of profits to sales changes'
-            }
-        },
-
         'quickRatio': {
             name: 'Quick Ratio (Acid Test)',
             category: 'Liquidity Analysis',
