@@ -1208,23 +1208,68 @@ export class EnhancedFinancialWorkbook {
 
     // Enhanced interpretation based on formula type
     generateDetailedInterpretation(formula, params, result) {
-        const baseValue = typeof result === 'object' ? result.value || result.ratio || result.breakEvenUnits || result.roe : result;
-        
-        switch(this.selectedFormula) {
-            case 'presentValue':
-                return this.interpretPresentValue(params, baseValue);
-            case 'netPresentValue':
-                return this.interpretNetPresentValue(params, baseValue);
-            case 'currentRatio':
-                return this.interpretCurrentRatio(params, result);
-            case 'returnOnEquity':
-                return this.interpretReturnOnEquity(params, result);
-            case 'breakEvenUnits':
-                return this.interpretBreakEvenAnalysis(params, result);
-            default:
-                return this.generateGenericInterpretation(formula, baseValue);
-        }
+    const baseValue = typeof result === 'object' ? result.value || result.ratio || result.breakEvenUnits || result.roe || result.irr || result.margin || result.eps || result.peRatio : result;
+    
+    switch(this.selectedFormula) {
+        case 'presentValue':
+            return this.interpretPresentValue(params, baseValue);
+        case 'netPresentValue':
+            return this.interpretNetPresentValue(params, baseValue);
+        case 'currentRatio':
+            return this.interpretCurrentRatio(params, result);
+        case 'returnOnEquity':
+            return this.interpretReturnOnEquity(params, result);
+        case 'breakEvenUnits':
+            return this.interpretBreakEvenAnalysis(params, result);
+        case 'futureValue':
+            return this.interpretFutureValue(params, baseValue);
+        case 'compoundInterest':
+            return this.interpretCompoundInterest(params, baseValue);
+        case 'effectiveInterestRate':
+            return this.interpretEffectiveInterestRate(params, baseValue);
+        case 'internalRateOfReturn':
+            return this.interpretInternalRateOfReturn(params, result);
+        case 'paybackPeriod':
+            return this.interpretPaybackPeriod(params, baseValue);
+        case 'discountedPaybackPeriod':
+            return this.interpretDiscountedPaybackPeriod(params, baseValue);
+        case 'quickRatio':
+            return this.interpretQuickRatio(params, result);
+        case 'debtToEquityRatio':
+            return this.interpretDebtToEquity(params, result);
+        case 'returnOnAssets':
+            return this.interpretReturnOnAssets(params, result);
+        case 'grossProfitMargin':
+            return this.interpretGrossProfitMargin(params, result);
+        case 'operatingMargin':
+            return this.interpretOperatingMargin(params, result);
+        case 'netProfitMargin':
+            return this.interpretNetProfitMargin(params, result);
+        case 'earningsPerShare':
+            return this.interpretEarningsPerShare(params, result);
+        case 'priceToEarningsRatio':
+            return this.interpretPriceToEarnings(params, result);
+        case 'workingCapital':
+            return this.interpretWorkingCapital(params, result);
+        case 'breakEvenRevenue':
+            return this.interpretBreakEvenRevenue(params, result);
+        case 'dividendDiscountModel':
+            return this.interpretDividendDiscountModel(params, result);
+        case 'economicValueAdded':
+            return this.interpretEconomicValueAdded(params, result);
+        case 'calculatePayment':
+            return this.interpretLoanPayment(params, baseValue);
+        case 'cashConversionCycle':
+            return this.interpretCashConversionCycle(params, result);
+        default:
+            return this.generateGenericInterpretation(formula, baseValue);
     }
+               
+    
+    }
+
+
+    
 
     interpretPresentValue(params, result) {
         const [fv, rate, periods, pmt] = params;
@@ -1294,6 +1339,376 @@ export class EnhancedFinancialWorkbook {
             }
         };
     }
+
+    interpretFutureValue(params, result) {
+    const [pv, rate, periods, pmt] = params;
+    const compoundFactor = Math.pow(1 + rate, periods);
+    const growth = result - pv;
+    
+    return {
+        value: this.formatCurrency(result),
+        meaning: `Investment of ${this.formatCurrency(pv)} grows to ${this.formatCurrency(result)} over ${periods} periods at ${this.formatPercentage(rate)}`,
+        implication: `Total growth of ${this.formatCurrency(growth)} represents ${this.formatPercentage(growth/pv)} return on investment`,
+        keyInsights: [
+            `Compound growth factor: ${compoundFactor.toFixed(4)}`,
+            `Effective annual growth: ${this.formatPercentage(Math.pow(result/pv, 1/periods) - 1)}`,
+            `Power of compounding adds ${this.formatCurrency(growth - (pv * rate * periods))} beyond simple interest`
+        ],
+        businessContext: {
+            investmentGrowth: growth > pv ? 'Strong wealth accumulation' : 'Modest growth achieved',
+            timeHorizon: periods > 10 ? 'Long-term compounding benefits significant' : 'Short-term growth limited',
+            rateImpact: rate > 0.08 ? 'High growth rate accelerates wealth building' : 'Conservative growth assumptions'
+        }
+    };
+}
+
+interpretCompoundInterest(params, result) {
+    const [principal, rate, periods, frequency] = params;
+    const simpleInterest = principal * (1 + rate * periods);
+    const compoundingBenefit = result - simpleInterest;
+    
+    return {
+        value: this.formatCurrency(result),
+        meaning: `Principal of ${this.formatCurrency(principal)} compounds to ${this.formatCurrency(result)} with ${frequency}x annual compounding`,
+        implication: `Compounding adds ${this.formatCurrency(compoundingBenefit)} beyond simple interest`,
+        keyInsights: [
+            `Simple interest would yield: ${this.formatCurrency(simpleInterest)}`,
+            `Compounding frequency: ${frequency} times per year`,
+            `Compounding advantage: ${this.formatCurrency(compoundingBenefit)}`,
+            `Effective yield: ${this.formatPercentage((result/principal - 1)/periods)}`
+        ],
+        businessContext: {
+            frequencyImpact: frequency >= 12 ? 'High frequency maximizes compounding' : 'Lower frequency reduces compound benefits',
+            timeValue: periods > 5 ? 'Long timeframe amplifies compounding effect' : 'Short timeframe limits compounding benefits'
+        }
+    };
+}
+
+interpretEffectiveInterestRate(params, result) {
+    const [nominalRate, frequency] = params;
+    const rateDifference = result - nominalRate;
+    
+    return {
+        value: this.formatPercentage(result),
+        meaning: `Nominal rate of ${this.formatPercentage(nominalRate)} becomes ${this.formatPercentage(result)} when compounded ${frequency} times annually`,
+        implication: `Compounding increases effective rate by ${this.formatPercentage(rateDifference)}`,
+        keyInsights: [
+            `Rate enhancement: ${this.formatPercentage(rateDifference)}`,
+            `Compounding frequency: ${frequency} times per year`,
+            `True borrowing/lending cost: ${this.formatPercentage(result)}`,
+            `Frequency impact: ${frequency > 12 ? 'Significant' : frequency > 4 ? 'Moderate' : 'Minimal'}`
+        ],
+        businessContext: {
+            loanComparison: 'Use effective rate for accurate cost comparison',
+            investmentAnalysis: 'Effective rate shows true earning potential',
+            rateTransparency: rateDifference > 0.005 ? 'Material difference from nominal rate' : 'Minor compounding effect'
+        }
+    };
+}
+
+interpretInternalRateOfReturn(params, result) {
+    const [cashFlows] = params;
+    const irr = result.irr || result;
+    const converged = result.converged !== false;
+    const initialInvestment = Math.abs(cashFlows[0]);
+    
+    return {
+        value: this.formatPercentage(irr),
+        meaning: `Investment yields ${this.formatPercentage(irr)} internal rate of return ${converged ? '' : '(estimated)'}`,
+        implication: irr > 0.12 ? 'Exceeds typical cost of capital' : irr > 0.08 ? 'Meets moderate return requirements' : 'Below typical investment threshold',
+        keyInsights: [
+            `Calculation ${converged ? 'converged successfully' : 'required estimation'}`,
+            `Break-even discount rate: ${this.formatPercentage(irr)}`,
+            `Investment attractiveness: ${irr > 0.15 ? 'Highly attractive' : irr > 0.10 ? 'Attractive' : 'Marginal'}`,
+            `Risk-return profile: ${irr > 0.20 ? 'High return/High risk' : 'Moderate risk-return'}`
+        ],
+        businessContext: {
+            decision: irr > 0.12 ? 'ACCEPT - Exceeds hurdle rate' : irr > 0.08 ? 'CONDITIONAL - Meets minimum threshold' : 'REJECT - Below required return',
+            comparison: 'Compare to weighted average cost of capital (WACC)',
+            reliability: converged ? 'Reliable calculation' : 'Verify with NPV analysis'
+        }
+    };
+}
+
+interpretPaybackPeriod(params, result) {
+    const [initialInvestment, cashFlows] = params;
+    const paybackYears = result;
+    
+    return {
+        value: paybackYears ? `${paybackYears.toFixed(2)} years` : 'Never pays back',
+        meaning: paybackYears ? `Investment recovers initial cost in ${paybackYears.toFixed(2)} years` : 'Investment never recovers initial cost',
+        implication: paybackYears ? (paybackYears <= 3 ? 'Quick payback reduces risk' : paybackYears <= 5 ? 'Moderate payback period' : 'Slow payback increases risk') : 'High-risk investment with no payback',
+        keyInsights: [
+            `Initial investment: ${this.formatCurrency(initialInvestment)}`,
+            `Recovery timeframe: ${paybackYears ? `${paybackYears.toFixed(2)} years` : 'No recovery'}`,
+            `Risk level: ${paybackYears ? (paybackYears <= 2 ? 'Low' : paybackYears <= 4 ? 'Moderate' : 'High') : 'Very High'}`,
+            `Cash flow pattern: ${paybackYears ? 'Positive recovery' : 'Insufficient cash generation'}`
+        ],
+        businessContext: {
+            riskAssessment: paybackYears ? (paybackYears <= 3 ? 'Low liquidity risk' : 'Higher capital exposure') : 'Capital at risk',
+            comparison: 'Supplement with NPV analysis for complete evaluation',
+            limitation: 'Ignores time value of money and post-payback cash flows'
+        }
+    };
+}
+
+interpretDiscountedPaybackPeriod(params, result) {
+    const [initialInvestment, cashFlows, discountRate] = params;
+    const paybackYears = result;
+    
+    return {
+        value: paybackYears ? `${paybackYears.toFixed(2)} years` : 'Never pays back (discounted)',
+        meaning: `Risk-adjusted payback period is ${paybackYears ? paybackYears.toFixed(2) + ' years' : 'infinite'} at ${this.formatPercentage(discountRate)} discount rate`,
+        implication: paybackYears ? (paybackYears <= 4 ? 'Acceptable risk-adjusted payback' : paybackYears <= 6 ? 'Longer risk-adjusted recovery' : 'Extended risk exposure') : 'Fails risk-adjusted payback test',
+        keyInsights: [
+            `Discount rate applied: ${this.formatPercentage(discountRate)}`,
+            `Risk-adjusted recovery: ${paybackYears ? `${paybackYears.toFixed(2)} years` : 'No recovery'}`,
+            `Time value impact: Longer than simple payback period`,
+            `Risk consideration: ${paybackYears ? 'Incorporates cost of capital' : 'Excessive risk exposure'}`
+        ],
+        businessContext: {
+            improvementOverSimple: 'More realistic than simple payback period',
+            riskAdjustment: 'Accounts for time value and risk',
+            investmentViability: paybackYears ? (paybackYears <= 5 ? 'Viable investment' : 'Questionable viability') : 'Not viable'
+        }
+    };
+}
+
+interpretQuickRatio(params, result) {
+    const [quickAssets, currentLiabilities] = params;
+    const ratio = result.ratio || result;
+    
+    return {
+        value: ratio.toFixed(2),
+        meaning: `Company has ${this.formatCurrency(ratio)} in liquid assets for every $1.00 of current liabilities`,
+        implication: result.interpretation ? result.interpretation.description : this.assessQuickLiquidity(ratio),
+        keyInsights: [
+            `Immediate liquidity: ${this.formatCurrency(quickAssets)}`,
+            `Short-term obligations: ${this.formatCurrency(currentLiabilities)}`,
+            `Liquidity buffer: ${this.formatCurrency(quickAssets - currentLiabilities)}`,
+            `Risk level: ${result.riskLevel || this.assessLiquidityRisk(ratio)}`
+        ],
+        businessContext: {
+            emergencyLiquidity: ratio >= 1.0 ? 'Can meet obligations without selling inventory' : 'May need inventory conversion for liquidity',
+            creditProfile: ratio >= 1.2 ? 'Strong immediate liquidity profile' : 'Limited immediate liquidity',
+            operationalRisk: ratio < 0.8 ? 'High operational risk' : 'Manageable liquidity position'
+        }
+    };
+}
+
+interpretDebtToEquity(params, result) {
+    const [totalDebt, totalEquity] = params;
+    const ratio = result.ratio || result;
+    
+    return {
+        value: ratio.toFixed(2),
+        meaning: `Company has ${this.formatCurrency(ratio)} in debt for every $1.00 of equity`,
+        implication: result.interpretation ? result.interpretation.description : this.assessLeverageLevel(ratio),
+        keyInsights: [
+            `Total debt: ${this.formatCurrency(totalDebt)}`,
+            `Total equity: ${this.formatCurrency(totalEquity)}`,
+            `Capital structure: ${ratio > 1 ? 'Debt-heavy' : 'Equity-heavy'}`,
+            `Financial risk: ${result.leverageLevel || this.assessLeverageRisk(ratio)}`
+        ],
+        businessContext: {
+            financialRisk: ratio > 1.5 ? 'High financial leverage increases risk' : ratio > 0.6 ? 'Moderate leverage' : 'Conservative capital structure',
+            flexibilityImpact: ratio > 1.0 ? 'Limited financial flexibility' : 'Good financial flexibility',
+            costOfCapital: ratio > 1.0 ? 'Higher cost of capital due to leverage' : 'Lower cost of capital'
+        }
+    };
+}
+
+interpretReturnOnAssets(params, result) {
+    const [netIncome, averageAssets] = params;
+    const roa = result.roa || result;
+    const roaPercentage = roa * 100;
+    
+    return {
+        value: this.formatPercentage(roa),
+        meaning: `Company generates ${this.formatCurrency(roa)} in profit for every $1.00 of assets`,
+        implication: result.interpretation ? result.interpretation.description : this.assessAssetEfficiency(roa),
+        keyInsights: [
+            `Asset efficiency: ${this.formatPercentage(roa)}`,
+            `Profit generation: ${this.formatCurrency(netIncome)}`,
+            `Asset base: ${this.formatCurrency(averageAssets)}`,
+            `Performance tier: ${roaPercentage > 10 ? 'Excellent' : roaPercentage > 5 ? 'Good' : 'Below Average'}`
+        ],
+        businessContext: {
+            assetUtilization: roaPercentage > 8 ? 'Efficient asset utilization' : 'Room for improvement in asset efficiency',
+            managementEffectiveness: roaPercentage > 12 ? 'Superior management performance' : 'Standard management performance',
+            industryPosition: 'Compare to industry benchmarks for context'
+        }
+    };
+}
+
+interpretGrossProfitMargin(params, result) {
+    const [grossProfit, revenue] = params;
+    const margin = result.margin || result;
+    const marginPercentage = margin * 100;
+    
+    return {
+        value: this.formatPercentage(margin),
+        meaning: `${marginPercentage.toFixed(1)}% of revenue remains after direct costs`,
+        implication: result.interpretation ? result.interpretation.description : this.assessGrossProfitability(margin),
+        keyInsights: [
+            `Gross profit: ${this.formatCurrency(grossProfit)}`,
+            `Total revenue: ${this.formatCurrency(revenue)}`,
+            `Direct costs: ${this.formatCurrency(revenue - grossProfit)}`,
+            `Pricing power: ${marginPercentage > 50 ? 'Strong' : marginPercentage > 30 ? 'Moderate' : 'Weak'}`
+        ],
+        businessContext: {
+            competitivePosition: marginPercentage > 50 ? 'Strong competitive moat' : marginPercentage > 30 ? 'Competitive position' : 'Commodity-like business',
+            scalability: marginPercentage > 40 ? 'Good scalability potential' : 'Limited scalability',
+            costControl: 'Monitor for margin compression trends'
+        }
+    };
+}
+
+interpretOperatingMargin(params, result) {
+    const [operatingIncome, revenue] = params;
+    const margin = result.margin || result;
+    const marginPercentage = margin * 100;
+    
+    return {
+        value: this.formatPercentage(margin),
+        meaning: `${marginPercentage.toFixed(1)}% of revenue remains after all operating expenses`,
+        implication: result.interpretation ? result.interpretation.description : this.assessOperationalEfficiency(margin),
+        keyInsights: [
+            `Operating income: ${this.formatCurrency(operatingIncome)}`,
+            `Revenue base: ${this.formatCurrency(revenue)}`,
+            `Operating efficiency: ${marginPercentage > 15 ? 'High' : marginPercentage > 8 ? 'Moderate' : 'Low'}`,
+            `Cost management: ${marginPercentage > 10 ? 'Effective' : 'Needs improvement'}`
+        ],
+        businessContext: {
+            operationalExcellence: marginPercentage > 20 ? 'Operational excellence achieved' : marginPercentage > 10 ? 'Good operational performance' : 'Operational challenges',
+            scalability: marginPercentage > 15 ? 'Scalable business model' : 'Fixed cost burden',
+            competitiveness: 'Compare to industry operating margin benchmarks'
+        }
+    };
+}
+
+interpretNetProfitMargin(params, result) {
+    const [netIncome, revenue] = params;
+    const margin = result.margin || result;
+    const marginPercentage = margin * 100;
+    
+    return {
+        value: this.formatPercentage(margin),
+        meaning: `${marginPercentage.toFixed(1)}% of revenue flows to bottom line`,
+        implication: result.interpretation ? result.interpretation.description : this.assessOverallProfitability(margin),
+        keyInsights: [
+            `Net income: ${this.formatCurrency(netIncome)}`,
+            `Revenue base: ${this.formatCurrency(revenue)}`,
+            `Overall efficiency: ${marginPercentage > 15 ? 'Excellent' : marginPercentage > 8 ? 'Good' : 'Needs improvement'}`,
+            `Profit retention: ${marginPercentage.toFixed(1)}% of sales becomes profit`
+        ],
+        businessContext: {
+            shareholderValue: marginPercentage > 12 ? 'Strong value creation' : marginPercentage > 5 ? 'Adequate value creation' : 'Limited value creation',
+            sustainability: marginPercentage > 10 ? 'Sustainable profit model' : 'Profit sustainability concerns',
+            investmentAttractiveness: marginPercentage > 15 ? 'Highly attractive to investors' : 'Moderate investment appeal'
+        }
+    };
+}
+
+interpretEarningsPerShare(params, result) {
+    const [netIncome, shares] = params;
+    const eps = result.eps || result;
+    
+    return {
+        value: this.formatCurrency(eps),
+        meaning: `Each share earned ${this.formatCurrency(eps)} in net income`,
+        implication: result.interpretation ? result.interpretation.description : this.assessEPSPerformance(eps),
+        keyInsights: [
+            `Total earnings: ${this.formatCurrency(netIncome)}`,
+            `Shares outstanding: ${this.formatNumber(shares)}`,
+            `Per-share value creation: ${this.formatCurrency(eps)}`,
+            `Growth potential: ${eps > 5 ? 'Strong' : eps > 2 ? 'Moderate' : 'Limited'}`
+        ],
+        businessContext: {
+            shareholderReturns: eps > 3 ? 'Strong per-share earnings' : eps > 1 ? 'Adequate per-share earnings' : 'Weak per-share performance',
+            marketValuation: 'Key input for P/E ratio and stock valuation',
+            growthTrajectory: 'Track EPS growth trends over time'
+        }
+    };
+}
+
+interpretPriceToEarnings(params, result) {
+    const [marketPrice, eps] = params;
+    const peRatio = result.peRatio || result;
+    
+    return {
+        value: `${peRatio.toFixed(1)}x`,
+        meaning: `Market pays $${peRatio.toFixed(2)} for every $1.00 of annual earnings`,
+        implication: result.interpretation ? result.interpretation.description : this.assessValuation(peRatio),
+        keyInsights: [
+            `Market price: ${this.formatCurrency(marketPrice)}`,
+            `Earnings per share: ${this.formatCurrency(eps)}`,
+            `Valuation multiple: ${peRatio.toFixed(1)}x earnings`,
+            `Market expectation: ${peRatio > 20 ? 'High growth expected' : peRatio > 15 ? 'Moderate growth' : 'Limited growth expected'}`
+        ],
+        businessContext: {
+            investmentDecision: result.valuation || this.assessInvestmentAttractiveness(peRatio),
+            marketSentiment: peRatio > 25 ? 'Very optimistic' : peRatio > 15 ? 'Optimistic' : peRatio < 10 ? 'Pessimistic' : 'Neutral',
+            riskReturn: peRatio > 20 ? 'Higher risk/higher return potential' : 'Moderate risk/return profile'
+        }
+    };
+}
+
+interpretWorkingCapital(params, result) {
+    const [currentAssets, currentLiabilities] = params;
+    const workingCapital = result.workingCapital || result;
+    
+    return {
+        value: this.formatCurrency(workingCapital),
+        meaning: `Company has ${this.formatCurrency(workingCapital)} in net working capital`,
+        implication: result.interpretation ? result.interpretation.description : this.assessWorkingCapitalAdequacy(workingCapital, currentAssets),
+        keyInsights: [
+            `Current assets: ${this.formatCurrency(currentAssets)}`,
+            `Current liabilities: ${this.formatCurrency(currentLiabilities)}`,
+            `Liquidity cushion: ${workingCapital > 0 ? 'Positive' : 'Negative'}`,
+            `Operational funding: ${workingCapital > currentLiabilities * 0.2 ? 'Adequate' : 'Tight'}`
+        ],
+        businessContext: {
+            operationalSupport: workingCapital > 0 ? 'Supports daily operations' : 'Constrains operations',
+            growthCapacity: workingCapital > currentAssets * 0.2 ? 'Can fund growth' : 'Growth funding limited',
+            cashFlowImpact: workingCapital > 0 ? 'Positive cash flow support' : 'Cash flow drain'
+        }
+    };
+}
+
+interpretBreakEvenRevenue(params, result) {
+    const [fixedCosts, contributionMarginRatio] = params;
+    const breakEvenRevenue = result.breakEvenRevenue || result;
+    
+    return {
+        value: this.formatCurrency(breakEvenRevenue),
+        meaning: `Business needs ${this.formatCurrency(breakEvenRevenue)} in revenue to break even`,
+        implication: result.interpretation ? result.interpretation.description : this.assessBreakEvenViability(breakEvenRevenue, fixedCosts),
+        keyInsights: [
+            `Fixed costs: ${this.formatCurrency(fixedCosts)}`,
+            `Contribution margin: ${this.formatPercentage(contributionMarginRatio)}`,
+            `Revenue target: ${this.formatCurrency(breakEvenRevenue)}`,
+            `Sales requirement: ${breakEvenRevenue > 1000000 ? 'High' : breakEvenRevenue > 500000 ? 'Moderate' : 'Achievable'}`
+        ],
+        businessContext: {
+            marketViability: breakEvenRevenue > 2000000 ? 'Challenging market requirements' : 'Reasonable market target',
+            riskLevel: contributionMarginRatio < 0.3 ? 'High break-even risk' : 'Manageable break-even target',
+            scalability: contributionMarginRatio > 0.4 ? 'Good scalability beyond break-even' : 'Limited scalability'
+        }
+    };
+}
+
+interpretDividendDiscountModel(params, result) {
+    const [dividend, growthRate, requiredReturn] = params;
+    const value = result.value || result;
+    const dividendYield = dividend / value;
+    
+    return {
+        value: this.formatCurrency(value),
+        meaning: `Stock valued at ${this.formatCurrency(value)} based on dividend growth model`,
+        implication: result.interpretation ? result.interpretation.description : this.assessDividendValue(dividendYield, growthRate),
+        keyInsights: [
+ 
 
     interpretReturnOnEquity(params, result) {
         const [netIncome, averageEquity] = params;
