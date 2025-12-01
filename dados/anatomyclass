@@ -1,0 +1,2200 @@
+class AnatomicalDiagramsRegistry {
+    static diagrams = {
+        // ===== 1. CELL BIOLOGY =====
+        'animalCell': {
+            name: 'Animal Cell',
+            category: 'Cell Biology',
+            description: 'Complete animal cell with all organelles',
+            dataRequired: [],
+            usage: 'Best for cell biology education',
+            examples: ['Cell biology', 'Organelles', 'Cellular anatomy'],
+            defaultOptions: {
+                title: 'Animal Cell Structure',
+                type: 'generic',
+                showLabels: true,
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'plantCell': {
+            name: 'Plant Cell',
+            category: 'Cell Biology',
+            description: 'Plant cell with cell wall, chloroplasts, and large central vacuole',
+            dataRequired: [],
+            usage: 'Best for plant cell biology education',
+            examples: ['Botany', 'Plant biology', 'Cell comparison'],
+            defaultOptions: {
+                title: 'Plant Cell Structure',
+                showLabels: true,
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'prokaryoticVsEukaryotic': {
+            name: 'Prokaryotic vs Eukaryotic Cell',
+            category: 'Cell Biology',
+            description: 'Side-by-side comparison of prokaryotic and eukaryotic cells',
+            dataRequired: [],
+            usage: 'Best for comparing cell types',
+            examples: ['Cell types', 'Evolution', 'Microbiology'],
+            defaultOptions: {
+                title: 'Prokaryotic vs Eukaryotic Cells',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'cellMembrane': {
+            name: 'Cell Membrane (Phospholipid Bilayer)',
+            category: 'Cell Biology',
+            description: 'Fluid mosaic model showing phospholipids, proteins, and cholesterol',
+            dataRequired: [],
+            usage: 'Best for membrane structure education',
+            examples: ['Cell membrane', 'Transport', 'Cellular biology'],
+            defaultOptions: {
+                title: 'Cell Membrane Structure',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'osmosisDiffusion': {
+            name: 'Osmosis & Diffusion',
+            category: 'Cell Biology',
+            description: 'Passive transport mechanisms across membranes',
+            dataRequired: [],
+            usage: 'Best for transport mechanisms',
+            examples: ['Passive transport', 'Osmosis', 'Diffusion'],
+            defaultOptions: {
+                title: 'Osmosis & Diffusion',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'activePassiveTransport': {
+            name: 'Active vs Passive Transport',
+            category: 'Cell Biology',
+            description: 'Comparison of transport mechanisms requiring and not requiring energy',
+            dataRequired: [],
+            usage: 'Best for cellular transport education',
+            examples: ['Cell transport', 'Membrane function', 'ATP usage'],
+            defaultOptions: {
+                title: 'Active vs Passive Transport',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'mitosis': {
+            name: 'Mitosis',
+            category: 'Cell Biology',
+            description: 'All stages of mitotic cell division',
+            dataRequired: [],
+            usage: 'Best for cell division education',
+            examples: ['Cell division', 'Growth', 'Reproduction'],
+            defaultOptions: {
+                title: 'Mitosis - Cell Division',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'meiosis': {
+            name: 'Meiosis',
+            category: 'Cell Biology',
+            description: 'Meiotic division producing four haploid gametes',
+            dataRequired: [],
+            usage: 'Best for sexual reproduction and genetics',
+            examples: ['Gamete formation', 'Sexual reproduction', 'Genetic variation'],
+            defaultOptions: {
+                title: 'Meiosis',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'organelles': {
+            name: 'Cell Organelles',
+            category: 'Cell Biology',
+            description: 'Individual organelles with detailed structures',
+            dataRequired: ['organelleType'],
+            usage: 'Best for detailed organelle study',
+            examples: ['Organelle function', 'Cell components', 'Cellular biology'],
+            organelleTypes: ['nucleus', 'mitochondria', 'ribosome', 'endoplasmicReticulum', 'golgiApparatus', 'lysosome', 'peroxisome'],
+            defaultOptions: {
+                title: 'Cell Organelles',
+                organelleType: 'mitochondria',
+                showLabels: true,
+                width: 700,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'cellCycle': {
+            name: 'Cell Cycle',
+            category: 'Cell Biology',
+            description: 'Complete cell cycle with G1, S, G2, and M phases',
+            dataRequired: [],
+            usage: 'Best for cell division regulation',
+            examples: ['Cell growth', 'Cell division', 'Cancer biology'],
+            defaultOptions: {
+                title: 'Cell Cycle',
+                showLabels: true,
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'enzymeAction': {
+            name: 'Enzyme Action',
+            category: 'Cell Biology',
+            description: 'Lock-and-key and induced fit models of enzyme action',
+            dataRequired: [],
+            usage: 'Best for enzyme mechanism education',
+            examples: ['Enzyme kinetics', 'Biochemistry', 'Metabolism'],
+            defaultOptions: {
+                title: 'Enzyme Action Mechanism',
+                model: 'both', // 'lockAndKey', 'inducedFit', 'both'
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 2. GENETICS & MOLECULAR BIOLOGY =====
+        'dnaStructure': {
+            name: 'DNA Double Helix',
+            category: 'Genetics & Molecular Biology',
+            description: 'DNA structure with base pairs',
+            dataRequired: [],
+            usage: 'Best for genetics education',
+            examples: ['Genetics', 'Molecular biology', 'DNA structure'],
+            defaultOptions: {
+                title: 'DNA Double Helix',
+                showLabels: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'rnaStructure': {
+            name: 'RNA Structure',
+            category: 'Genetics & Molecular Biology',
+            description: 'RNA single strand with different types (mRNA, tRNA, rRNA)',
+            dataRequired: [],
+            usage: 'Best for RNA education',
+            examples: ['Molecular biology', 'Gene expression', 'Protein synthesis'],
+            defaultOptions: {
+                title: 'RNA Structure',
+                rnaType: 'mRNA', // 'mRNA', 'tRNA', 'rRNA'
+                showLabels: true,
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'dnaReplication': {
+            name: 'DNA Replication',
+            category: 'Genetics & Molecular Biology',
+            description: 'Semi-conservative DNA replication process',
+            dataRequired: [],
+            usage: 'Best for molecular biology and genetics',
+            examples: ['DNA synthesis', 'Cell division prep', 'Molecular biology'],
+            defaultOptions: {
+                title: 'DNA Replication',
+                showLabels: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'transcription': {
+            name: 'Transcription',
+            category: 'Genetics & Molecular Biology',
+            description: 'DNA to RNA transcription process',
+            dataRequired: [],
+            usage: 'Best for gene expression education',
+            examples: ['Gene expression', 'RNA synthesis', 'Molecular biology'],
+            defaultOptions: {
+                title: 'Transcription (DNA → RNA)',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'translation': {
+            name: 'Translation',
+            category: 'Genetics & Molecular Biology',
+            description: 'RNA to protein translation at ribosome',
+            dataRequired: [],
+            usage: 'Best for protein synthesis education',
+            examples: ['Protein synthesis', 'Ribosomes', 'Gene expression'],
+            defaultOptions: {
+                title: 'Translation (RNA → Protein)',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'codonChart': {
+            name: 'Genetic Code (Codon Chart)',
+            category: 'Genetics & Molecular Biology',
+            description: 'Complete genetic code showing all 64 codons',
+            dataRequired: [],
+            usage: 'Best for understanding genetic code',
+            examples: ['Genetics', 'Protein synthesis', 'Molecular biology'],
+            defaultOptions: {
+                title: 'Genetic Code - Codon Chart',
+                showLabels: true,
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'geneExpression': {
+            name: 'Gene Expression Pathway',
+            category: 'Genetics & Molecular Biology',
+            description: 'Complete pathway from DNA to protein',
+            dataRequired: [],
+            usage: 'Best for central dogma education',
+            examples: ['Gene expression', 'Central dogma', 'Molecular biology'],
+            defaultOptions: {
+                title: 'Gene Expression Pathway',
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'punnettSquare': {
+            name: 'Punnett Square',
+            category: 'Genetics & Molecular Biology',
+            description: 'Genetic cross prediction tool',
+            dataRequired: ['crossType'],
+            usage: 'Best for genetics problems',
+            examples: ['Mendelian genetics', 'Inheritance', 'Probability'],
+            crossTypes: ['monohybrid', 'dihybrid'],
+            defaultOptions: {
+                title: 'Punnett Square',
+                crossType: 'monohybrid',
+                showLabels: true,
+                width: 600,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'chromosomes': {
+            name: 'Chromosome Structure',
+            category: 'Genetics & Molecular Biology',
+            description: 'Chromosome anatomy and homologous pairs',
+            dataRequired: [],
+            usage: 'Best for genetics and cell division',
+            examples: ['Chromosomes', 'Karyotypes', 'Genetics'],
+            defaultOptions: {
+                title: 'Chromosome Structure',
+                showHomologousPairs: true,
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'crossingOver': {
+            name: 'Crossing Over',
+            category: 'Genetics & Molecular Biology',
+            description: 'Genetic recombination during meiosis',
+            dataRequired: [],
+            usage: 'Best for genetic variation education',
+            examples: ['Meiosis', 'Genetic variation', 'Recombination'],
+            defaultOptions: {
+                title: 'Crossing Over (Recombination)',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'mutations': {
+            name: 'DNA Mutations',
+            category: 'Genetics & Molecular Biology',
+            description: 'Types of mutations: point, frameshift, etc.',
+            dataRequired: [],
+            usage: 'Best for mutation education',
+            examples: ['Mutations', 'Genetic disorders', 'Evolution'],
+            defaultOptions: {
+                title: 'DNA Mutations',
+                mutationTypes: ['point', 'frameshift', 'insertion', 'deletion'],
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'recombinantDNA': {
+            name: 'Recombinant DNA Technology',
+            category: 'Genetics & Molecular Biology',
+            description: 'Gene splicing and recombinant DNA creation',
+            dataRequired: [],
+            usage: 'Best for biotechnology education',
+            examples: ['Genetic engineering', 'Biotechnology', 'GMOs'],
+            defaultOptions: {
+                title: 'Recombinant DNA Technology',
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'pcrCycle': {
+            name: 'PCR (Polymerase Chain Reaction)',
+            category: 'Genetics & Molecular Biology',
+            description: 'DNA amplification cycle',
+            dataRequired: [],
+            usage: 'Best for molecular biology techniques',
+            examples: ['PCR', 'DNA amplification', 'Molecular techniques'],
+            defaultOptions: {
+                title: 'PCR Cycle',
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 3. EVOLUTION & NATURAL SELECTION =====
+        'darwinsFinches': {
+            name: "Darwin's Finches",
+            category: 'Evolution & Natural Selection',
+            description: 'Beak adaptations in Galapagos finches',
+            dataRequired: [],
+            usage: 'Best for natural selection examples',
+            examples: ['Natural selection', 'Adaptation', 'Evolution'],
+            defaultOptions: {
+                title: "Darwin's Finches - Beak Adaptations",
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'naturalSelection': {
+            name: 'Natural Selection Process',
+            category: 'Evolution & Natural Selection',
+            description: 'Step-by-step natural selection mechanism',
+            dataRequired: [],
+            usage: 'Best for evolution education',
+            examples: ['Evolution', 'Selection pressure', 'Adaptation'],
+            defaultOptions: {
+                title: 'Natural Selection Process',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'phylogeneticTree': {
+            name: 'Phylogenetic Tree',
+            category: 'Evolution & Natural Selection',
+            description: 'Evolutionary relationships between species',
+            dataRequired: [],
+            usage: 'Best for evolutionary relationships',
+            examples: ['Evolution', 'Taxonomy', 'Common ancestry'],
+            defaultOptions: {
+                title: 'Phylogenetic Tree',
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'adaptiveRadiation': {
+            name: 'Adaptive Radiation',
+            category: 'Evolution & Natural Selection',
+            description: 'Divergent evolution from common ancestor',
+            dataRequired: [],
+            usage: 'Best for speciation education',
+            examples: ['Speciation', 'Divergent evolution', 'Biodiversity'],
+            defaultOptions: {
+                title: 'Adaptive Radiation',
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'fossilLayers': {
+            name: 'Fossil Layers (Stratigraphy)',
+            category: 'Evolution & Natural Selection',
+            description: 'Geological time and fossil record',
+            dataRequired: [],
+            usage: 'Best for fossil evidence of evolution',
+            examples: ['Fossils', 'Geological time', 'Evolution evidence'],
+            defaultOptions: {
+                title: 'Fossil Layers',
+                showLabels: true,
+                width: 700,
+                height: 800,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'hardyWeinberg': {
+            name: 'Hardy-Weinberg Equilibrium',
+            category: 'Evolution & Natural Selection',
+            description: 'Population genetics equilibrium graph',
+            dataRequired: [],
+            usage: 'Best for population genetics',
+            examples: ['Population genetics', 'Allele frequency', 'Evolution'],
+            defaultOptions: {
+                title: 'Hardy-Weinberg Equilibrium',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'speciation': {
+            name: 'Speciation',
+            category: 'Evolution & Natural Selection',
+            description: 'Formation of new species (allopatric, sympatric)',
+            dataRequired: [],
+            usage: 'Best for speciation mechanisms',
+            examples: ['Speciation', 'Reproductive isolation', 'Evolution'],
+            defaultOptions: {
+                title: 'Speciation Mechanisms',
+                speciationType: 'allopatric', // 'allopatric', 'sympatric'
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'comparativeAnatomy': {
+            name: 'Comparative Anatomy',
+            category: 'Evolution & Natural Selection',
+            description: 'Homologous and analogous structures',
+            dataRequired: [],
+            usage: 'Best for anatomical evidence of evolution',
+            examples: ['Homologous structures', 'Analogous structures', 'Evolution'],
+            defaultOptions: {
+                title: 'Comparative Anatomy',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 4. ECOLOGY =====
+        'foodChain': {
+            name: 'Food Chain',
+            category: 'Ecology',
+            description: 'Simple food chain showing energy flow',
+            dataRequired: [],
+            usage: 'Best for basic ecology education',
+            examples: ['Energy flow', 'Trophic levels', 'Ecosystems'],
+            defaultOptions: {
+                title: 'Food Chain',
+                showLabels: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'foodWeb': {
+            name: 'Food Web',
+            category: 'Ecology',
+            description: 'Complex interconnected food relationships',
+            dataRequired: [],
+            usage: 'Best for ecosystem complexity',
+            examples: ['Food webs', 'Ecosystem interactions', 'Energy flow'],
+            defaultOptions: {
+                title: 'Food Web',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'energyPyramid': {
+            name: 'Energy Pyramid',
+            category: 'Ecology',
+            description: 'Trophic pyramid showing 10% energy transfer rule',
+            dataRequired: [],
+            usage: 'Best for energy transfer in ecosystems',
+            examples: ['Trophic levels', 'Energy efficiency', 'Biomass'],
+            defaultOptions: {
+                title: 'Energy Pyramid',
+                showLabels: true,
+                width: 700,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'carbonCycle': {
+            name: 'Carbon Cycle',
+            category: 'Ecology',
+            description: 'Carbon movement through ecosystems',
+            dataRequired: [],
+            usage: 'Best for biogeochemical cycles',
+            examples: ['Carbon cycle', 'Climate change', 'Biogeochemical cycles'],
+            defaultOptions: {
+                title: 'Carbon Cycle',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'nitrogenCycle': {
+            name: 'Nitrogen Cycle',
+            category: 'Ecology',
+            description: 'Nitrogen fixation and cycling',
+            dataRequired: [],
+            usage: 'Best for nutrient cycles',
+            examples: ['Nitrogen cycle', 'Nutrient cycling', 'Bacteria'],
+            defaultOptions: {
+                title: 'Nitrogen Cycle',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'waterCycle': {
+            name: 'Water Cycle',
+            category: 'Ecology',
+            description: 'Hydrological cycle',
+            dataRequired: [],
+            usage: 'Best for water movement education',
+            examples: ['Water cycle', 'Precipitation', 'Evaporation'],
+            defaultOptions: {
+                title: 'Water Cycle',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'populationGrowth': {
+            name: 'Population Growth Curves',
+            category: 'Ecology',
+            description: 'Exponential and logistic growth curves',
+            dataRequired: [],
+            usage: 'Best for population dynamics',
+            examples: ['Population growth', 'Carrying capacity', 'Ecology'],
+            defaultOptions: {
+                title: 'Population Growth Curves',
+                showBoth: true, // exponential and logistic
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'ecosystem': {
+            name: 'Ecosystem Diagram',
+            category: 'Ecology',
+            description: 'Biotic and abiotic components of ecosystem',
+            dataRequired: [],
+            usage: 'Best for ecosystem structure',
+            examples: ['Ecosystems', 'Biotic factors', 'Abiotic factors'],
+            defaultOptions: {
+                title: 'Ecosystem Components',
+                ecosystemType: 'forest', // 'forest', 'aquatic', 'grassland'
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'biomes': {
+            name: 'World Biomes',
+            category: 'Ecology',
+            description: 'Distribution of major biomes',
+            dataRequired: [],
+            usage: 'Best for global ecology',
+            examples: ['Biomes', 'Climate', 'Biodiversity'],
+            defaultOptions: {
+                title: 'World Biomes Distribution',
+                showLabels: true,
+                width: 1000,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'predatorPrey': {
+            name: 'Predator-Prey Graph',
+            category: 'Ecology',
+            description: 'Lotka-Volterra predator-prey dynamics',
+            dataRequired: [],
+            usage: 'Best for population interactions',
+            examples: ['Population dynamics', 'Predation', 'Ecology'],
+            defaultOptions: {
+                title: 'Predator-Prey Dynamics',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 5. HUMAN ANATOMY & PHYSIOLOGY (existing ones) =====
+        // Keep all existing cardiovascular, respiratory, etc.
+
+        'skeletalSystem': {
+            name: 'Skeletal System',
+            category: 'Human Anatomy & Physiology',
+            description: 'Complete human skeleton',
+            dataRequired: [],
+            usage: 'Best for skeletal anatomy overview',
+            examples: ['Skeleton', 'Bones', 'Anatomy'],
+            defaultOptions: {
+                title: 'Human Skeletal System',
+                view: 'anterior', // 'anterior', 'posterior'
+                showLabels: true,
+                width: 600,
+                height: 900,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'muscularSystem': {
+            name: 'Muscular System',
+            category: 'Human Anatomy & Physiology',
+            description: 'Major muscle groups',
+            dataRequired: [],
+            usage: 'Best for muscle anatomy',
+            examples: ['Muscles', 'Anatomy', 'Movement'],
+            defaultOptions: {
+                title: 'Human Muscular System',
+                view: 'anterior',
+                showLabels: true,
+                width: 600,
+                height: 900,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'digestiveSystem': {
+            name: 'Digestive System',
+            category: 'Human Anatomy & Physiology',
+            description: 'Complete digestive tract',
+            dataRequired: [],
+            usage: 'Best for digestion pathway',
+            examples: ['Digestion', 'GI tract', 'Nutrition'],
+            defaultOptions: {
+                title: 'Digestive System',
+                showLabels: true,
+                showPath: true,
+                width: 600,
+                height: 800,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'respiratorySystem': {
+            name: 'Respiratory System',
+            category: 'Human Anatomy & Physiology',
+            description: 'Complete respiratory tract with gas exchange',
+            dataRequired: [],
+            usage: 'Best for breathing anatomy',
+            examples: ['Lungs', 'Breathing', 'Gas exchange'],
+            defaultOptions: {
+                title: 'Respiratory System',
+                showLabels: true,
+                showGasExchange: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'circulatorySystem': {
+            name: 'Circulatory System',
+            category: 'Human Anatomy & Physiology',
+            description: 'Heart and blood vessels',
+            dataRequired: [],
+            usage: 'Best for circulation education',
+            examples: ['Heart', 'Blood vessels', 'Circulation'],
+            defaultOptions: {
+                title: 'Circulatory System',
+                showLabels: true,
+                showOxygenation: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'excretorySystem': {
+            name: 'Excretory/Urinary System',
+            category: 'Human Anatomy & Physiology',
+            description: 'Kidneys and urinary tract',
+            dataRequired: [],
+            usage: 'Best for waste removal education',
+            examples: ['Kidneys', 'Urinary system', 'Excretion'],
+            defaultOptions: {
+                title: 'Urinary System',
+                showLabels: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'nervousSystem': {
+            name: 'Nervous System',
+            category: 'Human Anatomy & Physiology',
+            description: 'Central and peripheral nervous system',
+            dataRequired: [],
+            usage: 'Best for nervous system overview',
+            examples: ['Brain', 'Spinal cord', 'Nerves'],
+            defaultOptions: {
+                title: 'Nervous System',
+                showLabels: true,
+                showSignal: false,
+                width: 600,
+                height: 800,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'neuronStructure': {
+            name: 'Neuron Structure',
+            category: 'Human Anatomy & Physiology',
+            description: 'Detailed neuron anatomy',
+            dataRequired: [],
+            usage: 'Best for nerve cell structure',
+            examples: ['Neurons', 'Synapses', 'Neural transmission'],
+            defaultOptions: {
+                title: 'Neuron Structure',
+                showLabels: true,
+                showSignal: false,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'synapse': {
+            name: 'Synapse',
+            category: 'Human Anatomy & Physiology',
+            description: 'Synaptic transmission between neurons',
+            dataRequired: [],
+            usage: 'Best for neural communication',
+            examples: ['Synapse', 'Neurotransmitters', 'Neural signaling'],
+            defaultOptions: {
+                title: 'Synaptic Transmission',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'endocrineSystem': {
+            name: 'Endocrine System',
+            category: 'Human Anatomy & Physiology',
+            description: 'Hormone-producing glands',
+            dataRequired: [],
+            usage: 'Best for hormone education',
+            examples: ['Hormones', 'Glands', 'Regulation'],
+            defaultOptions: {
+                title: 'Endocrine System',
+                showLabels: true,
+                width: 600,
+                height: 800,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'reproductiveSystem': {
+            name: 'Reproductive System',
+            category: 'Human Anatomy & Physiology',
+            description: 'Male and female reproductive anatomy',
+            dataRequired: ['sex'],
+            usage: 'Best for reproductive anatomy',
+            examples: ['Reproduction', 'Anatomy', 'Development'],
+            defaultOptions: {
+                title: 'Reproductive System',
+                sex: 'both', // 'male', 'female', 'both'
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'immuneSystem': {
+            name: 'Immune System',
+            category: 'Human Anatomy & Physiology',
+            description: 'Immune organs and cells',
+            dataRequired: [],
+            usage: 'Best for immunity education',
+            examples: ['Immunity', 'White blood cells', 'Defense'],
+            defaultOptions: {
+                title: 'Immune System',
+                showLabels: true,
+                width: 700,
+                height: 800,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'skinStructure': {
+            name: 'Skin Layers',
+            category: 'Human Anatomy & Physiology',
+            description: 'Cross-section of skin layers',
+            dataRequired: [],
+            usage: 'Best for dermatology education',
+            examples: ['Skin', 'Integumentary system', 'Dermis'],
+            defaultOptions: {
+                title: 'Skin Structure',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 6. PLANTS (BOTANY) =====
+        'leafCrossSection': {
+            name: 'Leaf Cross-Section',
+            category: 'Plants (Botany)',
+            description: 'Detailed leaf anatomy',
+            dataRequired: [],
+            usage: 'Best for photosynthesis and plant anatomy',
+            examples: ['Leaf structure', 'Gas exchange', 'Photosynthesis'],
+            defaultOptions: {
+                title: 'Leaf Cross-Section',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'photosynthesis': {
+            name: 'Photosynthesis',
+            category: 'Plants (Botany)',
+            description: 'Photosynthesis process in chloroplast',
+            dataRequired: [],
+            usage: 'Best for teaching photosynthesis mechanism',
+            examples: ['Plant metabolism', 'Energy production', 'Biochemistry'],
+            defaultOptions: {
+                title: 'Photosynthesis',
+                showLabels: true,
+                showEquation: true,
+                width: 700,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'stomata': {
+            name: 'Stomata Structure',
+            category: 'Plants (Botany)',
+            description: 'Guard cells and stomatal pore',
+            dataRequired: [],
+            usage: 'Best for gas exchange in plants',
+            examples: ['Stomata', 'Transpiration', 'Gas exchange'],
+            defaultOptions: {
+                title: 'Stomata Structure',
+                state: 'both', // 'open', 'closed', 'both'
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'xylemPhloem': {
+            name: 'Xylem & Phloem',
+            category: 'Plants (Botany)',
+            description: 'Vascular tissue structure and function',
+            dataRequired: [],
+            usage: 'Best for plant transport systems',
+            examples: ['Vascular tissue', 'Transport', 'Plant anatomy'],
+            defaultOptions: {
+                title: 'Xylem & Phloem - Vascular Tissue',
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'flowerStructure': {
+            name: 'Flower Structure',
+            category: 'Plants (Botany)',
+            description: 'Reproductive parts of flowering plants',
+            dataRequired: [],
+            usage: 'Best for plant reproduction',
+            examples: ['Flowers', 'Reproduction', 'Pollination'],
+            defaultOptions: {
+                title: 'Flower Anatomy',
+                showLabels: true,
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'seedGermination': {
+            name: 'Seed Germination',
+            category: 'Plants (Botany)',
+            description: 'Stages of seed sprouting and growth',
+            dataRequired: [],
+            usage: 'Best for plant development',
+            examples: ['Germination', 'Plant growth', 'Development'],
+            defaultOptions: {
+                title: 'Seed Germination Stages',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'tropisms': {
+            name: 'Plant Tropisms',
+            category: 'Plants (Botany)',
+            description: 'Phototropism, geotropism, thigmotropism',
+            dataRequired: [],
+            usage: 'Best for plant responses to stimuli',
+            examples: ['Tropisms', 'Plant behavior', 'Growth responses'],
+            defaultOptions: {
+                title: 'Plant Tropisms',
+                tropismTypes: ['phototropism', 'geotropism', 'thigmotropism'],
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 7. MICROBIOLOGY =====
+        'bacteriaStructure': {
+            name: 'Bacterial Cell',
+            category: 'Microbiology',
+            description: 'Prokaryotic cell structure',
+            dataRequired: [],
+            usage: 'Best for microbiology education',
+            examples: ['Bacteria', 'Prokaryotes', 'Microbiology'],
+            defaultOptions: {
+                title: 'Bacterial Cell Structure',
+                showLabels: true,
+                width: 700,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'virusStructure': {
+            name: 'Virus Structure',
+            category: 'Microbiology',
+            description: 'Viral components and structure',
+            dataRequired: [],
+            usage: 'Best for virology education',
+            examples: ['Viruses', 'Virology', 'Infectious disease'],
+            defaultOptions: {
+                title: 'Virus Structure',
+                showLabels: true,
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'fungalCell': {
+            name: 'Fungal Cell Structure',
+            category: 'Microbiology',
+            description: 'Fungal cell with chitin wall and hyphae',
+            dataRequired: [],
+            usage: 'Best for mycology education',
+            examples: ['Fungi', 'Mycology', 'Cell structure'],
+            defaultOptions: {
+                title: 'Fungal Cell Structure',
+                showLabels: true,
+                showHyphae: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'protists': {
+            name: 'Protist Examples',
+            category: 'Microbiology',
+            description: 'Various protist organisms (amoeba, paramecium, euglena)',
+            dataRequired: [],
+            usage: 'Best for protist diversity',
+            examples: ['Protists', 'Microorganisms', 'Diversity'],
+            defaultOptions: {
+                title: 'Protist Diversity',
+                protistTypes: ['amoeba', 'paramecium', 'euglena'],
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'bacterialGrowthCurve': {
+            name: 'Bacterial Growth Curve',
+            category: 'Microbiology',
+            description: 'Lag, log, stationary, death phases',
+            dataRequired: [],
+            usage: 'Best for microbial growth dynamics',
+            examples: ['Bacterial growth', 'Microbiology', 'Population dynamics'],
+            defaultOptions: {
+                title: 'Bacterial Growth Curve',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'viralReplication': {
+            name: 'Viral Replication Cycles',
+            category: 'Microbiology',
+            description: 'Lytic and lysogenic cycles',
+            dataRequired: [],
+            usage: 'Best for viral life cycles',
+            examples: ['Viral replication', 'Lytic cycle', 'Lysogenic cycle'],
+            defaultOptions: {
+                title: 'Viral Replication Cycles',
+                cycleType: 'both', // 'lytic', 'lysogenic', 'both'
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'microscopy': {
+            name: 'Microscopy Types',
+            category: 'Microbiology',
+            description: 'Light microscope vs electron microscope',
+            dataRequired: [],
+            usage: 'Best for microscopy education',
+            examples: ['Microscopy', 'Lab techniques', 'Visualization'],
+            defaultOptions: {
+                title: 'Microscopy Comparison',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 8. BIOTECHNOLOGY =====
+        'geneticEngineering': {
+            name: 'Genetic Engineering',
+            category: 'Biotechnology',
+            description: 'Gene insertion and modification process',
+            dataRequired: [],
+            usage: 'Best for biotechnology overview',
+            examples: ['Genetic engineering', 'GMOs', 'Biotechnology'],
+            defaultOptions: {
+                title: 'Genetic Engineering Process',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'gelElectrophoresis': {
+            name: 'Gel Electrophoresis',
+            category: 'Biotechnology',
+            description: 'DNA separation technique and band patterns',
+            dataRequired: [],
+            usage: 'Best for DNA analysis techniques',
+            examples: ['DNA analysis', 'Lab techniques', 'Forensics'],
+            defaultOptions: {
+                title: 'Gel Electrophoresis',
+                showLabels: true,
+                showBands: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'cloning': {
+            name: 'Cloning Process',
+            category: 'Biotechnology',
+            description: 'Steps in organismal cloning',
+            dataRequired: [],
+            usage: 'Best for cloning technology',
+            examples: ['Cloning', 'Biotechnology', 'Reproduction'],
+            defaultOptions: {
+                title: 'Cloning Steps',
+                cloningType: 'organismal', // 'organismal', 'gene', 'therapeutic'
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'crispr': {
+            name: 'CRISPR-Cas9',
+            category: 'Biotechnology',
+            description: 'Gene editing mechanism',
+            dataRequired: [],
+            usage: 'Best for modern gene editing',
+            examples: ['CRISPR', 'Gene editing', 'Biotechnology'],
+            defaultOptions: {
+                title: 'CRISPR-Cas9 Gene Editing',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'bioreactor': {
+            name: 'Bioreactor',
+            category: 'Biotechnology',
+            description: 'Industrial biotechnology vessel',
+            dataRequired: [],
+            usage: 'Best for industrial biotechnology',
+            examples: ['Bioreactor', 'Fermentation', 'Industrial biology'],
+            defaultOptions: {
+                title: 'Bioreactor System',
+                showLabels: true,
+                width: 700,
+                height: 800,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'gmoProduction': {
+            name: 'GMO Production',
+            category: 'Biotechnology',
+            description: 'Creating genetically modified organisms',
+            dataRequired: [],
+            usage: 'Best for GMO education',
+            examples: ['GMOs', 'Agricultural biotechnology', 'Genetic modification'],
+            defaultOptions: {
+                title: 'GMO Production Process',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 9. REPRODUCTION & DEVELOPMENT =====
+        'fertilization': {
+            name: 'Fertilization',
+            category: 'Reproduction & Development',
+            description: 'Sperm-egg fusion process',
+            dataRequired: [],
+            usage: 'Best for reproduction education',
+            examples: ['Fertilization', 'Conception', 'Reproduction'],
+            defaultOptions: {
+                title: 'Fertilization Process',
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'embryoDevelopment': {
+            name: 'Embryo Development',
+            category: 'Reproduction & Development',
+            description: 'Stages from zygote to fetus',
+            dataRequired: [],
+            usage: 'Best for developmental biology',
+            examples: ['Embryology', 'Development', 'Pregnancy'],
+            defaultOptions: {
+                title: 'Embryo Development Stages',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'menstrualCycle': {
+            name: 'Menstrual Cycle',
+            category: 'Reproduction & Development',
+            description: 'Hormonal cycle and uterine changes',
+            dataRequired: [],
+            usage: 'Best for reproductive physiology',
+            examples: ['Menstrual cycle', 'Hormones', 'Reproduction'],
+            defaultOptions: {
+                title: 'Menstrual Cycle',
+                showLabels: true,
+                showHormones: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'gametogenesis': {
+            name: 'Gametogenesis',
+            category: 'Reproduction & Development',
+            description: 'Spermatogenesis and oogenesis',
+            dataRequired: [],
+            usage: 'Best for gamete formation',
+            examples: ['Gametogenesis', 'Meiosis', 'Reproduction'],
+            defaultOptions: {
+                title: 'Gametogenesis',
+                showBoth: true, // spermatogenesis and oogenesis
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'placenta': {
+            name: 'Placenta & Fetal Development',
+            category: 'Reproduction & Development',
+            description: 'Placental structure and maternal-fetal exchange',
+            dataRequired: [],
+            usage: 'Best for pregnancy education',
+            examples: ['Placenta', 'Pregnancy', 'Fetal development'],
+            defaultOptions: {
+                title: 'Placenta Structure',
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 10. HEALTH, DISEASE & IMMUNOLOGY =====
+        'immuneResponse': {
+            name: 'Immune Response',
+            category: 'Health, Disease & Immunology',
+            description: 'Innate and adaptive immune response flowchart',
+            dataRequired: [],
+            usage: 'Best for immunology education',
+            examples: ['Immunity', 'Immune response', 'Defense'],
+            defaultOptions: {
+                title: 'Immune Response',
+                responseType: 'both', // 'innate', 'adaptive', 'both'
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'antibodyStructure': {
+            name: 'Antibody Structure',
+            category: 'Health, Disease & Immunology',
+            description: 'Y-shaped antibody with binding sites',
+            dataRequired: [],
+            usage: 'Best for antibody education',
+            examples: ['Antibodies', 'Immunity', 'Proteins'],
+            defaultOptions: {
+                title: 'Antibody (Immunoglobulin) Structure',
+                showLabels: true,
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'pathogenTypes': {
+            name: 'Pathogen Types',
+            category: 'Health, Disease & Immunology',
+            description: 'Bacteria, viruses, fungi, parasites comparison',
+            dataRequired: [],
+            usage: 'Best for infectious disease education',
+            examples: ['Pathogens', 'Infectious disease', 'Microbiology'],
+            defaultOptions: {
+                title: 'Types of Pathogens',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'vaccination': {
+            name: 'Vaccination Mechanism',
+            category: 'Health, Disease & Immunology',
+            description: 'How vaccines create immunity',
+            dataRequired: [],
+            usage: 'Best for vaccine education',
+            examples: ['Vaccination', 'Immunization', 'Prevention'],
+            defaultOptions: {
+                title: 'How Vaccines Work',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'inflammation': {
+            name: 'Inflammation Pathway',
+            category: 'Health, Disease & Immunology',
+            description: 'Steps in inflammatory response',
+            dataRequired: [],
+            usage: 'Best for immune response education',
+            examples: ['Inflammation', 'Innate immunity', 'Healing'],
+            defaultOptions: {
+                title: 'Inflammatory Response',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'diseaseTransmission': {
+            name: 'Disease Transmission Cycles',
+            category: 'Health, Disease & Immunology',
+            description: 'Vector-borne disease transmission (e.g., mosquito-human)',
+            dataRequired: [],
+            usage: 'Best for epidemiology education',
+            examples: ['Disease transmission', 'Vectors', 'Epidemiology'],
+            defaultOptions: {
+                title: 'Disease Transmission Cycle',
+                diseaseType: 'malaria', // 'malaria', 'dengue', 'lyme'
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'bloodCells': {
+            name: 'Blood Cells',
+            category: 'Health, Disease & Immunology',
+            description: 'RBCs, WBCs, and platelets',
+            dataRequired: [],
+            usage: 'Best for hematology education',
+            examples: ['Blood cells', 'Hematology', 'Immune cells'],
+            defaultOptions: {
+                title: 'Blood Cell Types',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 11. CLASSIFICATION & TAXONOMY =====
+        'fiveKingdoms': {
+            name: 'Five Kingdom System',
+            category: 'Classification & Taxonomy',
+            description: 'Monera, Protista, Fungi, Plantae, Animalia',
+            dataRequired: [],
+            usage: 'Best for biological classification',
+            examples: ['Classification', 'Taxonomy', 'Kingdoms'],
+            defaultOptions: {
+                title: 'Five Kingdom Classification',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'threeDomains': {
+            name: 'Three Domain System',
+            category: 'Classification & Taxonomy',
+            description: 'Bacteria, Archaea, Eukarya',
+            dataRequired: [],
+            usage: 'Best for modern classification',
+            examples: ['Domains', 'Taxonomy', 'Evolution'],
+            defaultOptions: {
+                title: 'Three Domain System',
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'taxonomyHierarchy': {
+            name: 'Taxonomy Hierarchy',
+            category: 'Classification & Taxonomy',
+            description: 'Kingdom to species classification levels',
+            dataRequired: [],
+            usage: 'Best for taxonomic ranks',
+            examples: ['Taxonomy', 'Classification', 'Hierarchy'],
+            defaultOptions: {
+                title: 'Taxonomic Hierarchy',
+                showExample: true,
+                showLabels: true,
+                width: 700,
+                height: 800,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'dichotomousKey': {
+            name: 'Dichotomous Key',
+            category: 'Classification & Taxonomy',
+            description: 'Branching identification tool',
+            dataRequired: [],
+            usage: 'Best for species identification',
+            examples: ['Identification', 'Classification', 'Keys'],
+            defaultOptions: {
+                title: 'Dichotomous Key Example',
+                keyType: 'leaves', // 'leaves', 'insects', 'general'
+                showLabels: true,
+                width: 800,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'cladogram': {
+            name: 'Cladogram',
+            category: 'Classification & Taxonomy',
+            description: 'Evolutionary relationships diagram',
+            dataRequired: [],
+            usage: 'Best for phylogenetic relationships',
+            examples: ['Cladistics', 'Evolution', 'Phylogeny'],
+            defaultOptions: {
+                title: 'Cladogram',
+                showLabels: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 12. HOMEOSTASIS & REGULATION =====
+        'negativeFeedback': {
+            name: 'Negative Feedback Loop',
+            category: 'Homeostasis & Regulation',
+            description: 'Self-regulating homeostatic mechanism',
+            dataRequired: [],
+            usage: 'Best for homeostasis education',
+            examples: ['Homeostasis', 'Regulation', 'Feedback'],
+            defaultOptions: {
+                title: 'Negative Feedback Loop',
+                exampleType: 'general', // 'general', 'temperature', 'glucose'
+                showLabels: true,
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'thermoregulation': {
+            name: 'Thermoregulation',
+            category: 'Homeostasis & Regulation',
+            description: 'Body temperature regulation mechanisms',
+            dataRequired: [],
+            usage: 'Best for temperature regulation',
+            examples: ['Temperature control', 'Homeostasis', 'Physiology'],
+            defaultOptions: {
+                title: 'Thermoregulation',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'bloodGlucoseRegulation': {
+            name: 'Blood Glucose Regulation',
+            category: 'Homeostasis & Regulation',
+            description: 'Insulin and glucagon balance',
+            dataRequired: [],
+            usage: 'Best for diabetes education',
+            examples: ['Glucose regulation', 'Diabetes', 'Hormones'],
+            defaultOptions: {
+                title: 'Blood Glucose Regulation',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'waterBalance': {
+            name: 'Water Balance (Osmoregulation)',
+            category: 'Homeostasis & Regulation',
+            description: 'Kidney regulation of water and salt',
+            dataRequired: [],
+            usage: 'Best for osmoregulation education',
+            examples: ['Osmoregulation', 'Kidneys', 'Water balance'],
+            defaultOptions: {
+                title: 'Water Balance Regulation',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'nephron': {
+            name: 'Kidney Nephron',
+            category: 'Homeostasis & Regulation',
+            description: 'Detailed nephron structure and function',
+            dataRequired: [],
+            usage: 'Best for kidney function',
+            examples: ['Nephron', 'Filtration', 'Kidney function'],
+            defaultOptions: {
+                title: 'Nephron Structure',
+                showLabels: true,
+                width: 700,
+                height: 800,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 13. ENERGY IN LIVING SYSTEMS =====
+        'atpStructure': {
+            name: 'ATP Structure',
+            category: 'Energy in Living Systems',
+            description: 'Adenosine triphosphate molecular structure',
+            dataRequired: [],
+            usage: 'Best for cellular energy education',
+            examples: ['ATP', 'Energy', 'Biochemistry'],
+            defaultOptions: {
+                title: 'ATP (Adenosine Triphosphate) Structure',
+                showLabels: true,
+                showHydrolysis: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'cellularRespiration': {
+            name: 'Cellular Respiration',
+            category: 'Energy in Living Systems',
+            description: 'Complete aerobic respiration pathway',
+            dataRequired: [],
+            usage: 'Best for energy metabolism',
+            examples: ['Cellular respiration', 'Metabolism', 'Energy production'],
+            defaultOptions: {
+                title: 'Cellular Respiration',
+                showLabels: true,
+                showStages: true, // glycolysis, Krebs, ETC
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'mitochondrion': {
+            name: 'Mitochondrion Structure',
+            category: 'Energy in Living Systems',
+            description: 'Detailed mitochondrial anatomy',
+            dataRequired: [],
+            usage: 'Best for cellular energy organelles',
+            examples: ['Mitochondria', 'Cell respiration', 'Organelles'],
+            defaultOptions: {
+                title: 'Mitochondrion Structure',
+                showLabels: true,
+                width: 700,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'electronTransportChain': {
+            name: 'Electron Transport Chain',
+            category: 'Energy in Living Systems',
+            description: 'ETC and chemiosmosis in mitochondria',
+            dataRequired: [],
+            usage: 'Best for ATP synthesis education',
+            examples: ['ETC', 'Chemiosmosis', 'ATP synthesis'],
+            defaultOptions: {
+                title: 'Electron Transport Chain',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'chloroplastStructure': {
+            name: 'Chloroplast Structure',
+            category: 'Energy in Living Systems',
+            description: 'Chloroplast anatomy with thylakoids',
+            dataRequired: [],
+            usage: 'Best for photosynthesis organelle',
+            examples: ['Chloroplast', 'Photosynthesis', 'Plant cells'],
+            defaultOptions: {
+                title: 'Chloroplast Structure',
+                showLabels: true,
+                width: 700,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'photosynthesisDetailed': {
+            name: 'Photosynthesis (Light & Dark Reactions)',
+            category: 'Energy in Living Systems',
+            description: 'Complete photosynthesis with both reaction stages',
+            dataRequired: [],
+            usage: 'Best for detailed photosynthesis',
+            examples: ['Light reactions', 'Calvin cycle', 'Photosynthesis'],
+            defaultOptions: {
+                title: 'Photosynthesis - Complete Process',
+                showLabels: true,
+                showBothStages: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== 14. DNA TECHNOLOGY & FORENSICS =====
+        'dnaFingerprinting': {
+            name: 'DNA Fingerprinting',
+            category: 'DNA Technology & Forensics',
+            description: 'DNA profile patterns for identification',
+            dataRequired: [],
+            usage: 'Best for forensic science',
+            examples: ['DNA fingerprinting', 'Forensics', 'Identification'],
+            defaultOptions: {
+                title: 'DNA Fingerprinting',
+                showLabels: true,
+                showComparison: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'gelElectrophoresisForensic': {
+            name: 'Gel Electrophoresis (Forensic)',
+            category: 'DNA Technology & Forensics',
+            description: 'Gel electrophoresis for DNA comparison',
+            dataRequired: [],
+            usage: 'Best for forensic DNA analysis',
+            examples: ['Forensics', 'DNA analysis', 'Electrophoresis'],
+            defaultOptions: {
+                title: 'Forensic Gel Electrophoresis',
+                showLabels: true,
+                showSamples: true,
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'strAnalysis': {
+            name: 'STR Analysis',
+            category: 'DNA Technology & Forensics',
+            description: 'Short tandem repeat analysis for identification',
+            dataRequired: [],
+            usage: 'Best for DNA profiling',
+            examples: ['STR analysis', 'DNA profiling', 'Forensics'],
+            defaultOptions: {
+                title: 'STR (Short Tandem Repeat) Analysis',
+                showLabels: true,
+                width: 900,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'forensicComparison': {
+            name: 'Forensic DNA Comparison',
+            category: 'DNA Technology & Forensics',
+            description: 'Comparing suspect and crime scene DNA',
+            dataRequired: [],
+            usage: 'Best for forensic matching',
+            examples: ['Forensic comparison', 'DNA matching', 'Criminal justice'],
+            defaultOptions: {
+                title: 'Forensic DNA Comparison',
+                showLabels: true,
+                width: 900,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        // ===== EXISTING CARDIOVASCULAR, RESPIRATORY, ETC. =====
+        // (Keep all the existing heart, circulatory, respiratory, skeletal, etc. diagrams)
+        
+        'heartAnatomy': {
+            name: 'Heart Anatomy',
+            category: 'Cardiovascular System',
+            description: 'Complete heart structure with chambers and blood flow',
+            dataRequired: ['chamber'],
+            usage: 'Best for showing heart structure and chamber details',
+            examples: ['Medical education', 'Patient briefings', 'Anatomy studies'],
+            chamberOptions: ['wholeheart', 'rightAtrium', 'rightVentricle', 'leftAtrium', 'leftVentricle'],
+            defaultOptions: {
+                title: 'Heart Anatomy',
+                chamber: 'wholeheart',
+                showLabels: true,
+                showBloodFlow: true,
+                animate: false,
+                width: 600,
+                height: 500,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'circulatorySystem': {
+            name: 'Circulatory System',
+            category: 'Cardiovascular System',
+            description: 'Complete blood circulation pathway through body',
+            dataRequired: [],
+            usage: 'Best for showing systemic and pulmonary circulation',
+            examples: ['Blood flow education', 'Circulatory teaching', 'Medical diagrams'],
+            defaultOptions: {
+                title: 'Circulatory System',
+                showLabels: true,
+                showOxygenation: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'bloodVesselComparison': {
+            name: 'Blood Vessel Comparison',
+            category: 'Cardiovascular System',
+            description: 'Comparison of arteries, veins, and capillaries',
+            dataRequired: [],
+            usage: 'Best for comparing vessel structures',
+            examples: ['Vessel anatomy', 'Blood transport', 'Vascular system'],
+            defaultOptions: {
+                title: 'Blood Vessel Comparison',
+                showLabels: true,
+                width: 700,
+                height: 400,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'heartValves': {
+            name: 'Heart Valves',
+            category: 'Cardiovascular System',
+            description: 'All four heart valves showing structure and function',
+            dataRequired: [],
+            usage: 'Best for showing valve anatomy and operation',
+            examples: ['Valve disorders', 'Cardiac anatomy', 'Heart function'],
+            defaultOptions: {
+                title: 'Heart Valves',
+                showLabels: true,
+                width: 800,
+                height: 500,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'respiratorySystem': {
+            name: 'Respiratory System',
+            category: 'Respiratory System',
+            description: 'Complete respiratory tract with gas exchange',
+            dataRequired: [],
+            usage: 'Best for showing breathing anatomy',
+            examples: ['Lung function', 'Breathing education', 'Respiratory health'],
+            defaultOptions: {
+                title: 'Respiratory System',
+                showLabels: true,
+                showGasExchange: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'digestiveOrgans': {
+            name: 'Digestive Organs',
+            category: 'Digestive System',
+            description: 'Individual digestive organs with functions',
+            dataRequired: [],
+            usage: 'Best for comparing digestive organ structures',
+            examples: ['Organ functions', 'Digestive process', 'Anatomy education'],
+            defaultOptions: {
+                title: 'Digestive Organs',
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'brain': {
+            name: 'Brain Structure',
+            category: 'Nervous System',
+            description: 'Brain anatomy with major regions',
+            dataRequired: [],
+            usage: 'Best for neuroanatomy',
+            examples: ['Brain anatomy', 'Neuroscience', 'CNS'],
+            defaultOptions: {
+                title: 'Brain Structure',
+                section: 'whole',
+                showLabels: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'liver': {
+            name: 'Liver',
+            category: 'Digestive System',
+            description: 'Liver structure and lobes',
+            dataRequired: [],
+            usage: 'Best for hepatic anatomy',
+            examples: ['Liver anatomy', 'Digestive system', 'Metabolism'],
+            defaultOptions: {
+                title: 'Liver Anatomy',
+                showLabels: true,
+                width: 700,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'kidney': {
+            name: 'Kidney Structure',
+            category: 'Urinary System',
+            description: 'Kidney anatomy with internal structures',
+            dataRequired: [],
+            usage: 'Best for renal anatomy',
+            examples: ['Kidney structure', 'Urinary system', 'Filtration'],
+            defaultOptions: {
+                title: 'Kidney Anatomy',
+                side: 'left',
+                showLabels: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'urinarySystem': {
+            name: 'Urinary System',
+            category: 'Urinary System',
+            description: 'Kidneys, bladder, and urinary tract',
+            dataRequired: [],
+            usage: 'Best for renal anatomy',
+            examples: ['Kidney function', 'Urinary health', 'Renal anatomy'],
+            defaultOptions: {
+                title: 'Urinary System',
+                showLabels: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'kidneyDetail': {
+            name: 'Kidney Internal Structure',
+            category: 'Urinary System',
+            description: 'Detailed kidney anatomy with nephron',
+            dataRequired: [],
+            usage: 'Best for renal physiology',
+            examples: ['Kidney function', 'Filtration process', 'Nephron anatomy'],
+            defaultOptions: {
+                title: 'Kidney Internal Structure',
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'eyeAnatomy': {
+            name: 'Eye Anatomy',
+            category: 'Sensory Organs',
+            description: 'Complete eye structure with all components',
+            dataRequired: [],
+            usage: 'Best for ophthalmology education',
+            examples: ['Vision anatomy', 'Eye structure', 'Ophthalmology'],
+            defaultOptions: {
+                title: 'Human Eye Anatomy',
+                showLabels: true,
+                pupilDilation: 0.3,
+                width: 700,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'skull': {
+            name: 'Human Skull',
+            category: 'Skeletal System',
+            description: 'Skull anatomy with cranium and facial bones',
+            dataRequired: [],
+            usage: 'Best for cranial anatomy education',
+            examples: ['Skull anatomy', 'Cranial structure', 'Head bones'],
+            defaultOptions: {
+                title: 'Human Skull',
+                bone: 'skull',
+                showLabels: true,
+                width: 500,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'femur': {
+            name: 'Femur',
+            category: 'Skeletal System',
+            description: 'Thigh bone structure and features',
+            dataRequired: [],
+            usage: 'Best for long bone anatomy',
+            examples: ['Bone structure', 'Orthopedics', 'Skeletal anatomy'],
+            defaultOptions: {
+                title: 'Femur (Thigh Bone)',
+                bone: 'femur',
+                showLabels: true,
+                width: 400,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'ribcage': {
+            name: 'Ribcage',
+            category: 'Skeletal System',
+            description: 'Thoracic cage with ribs and sternum',
+            dataRequired: [],
+            usage: 'Best for thoracic anatomy',
+            examples: ['Chest structure', 'Rib anatomy', 'Thoracic cage'],
+            defaultOptions: {
+                title: 'Ribcage',
+                bone: 'ribcage',
+                showLabels: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'spine': {
+            name: 'Vertebral Column',
+            category: 'Skeletal System',
+            description: 'Spine with vertebrae and spinal cord',
+            dataRequired: [],
+            usage: 'Best for spinal anatomy',
+            examples: ['Back pain education', 'Spinal structure', 'Vertebrae'],
+            defaultOptions: {
+                title: 'Vertebral Column',
+                bone: 'spine',
+                showLabels: true,
+                width: 400,
+                height: 800,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'boneStructure': {
+            name: 'Bone Structure',
+            category: 'Skeletal System',
+            description: 'Cross-section showing internal bone anatomy',
+            dataRequired: [],
+            usage: 'Best for showing bone composition',
+            examples: ['Bone health', 'Osteoporosis education', 'Bone anatomy'],
+            defaultOptions: {
+                title: 'Bone Structure (Cross-Section)',
+                width: 700,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'skeletalMuscle': {
+            name: 'Skeletal Muscle',
+            category: 'Muscular System',
+            description: 'Voluntary muscle structure with fibers',
+            dataRequired: [],
+            usage: 'Best for muscle anatomy education',
+            examples: ['Muscle structure', 'Exercise physiology', 'Athletic training'],
+            defaultOptions: {
+                title: 'Skeletal Muscle',
+                type: 'skeletal',
+                showLabels: true,
+                width: 600,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'muscleContraction': {
+            name: 'Muscle Contraction',
+            category: 'Muscular System',
+            description: 'Sliding filament model of muscle contraction',
+            dataRequired: [],
+            usage: 'Best for showing muscle mechanics',
+            examples: ['Exercise science', 'Physiology', 'Muscle function'],
+            defaultOptions: {
+                title: 'Muscle Contraction (Sliding Filament)',
+                width: 800,
+                height: 600,
+                backgroundColor: '#ffffff'
+            }
+        },
+
+        'cellStructure': {
+            name: 'Animal Cell',
+            category: 'Cellular & Microscopic',
+            description: 'Complete cell with organelles',
+            dataRequired: [],
+            usage: 'Best for cell biology education',
+            examples: ['Cell biology', 'Organelles', 'Cellular anatomy'],
+            defaultOptions: {
+                title: 'Animal Cell Structure',
+                type: 'generic',
+                showLabels: true,
+                width: 700,
+                height: 700,
+                backgroundColor: '#ffffff'
+            }
+        }
+    };
+
+    // ===== HELPER METHODS =====
+    
+    static getDiagram(key) {
+        return this.diagrams[key];
+    }
+
+    static getAllDiagrams() {
+        return Object.keys(this.diagrams);
+    }
+
+    static getDiagramsByCategory(category) {
+        return Object.entries(this.diagrams)
+            .filter(([_, diagram]) => diagram.category === category)
+            .reduce((acc, [key, diagram]) => {
+                acc[key] = diagram;
+                return acc;
+            }, {});
+    }
+
+    static getAllCategories() {
+        return [...new Set(Object.values(this.diagrams).map(d => d.category))];
+    }
+
+    static searchDiagrams(query) {
+        const lowerQuery = query.toLowerCase();
+        return Object.entries(this.diagrams)
+            .filter(([key, diagram]) =>
+                diagram.name.toLowerCase().includes(lowerQuery) ||
+                diagram.description.toLowerCase().includes(lowerQuery) ||
+                diagram.category.toLowerCase().includes(lowerQuery) ||
+                key.toLowerCase().includes(lowerQuery) ||
+                diagram.examples.some(ex => ex.toLowerCase().includes(lowerQuery))
+            )
+            .reduce((acc, [key, diagram]) => {
+                acc[key] = diagram;
+                return acc;
+            }, {});
+    }
+
+    static getDiagramStats() {
+        const stats = {};
+        this.getAllCategories().forEach(category => {
+            const diagrams = this.getDiagramsByCategory(category);
+            stats[category] = {
+                count: Object.keys(diagrams).length,
+                diagrams: Object.keys(diagrams)
+            };
+        });
+        return stats;
+    }
+
+    static getTotalDiagramCount() {
+        return Object.keys(this.diagrams).length;
+    }
+
+    static getDiagramsByTopic(topic) {
+        const topicMap = {
+            'cellBiology': ['animalCell', 'plantCell', 'prokaryoticVsEukaryotic', 'cellMembrane', 'osmosisDiffusion', 'activePassiveTransport', 'mitosis', 'meiosis', 'organelles', 'cellCycle', 'enzymeAction'],
+            'genetics': ['dnaStructure', 'rnaStructure', 'dnaReplication', 'transcription', 'translation', 'codonChart', 'geneExpression', 'punnettSquare', 'chromosomes', 'crossingOver', 'mutations', 'recombinantDNA', 'pcrCycle'],
+            'evolution': ['darwinsFinches', 'naturalSelection', 'phylogeneticTree', 'adaptiveRadiation', 'fossilLayers', 'hardyWeinberg', 'speciation', 'comparativeAnatomy'],
+            'ecology': ['foodChain', 'foodWeb', 'energyPyramid', 'carbonCycle', 'nitrogenCycle', 'waterCycle', 'populationGrowth', 'ecosystem', 'biomes', 'predatorPrey'],
+            'anatomy': ['heartAnatomy', 'circulatorySystem', 'respiratorySystem', 'digestiveSystem', 'nervousSystem', 'skeletalSystem', 'muscularSystem', 'urinarySystem', 'endocrineSystem', 'reproductiveSystem', 'immuneSystem'],
+            'botany': ['plantCell', 'leafCrossSection', 'photosynthesis', 'stomata', 'xylemPhloem', 'flowerStructure', 'seedGermination', 'tropisms'],
+            'microbiology': ['bacteriaStructure', 'virusStructure', 'fungalCell', 'protists', 'bacterialGrowthCurve', 'viralReplication', 'microscopy'],
+            'biotechnology': ['geneticEngineering', 'gelElectrophoresis', 'cloning', 'crispr', 'bioreactor', 'gmoProduction'],
+            'development': ['fertilization', 'embryoDevelopment', 'menstrualCycle', 'gametogenesis', 'placenta'],
+            'immunology': ['immuneResponse', 'antibodyStructure', 'pathogenTypes', 'vaccination', 'inflammation', 'diseaseTransmission', 'bloodCells'],
+            'taxonomy': ['fiveKingdoms', 'threeDomains', 'taxonomyHierarchy', 'dichotomousKey', 'cladogram'],
+            'homeostasis': ['negativeFeedback', 'thermoregulation', 'bloodGlucoseRegulation', 'waterBalance', 'nephron'],
+            'energy': ['atpStructure', 'cellularRespiration', 'mitochondrion', 'electronTransportChain', 'chloroplastStructure', 'photosynthesisDetailed'],
+            'forensics': ['dnaFingerprinting', 'gelElectrophoresisForensic', 'strAnalysis', 'forensicComparison']
+        };
+        
+        return topicMap[topic] || [];
+    }
+
+    static printSummary() {
+        console.log('=== ANATOMICAL DIAGRAMS REGISTRY SUMMARY ===');
+        console.log(`Total Diagrams: ${this.getTotalDiagramCount()}`);
+        console.log('\nBy Category:');
+        const stats = this.getDiagramStats();
+        Object.entries(stats).forEach(([category, data]) => {
+            console.log(`  ${category}: ${data.count} diagrams`);
+        });
+        console.log('\nBy Topic:');
+        const topics = ['cellBiology', 'genetics', 'evolution', 'ecology', 'anatomy', 'botany', 'microbiology', 'biotechnology', 'development', 'immunology', 'taxonomy', 'homeostasis', 'energy', 'forensics'];
+        topics.forEach(topic => {
+            const diagrams = this.getDiagramsByTopic(topic);
+            console.log(`  ${topic}: ${diagrams.length} diagrams`);
+        });
+    }
+}
+
+// Export
+export { AnatomicalDiagramsRegistry };
