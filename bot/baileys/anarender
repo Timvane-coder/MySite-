@@ -1,0 +1,623 @@
+class AnatomicalDiagramRenderer {
+    constructor(canvas = null) {
+        this.defaultFont = 'Arial, sans-serif';
+        this.defaultFontSize = 12;
+        this.canvas = canvas;
+        this.ctx = canvas ? canvas.getContext('2d') : null;
+        this.currentFrame = 0;
+    }
+
+    renderDiagram(diagramKey, x, y, width, height, options = {}) {
+        const diagram = AnatomicalDiagramsRegistry.getDiagram(diagramKey);
+        if (!diagram) {
+            throw new Error(`Anatomical diagram '${diagramKey}' not found`);
+        }
+
+        const mergedOptions = { ...diagram.defaultOptions, ...options };
+        
+        this.ctx.save();
+        this.ctx.translate(x, y);
+
+        // Clear background
+        this.ctx.fillStyle = mergedOptions.backgroundColor;
+        this.ctx.fillRect(0, 0, width, height);
+
+        // Title
+        this.drawTitle(mergedOptions.title, width / 2, 30);
+
+        // Route to specific renderer based on diagram key
+        const centerX = width / 2;
+        const centerY = height / 2 + 30;
+
+        try {
+            switch (diagramKey) {
+                // ===== CELL BIOLOGY =====
+                case 'animalCell':
+                    this.renderAnimalCellDiagram(centerX, centerY, Math.min(width, height) * 0.7, mergedOptions);
+                    break;
+                case 'plantCell':
+                    this.renderPlantCellDiagram(centerX, centerY, Math.min(width, height) * 0.7, mergedOptions);
+                    break;
+                case 'prokaryoticVsEukaryotic':
+                    this.renderProkaryoticVsEukaryoticDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'cellMembrane':
+                    this.renderCellMembraneDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'osmosisDiffusion':
+                    this.renderOsmosisDiffusionDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'activePassiveTransport':
+                    this.renderActivePassiveTransportDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'mitosis':
+                    this.renderMitosisDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'meiosis':
+                    this.renderMeiosisDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'organelles':
+                    this.renderOrganellesDiagram(centerX, centerY, width * 0.7, height * 0.6, mergedOptions);
+                    break;
+                case 'cellCycle':
+                    this.renderCellCycleDiagram(centerX, centerY, Math.min(width, height) * 0.6, mergedOptions);
+                    break;
+                case 'enzymeAction':
+                    this.renderEnzymeActionDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+
+                // ===== GENETICS & MOLECULAR BIOLOGY =====
+                case 'dnaStructure':
+                    this.renderDNAStructureDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'rnaStructure':
+                    this.renderRNAStructureDiagram(centerX, centerY, width * 0.6, height * 0.7, mergedOptions);
+                    break;
+                case 'dnaReplication':
+                    this.renderDNAReplicationDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'transcription':
+                    this.renderTranscriptionDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'translation':
+                    this.renderTranslationDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'codonChart':
+                    this.renderCodonChartDiagram(centerX, centerY, Math.min(width, height) * 0.6, mergedOptions);
+                    break;
+                case 'geneExpression':
+                    this.renderGeneExpressionDiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+                case 'punnettSquare':
+                    this.renderPunnettSquareDiagram(centerX, centerY, Math.min(width, height) * 0.5, mergedOptions);
+                    break;
+                case 'chromosomes':
+                    this.renderChromosomesDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'crossingOver':
+                    this.renderCrossingOverDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'mutations':
+                    this.renderMutationsDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'recombinantDNA':
+                    this.renderRecombinantDNADiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+                case 'pcrCycle':
+                    this.renderPCRCycleDiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+
+                // ===== EVOLUTION & NATURAL SELECTION =====
+                case 'darwinsFinches':
+                    this.renderDarwinsFinchesDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'naturalSelection':
+                    this.renderNaturalSelectionDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'phylogeneticTree':
+                    this.renderPhylogeneticTreeDiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+                case 'adaptiveRadiation':
+                    this.renderAdaptiveRadiationDiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+                case 'fossilLayers':
+                    this.renderFossilLayersDiagram(centerX, centerY, width * 0.6, height * 0.8, mergedOptions);
+                    break;
+                case 'hardyWeinberg':
+                    this.renderHardyWeinbergDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'speciation':
+                    this.renderSpeciationDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'comparativeAnatomy':
+                    this.renderComparativeAnatomyDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+
+                // ===== ECOLOGY =====
+                case 'foodChain':
+                    this.renderFoodChainDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'foodWeb':
+                    this.renderFoodWebDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'energyPyramid':
+                    this.renderEnergyPyramidDiagram(centerX, centerY, width * 0.6, height * 0.6, mergedOptions);
+                    break;
+                case 'carbonCycle':
+                    this.renderCarbonCycleDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'nitrogenCycle':
+                    this.renderNitrogenCycleDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'waterCycle':
+                    this.renderWaterCycleDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'populationGrowth':
+                    this.renderPopulationGrowthDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'ecosystem':
+                    this.renderEcosystemDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'biomes':
+                    this.renderBiomesDiagram(centerX, centerY, width * 0.9, height * 0.6, mergedOptions);
+                    break;
+                case 'predatorPrey':
+                    this.renderPredatorPreyDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+
+                // ===== HUMAN ANATOMY & PHYSIOLOGY =====
+                case 'skeletalSystem':
+                    this.renderSkeletalSystemDiagram(centerX, centerY, width * 0.5, height * 0.85, mergedOptions);
+                    break;
+                case 'muscularSystem':
+                    this.renderMuscularSystemDiagram(centerX, centerY, width * 0.5, height * 0.85, mergedOptions);
+                    break;
+                case 'digestiveSystem':
+                    this.renderCompleteDigestiveSystemDiagram(centerX, centerY, width * 0.5, height * 0.8, mergedOptions);
+                    break;
+                case 'respiratorySystem':
+                    this.renderRespiratorySystemDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'circulatorySystem':
+                    this.renderCirculatorySystemDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'excretorySystem':
+                    this.renderUrinarySystemDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'nervousSystem':
+                    this.renderCompleteNervousSystemDiagram(centerX, centerY, width * 0.5, height * 0.8, mergedOptions);
+                    break;
+                case 'neuronStructure':
+                    this.renderNeuronDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'synapse':
+                    this.renderSynapseDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'endocrineSystem':
+                    this.renderEndocrineSystemDiagram(centerX, centerY, width * 0.5, height * 0.8, mergedOptions);
+                    break;
+                case 'reproductiveSystem':
+                    this.renderReproductiveSystemDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'immuneSystem':
+                    this.renderImmuneSystemDiagram(centerX, centerY, width * 0.6, height * 0.8, mergedOptions);
+                    break;
+                case 'skinStructure':
+                    this.renderSkinDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+
+                // ===== PLANTS (BOTANY) =====
+                case 'leafCrossSection':
+                    this.renderLeafCrossSectionDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'photosynthesis':
+                    this.renderPhotosynthesisDiagram(centerX, centerY, width * 0.7, height * 0.6, mergedOptions);
+                    break;
+                case 'stomata':
+                    this.renderStomataDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'xylemPhloem':
+                    this.renderXylemPhloemDiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+                case 'flowerStructure':
+                    this.renderFlowerStructureDiagram(centerX, centerY, Math.min(width, height) * 0.6, mergedOptions);
+                    break;
+                case 'seedGermination':
+                    this.renderSeedGerminationDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'tropisms':
+                    this.renderTropismsDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+
+                // ===== MICROBIOLOGY =====
+                case 'bacteriaStructure':
+                    this.renderBacterialCellDiagram(centerX, centerY, width * 0.6, height * 0.6, mergedOptions);
+                    break;
+                case 'virusStructure':
+                    this.renderVirusStructureDiagram(centerX, centerY, Math.min(width, height) * 0.6, mergedOptions);
+                    break;
+                case 'fungalCell':
+                    this.renderFungalCellDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'protists':
+                    this.renderProtistsDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'bacterialGrowthCurve':
+                    this.renderBacterialGrowthCurveDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'viralReplication':
+                    this.renderViralReplicationDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'microscopy':
+                    this.renderMicroscopyDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+
+                // ===== BIOTECHNOLOGY =====
+                case 'geneticEngineering':
+                    this.renderGeneticEngineeringDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'gelElectrophoresis':
+                    this.renderGelElectrophoresisDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'cloning':
+                    this.renderCloningProcessDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'crispr':
+                    this.renderCRISPRDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'bioreactor':
+                    this.renderBioreactorDiagram(centerX, centerY, width * 0.6, height * 0.8, mergedOptions);
+                    break;
+                case 'gmoProduction':
+                    this.renderGMOProductionDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+
+                // ===== REPRODUCTION & DEVELOPMENT =====
+                case 'fertilization':
+                    this.renderFertilizationDiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+                case 'embryoDevelopment':
+                    this.renderEmbryoDevelopmentDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'menstrualCycle':
+                    this.renderMenstrualCycleDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'gametogenesis':
+                    this.renderGametogenesisDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'placenta':
+                    this.renderPlacentaDiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+
+                // ===== HEALTH, DISEASE & IMMUNOLOGY =====
+                case 'immuneResponse':
+                    this.renderImmuneResponseDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'antibodyStructure':
+                    this.renderAntibodyStructureDiagram(centerX, centerY, Math.min(width, height) * 0.6, mergedOptions);
+                    break;
+                case 'pathogenTypes':
+                    this.renderPathogenTypesDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'vaccination':
+                    this.renderVaccinationDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'inflammation':
+                    this.renderInflammationDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'diseaseTransmission':
+                    this.renderDiseaseTransmissionDiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+                case 'bloodCells':
+                    this.renderBloodCellsDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+
+                // ===== CLASSIFICATION & TAXONOMY =====
+                case 'fiveKingdoms':
+                    this.renderFiveKingdomsDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'threeDomains':
+                    this.renderThreeDomainsDiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+                case 'taxonomyHierarchy':
+                    this.renderTaxonomyHierarchyDiagram(centerX, centerY, width * 0.6, height * 0.8, mergedOptions);
+                    break;
+                case 'dichotomousKey':
+                    this.renderDichotomousKeyDiagram(centerX, centerY, width * 0.8, height * 0.7, mergedOptions);
+                    break;
+                case 'cladogram':
+                    this.renderCladogramDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+
+                // ===== HOMEOSTASIS & REGULATION =====
+                case 'negativeFeedback':
+                    this.renderNegativeFeedbackDiagram(centerX, centerY, Math.min(width, height) * 0.6, mergedOptions);
+                    break;
+                case 'thermoregulation':
+                    this.renderThermoregulationDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'bloodGlucoseRegulation':
+                    this.renderBloodGlucoseRegulationDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'waterBalance':
+                    this.renderWaterBalanceDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'nephron':
+                    this.renderNephronDiagram(centerX, centerY, width * 0.6, height * 0.8, mergedOptions);
+                    break;
+
+                // ===== ENERGY IN LIVING SYSTEMS =====
+                case 'atpStructure':
+                    this.renderATPStructureDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'cellularRespiration':
+                    this.renderCellularRespirationDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+                case 'mitochondrion':
+                    this.renderMitochondrionDiagram(centerX, centerY, width * 0.7, height * 0.6, mergedOptions);
+                    break;
+                case 'electronTransportChain':
+                    this.renderElectronTransportChainDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'chloroplastStructure':
+                    this.renderChloroplastStructureDiagram(centerX, centerY, width * 0.7, height * 0.6, mergedOptions);
+                    break;
+                case 'photosynthesisDetailed':
+                    this.renderPhotosynthesisDetailedDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+
+                // ===== DNA TECHNOLOGY & FORENSICS =====
+                case 'dnaFingerprinting':
+                    this.renderDNAFingerprintingDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'gelElectrophoresisForensic':
+                    this.renderGelElectrophoresisForensicDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'strAnalysis':
+                    this.renderSTRAnalysisDiagram(centerX, centerY, width * 0.85, height * 0.6, mergedOptions);
+                    break;
+                case 'forensicComparison':
+                    this.renderForensicDNAComparisonDiagram(centerX, centerY, width * 0.85, height * 0.7, mergedOptions);
+                    break;
+
+                // ===== EXISTING CARDIOVASCULAR, ETC. =====
+                case 'heartAnatomy':
+                    this.renderHeartAnatomyDiagram(0, 0, width, height, mergedOptions);
+                    break;
+                case 'bloodVesselComparison':
+                    this.renderBloodVesselComparison(centerX, centerY, width * 0.7, height * 0.4, mergedOptions);
+                    break;
+                case 'heartValves':
+                    this.renderHeartValvesDiagram(centerX, centerY, width * 0.8, height * 0.5, mergedOptions);
+                    break;
+                case 'digestiveOrgans':
+                    this.renderDigestiveOrganComparison(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'brain':
+                    this.renderBrainDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'liver':
+                    this.renderLiverDiagram(centerX, centerY, width * 0.6, height * 0.6, mergedOptions);
+                    break;
+                case 'kidney':
+                    this.renderKidneyDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'kidneyDetail':
+                    this.renderKidneyDetailDiagram(centerX, centerY, width * 0.7, height * 0.7, mergedOptions);
+                    break;
+                case 'eyeAnatomy':
+                    this.renderEyeDiagram(centerX, centerY, width * 0.7, height * 0.6, mergedOptions);
+                    break;
+                case 'skull':
+                    this.renderSkullDiagram(centerX, centerY, width * 0.4, height * 0.6, mergedOptions);
+                    break;
+                case 'femur':
+                    this.renderFemurDiagram(centerX, centerY, width * 0.3, height * 0.7, mergedOptions);
+                    break;
+                case 'ribcage':
+                    this.renderRibcageDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'spine':
+                    this.renderSpineDiagram(centerX, centerY, width * 0.3, height * 0.8, mergedOptions);
+                    break;
+                case 'boneStructure':
+                    this.renderBoneStructureDiagram(centerX, centerY, width * 0.7, height * 0.6, mergedOptions);
+                    break;
+                case 'skeletalMuscle':
+                    this.renderSkeletalMuscleDiagram(centerX, centerY, width * 0.5, height * 0.7, mergedOptions);
+                    break;
+                case 'muscleContraction':
+                    this.renderMuscleContractionDiagram(centerX, centerY, width * 0.8, height * 0.6, mergedOptions);
+                    break;
+                case 'cellStructure':
+                    this.renderCellDiagram(centerX, centerY, Math.min(width, height) * 0.7, mergedOptions);
+                    break;
+
+                default:
+                    this.renderPlaceholder(diagram, centerX, centerY, width * 0.7, height * 0.5);
+            }
+
+            // Add category and info
+            this.drawDiagramInfo(diagram, 20, height - 60, mergedOptions);
+
+        } catch (error) {
+            console.error(`Error rendering ${diagramKey}:`, error);
+            this.renderError(diagram, centerX, centerY, width * 0.7, height * 0.5, error.message);
+        }
+
+        this.ctx.restore();
+    }
+
+    // ========== HELPER METHODS ==========
+
+    drawTitle(title, x, y) {
+        this.ctx.font = 'bold 24px Arial';
+        this.ctx.fillStyle = '#2C3E50';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(title, x, y);
+    }
+
+    drawDiagramInfo(diagram, x, y, options) {
+        this.ctx.font = '12px Arial';
+        this.ctx.fillStyle = '#7F8C8D';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText(`Category: ${diagram.category}`, x, y);
+        this.ctx.fillText(`Description: ${diagram.description}`, x, y + 15);
+    }
+
+    renderPlaceholder(diagram, x, y, width, height) {
+        this.ctx.fillStyle = '#ECF0F1';
+        this.ctx.fillRect(x - width/2, y - height/2, width, height);
+        this.ctx.strokeStyle = '#BDC3C7';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(x - width/2, y - height/2, width, height);
+        
+        this.ctx.font = 'bold 18px Arial';
+        this.ctx.fillStyle = '#7F8C8D';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(`${diagram.name}`, x, y - 10);
+        this.ctx.font = '14px Arial';
+        this.ctx.fillText('(Renderer not yet implemented)', x, y + 15);
+    }
+
+    renderError(diagram, x, y, width, height, errorMessage) {
+        this.ctx.fillStyle = '#FADBD8';
+        this.ctx.fillRect(x - width/2, y - height/2, width, height);
+        this.ctx.strokeStyle = '#E74C3C';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(x - width/2, y - height/2, width, height);
+        
+        this.ctx.font = 'bold 18px Arial';
+        this.ctx.fillStyle = '#C0392B';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('Error Rendering Diagram', x, y - 10);
+        this.ctx.font = '14px Arial';
+        this.ctx.fillText(errorMessage, x, y + 15);
+    }
+
+    addLabel(text, x, y, color = '#2C3E50', align = 'center') {
+        this.ctx.font = 'bold 13px Arial';
+        this.ctx.fillStyle = color;
+        this.ctx.textAlign = align;
+        
+        const lines = text.split('\n');
+        lines.forEach((line, index) => {
+            this.ctx.fillText(line, x, y + index * 15);
+        });
+    }
+
+    drawArrow(x1, y1, x2, y2, color, label = '', arrowSize = 8) {
+        this.ctx.save();
+        
+        this.ctx.strokeStyle = color;
+        this.ctx.fillStyle = color;
+        this.ctx.lineWidth = 2;
+
+        // Draw line
+        this.ctx.beginPath();
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.stroke();
+
+        // Draw arrowhead
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        this.ctx.beginPath();
+        this.ctx.moveTo(x2, y2);
+        this.ctx.lineTo(
+            x2 - arrowSize * Math.cos(angle - Math.PI / 6),
+            y2 - arrowSize * Math.sin(angle - Math.PI / 6)
+        );
+        this.ctx.lineTo(
+            x2 - arrowSize * Math.cos(angle + Math.PI / 6),
+            y2 - arrowSize * Math.sin(angle + Math.PI / 6)
+        );
+        this.ctx.closePath();
+        this.ctx.fill();
+
+        // Label
+        if(label) {
+            const midX = (x1 + x2) / 2;
+            const midY = (y1 + y2) / 2;
+            this.ctx.font = '11px Arial';
+            this.ctx.fillStyle = color;
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(label, midX, midY - 5);
+        }
+
+        this.ctx.restore();
+    }
+
+    drawCurvedArrow(x1, y1, x2, y2, color, label = '') {
+        this.ctx.save();
+        
+        this.ctx.strokeStyle = color;
+        this.ctx.fillStyle = color;
+        this.ctx.lineWidth = 3;
+
+        // Calculate control point for curve
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2;
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const ctrlX = midX - dy * 0.3;
+        const ctrlY = midY + dx * 0.3;
+
+        // Draw curved line
+        this.ctx.beginPath();
+        this.ctx.moveTo(x1, y1);
+        this.ctx.quadraticCurveTo(ctrlX, ctrlY, x2, y2);
+        this.ctx.stroke();
+
+        // Draw arrowhead
+        const angle = Math.atan2(y2 - ctrlY, x2 - ctrlX);
+        this.ctx.beginPath();
+        this.ctx.moveTo(x2, y2);
+        this.ctx.lineTo(
+            x2 - 10 * Math.cos(angle - Math.PI / 6),
+            y2 - 10 * Math.sin(angle - Math.PI / 6)
+        );
+        this.ctx.lineTo(
+            x2 - 10 * Math.cos(angle + Math.PI / 6),
+            y2 - 10 * Math.sin(angle + Math.PI / 6)
+        );
+        this.ctx.closePath();
+        this.ctx.fill();
+
+        // Label
+        if(label) {
+            this.ctx.font = '11px Arial';
+            this.ctx.fillStyle = color;
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(label, ctrlX, ctrlY - 5);
+        }
+
+        this.ctx.restore();
+    }
+
+    drawLegend(x, y, items) {
+        this.ctx.save();
+        this.ctx.translate(x, y);
+
+        const boxSize = 12;
+        const spacing = 20;
+
+        items.forEach((item, index) => {
+            const yPos = index * spacing;
+
+            // Color box
+            this.ctx.fillStyle = item.color;
+            this.ctx.fillRect(0, yPos, boxSize, boxSize);
+            this.ctx.strokeStyle = '#2C3E50';
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeRect(0, yPos, boxSize, boxSize);
+
+            // Label
+            this.ctx.font = '11px Arial';
+            this.ctx.fillStyle = '#2C3E50';
+            this.ctx.textAlign = 'left';
+            this.ctx.fillText(item.label, boxSize + 5, yPos + boxSize - 2);
+        });
+
+        this.ctx.restore();
+    }
+
