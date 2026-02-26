@@ -1,0 +1,423 @@
+// ============================================================================
+// INSET DRAWING METHODS
+// ============================================================================
+
+drawInset(x, y, width, height, insetType, options = {}) {
+    this.ctx.save();
+    this.ctx.translate(x, y);
+
+    // Draw inset border
+    this.ctx.strokeStyle = '#34495E';
+    this.ctx.lineWidth = 3;
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+    this.ctx.shadowBlur = 10;
+    this.ctx.shadowOffsetX = 3;
+    this.ctx.shadowOffsetY = 3;
+    
+    this.ctx.beginPath();
+    this.ctx.roundRect(0, 0, width, height, 8);
+    this.ctx.fill();
+    this.ctx.stroke();
+    
+    this.ctx.shadowBlur = 0;
+    this.ctx.shadowOffsetX = 0;
+    this.ctx.shadowOffsetY = 0;
+
+
+    const insetTitles = {
+            'gas-exchange': 'Gas Exchange in Alveoli',
+            'cardiac-cycle': 'Cardiac Cycle',
+            'action-potential': 'Action Potential',
+            'sarcomere': 'Sarcomere Structure',
+            'nephron-detail': 'Nephron Function',
+            'feedback-loop': 'Negative Feedback Loop',
+            'fertilization': 'Fertilization Process',
+            'antibody-production': 'Antibody Production',
+            'melanocyte-function': 'Melanin Production',
+            'retinal-layers': 'Retinal Cell Layers',
+            'villi-structure': 'Intestinal Villi',
+            'blood-pressure': 'Blood Pressure Regulation',
+            'atp-production': 'ATP Synthesis',
+            'photosynthesis-detail': 'Light Reactions',
+            'stomata-mechanism': 'Stomatal Opening/Closing',
+            'transpiration-pull': 'Transpiration-Cohesion-Tension',
+            'double-fertilization': 'Double Fertilization',
+            'embryo-development': 'Embryo Development',
+            'auxin-mechanism': 'Auxin Distribution',
+            'peptidoglycan-layer': 'Peptidoglycan Structure',
+            'viral-replication': 'Viral Replication Cycle',
+            'chromosome-condensation': 'DNA to Chromosome',
+            'base-pairing-rules': 'Base Pairing',
+            'okazaki-fragments': 'Okazaki Fragments',
+            'rna-splicing': 'RNA Splicing',
+            'codon-anticodon': 'Codon-Anticodon Pairing',
+            'frameshift-effect': 'Frameshift Effect',
+            'restriction-enzyme': 'Restriction Enzyme Cutting',
+            'exponential-amplification': 'PCR Amplification',
+            'z-scheme': 'Z-Scheme (Light Reactions)'
+        };
+        
+        this.ctx.fillText(insetTitles[insetType] || 'Detail', width / 2, 12);
+
+
+    // Route to specific inset renderer
+    switch(insetType) {
+        // Cell Biology Insets
+        case 'atp-production':
+            this.drawATPProductionInset(width, height);
+            break;
+        case 'protein-synthesis':
+            this.drawProteinSynthesisInset(width, height);
+            break;
+        case 'vesicle-transport':
+            this.drawVesicleTransportInset(width, height);
+            break;
+        case 'photosynthesis-detail':
+            this.drawPhotosynthesisDetailInset(width, height);
+            break;
+        case 'active-transport':
+            this.drawActiveTransportInset(width, height);
+            break;
+        case 'passive-transport':
+            this.drawPassiveTransportInset(width, height);
+            break;
+        case 'endocytosis':
+            this.drawEndocytosisInset(width, height);
+            break;
+        case 'chromosome-condensation':
+            this.drawChromosomeCondensationInset(width, height);
+            break;
+        case 'spindle-formation':
+            this.drawSpindleFormationInset(width, height);
+            break;
+        case 'crossing-over':
+            this.drawCrossingOverInset(width, height);
+            break;
+        
+        // Genetics & Molecular Biology Insets
+        case 'base-pairing-rules':
+            this.drawBasePairingRulesInset(width, height);
+            break;
+        case 'dna-packaging':
+            this.drawDNAPackagingInset(width, height);
+            break;
+        case 'replication-fork':
+            this.drawReplicationForkInset(width, height);
+            break;
+        case 'okazaki-fragments':
+            this.drawOkazakiFragmentsInset(width, height);
+            break;
+        case 'rna-splicing':
+            this.drawRNASplicingInset(width, height);
+            break;
+        case 'codon-anticodon':
+            this.drawCodonAnticodonInset(width, height);
+            break;
+        case 'peptide-bond-formation':
+            this.drawPeptideBondFormationInset(width, height);
+            break;
+        
+        // Cardiovascular Insets
+        case 'cardiac-cycle':
+            this.drawCardiacCycleInset(width, height);
+            break;
+        case 'conduction-system':
+            this.drawConductionSystemInset(width, height);
+            break;
+        case 'coronary-circulation':
+            this.drawCoronaryCirculationInset(width, height);
+            break;
+        
+        // Respiratory Insets
+        case 'gas-exchange':
+            this.drawGasExchangeInset(width * 0.05, height * 0.1, width * 0.9, height * 0.85);
+            break;
+        case 'alveolar-structure':
+            this.drawAlveolarStructureInset(width, height);
+            break;
+        case 'surfactant-function':
+            this.drawSurfactantFunctionInset(width, height);
+            break;
+        case 'oxygen-hemoglobin':
+            this.drawOxygenHemoglobinInset(width, height);
+            break;
+        
+        // Digestive Insets
+        case 'villi-structure':
+            this.drawVilliStructureInset(width, height);
+            break;
+        case 'enzyme-action':
+            this.drawEnzymeActionInset(width, height);
+            break;
+        case 'peristalsis':
+            this.drawPeristalsisInset(width, height);
+            break;
+        
+        // Nervous System Insets
+        case 'action-potential':
+            this.drawActionPotentialInset(width, height);
+            break;
+        case 'saltatory-conduction':
+            this.drawSaltatatoryConductionInset(width, height);
+            break;
+        case 'neurotransmitter-release':
+            this.drawNeurotransmitterReleaseInset(width, height);
+            break;
+        
+        // Skeletal/Muscular Insets
+        case 'bone-structure':
+            this.drawBoneStructureInset(width, height);
+            break;
+        case 'sarcomere':
+            this.drawSarcomereInset(width, height);
+            break;
+        case 'sliding-filament':
+            this.drawSlidingFilamentInset(width, height);
+            break;
+        case 'neuromuscular-junction':
+            this.drawNeuromuscularJunctionInset(width, height);
+            break;
+        
+        // Urinary Insets
+        case 'nephron-detail':
+            this.drawNephronInset(width * 0.05, height * 0.1, width * 0.9, height * 0.85);
+            break;
+        case 'glomerular-filtration':
+            this.drawGlomerularFiltrationInset(width, height);
+            break;
+        case 'countercurrent':
+            this.drawCountercurrentInset(width, height);
+            break;
+        
+        // Immune System Insets
+        case 'antibody-production':
+            this.drawAntibodyProductionInset(width, height);
+            break;
+        case 'phagocytosis':
+            this.drawPhagocytosisInset(width, height);
+            break;
+        case 'clonal-selection':
+            this.drawClonalSelectionInset(width, height);
+            break;
+        
+        // Homeostasis Insets
+        case 'insulin-signaling':
+            this.drawInsulinSignalingInset(width, height);
+            break;
+        case 'hormone-feedback':
+            this.drawHormoneFeedbackInset(width, height);
+            break;
+        
+        // Energy Metabolism Insets
+        case 'atp-yield':
+            this.drawATPYieldInset(width, height);
+            break;
+        case 'chemiosmosis':
+            this.drawChemiosmosisInset(width, height);
+            break;
+        case 'z-scheme':
+            this.drawZSchemeInset(width, height);
+            break;
+        
+        // Ecology Insets
+        case 'energy-pyramid':
+            this.drawEnergyPyramidInset(width, height);
+            break;
+        case 'greenhouse-effect':
+            this.drawGreenhouseEffectInset(width, height);
+            break;
+        
+        // Biotechnology Insets
+        case 'dna-migration':
+            this.drawDNAMigrationInset(width, height);
+            break;
+        case 'guide-rna-design':
+            this.drawGuideRNADesignInset(width, height);
+            break;
+        
+        default:
+            this.drawPlaceholderInset(width, height, insetType);
+    }
+
+    this.ctx.restore();
+}
+
+// ============================================================================
+// SPECIFIC INSET IMPLEMENTATIONS
+// ============================================================================
+
+drawATPProductionInset(width, height) {
+    // Title
+    this.ctx.font = 'bold 14px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('ATP Production in Mitochondria', width / 2, 20);
+
+    // Draw simplified mitochondrion
+    const mitoX = width * 0.5;
+    const mitoY = height * 0.5;
+    const mitoW = width * 0.7;
+    const mitoH = height * 0.6;
+
+    // Outer membrane
+    this.ctx.strokeStyle = '#8B4513';
+    this.ctx.lineWidth = 3;
+    this.ctx.fillStyle = 'rgba(139, 69, 19, 0.1)';
+    this.ctx.beginPath();
+    this.ctx.ellipse(mitoX, mitoY, mitoW / 2, mitoH / 2, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.stroke();
+
+    // Cristae (inner membrane folds)
+    this.ctx.strokeStyle = '#A0522D';
+    this.ctx.lineWidth = 2;
+    for(let i = 0; i < 5; i++) {
+        this.ctx.beginPath();
+        const y = mitoY - mitoH * 0.3 + i * (mitoH * 0.15);
+        this.ctx.moveTo(mitoX - mitoW * 0.3, y);
+        this.ctx.quadraticCurveTo(mitoX - mitoW * 0.1, y + 10, mitoX + mitoW * 0.1, y);
+        this.ctx.stroke();
+    }
+
+    // ATP molecules
+    this.ctx.fillStyle = '#FFD700';
+    this.ctx.font = 'bold 16px Arial';
+    for(let i = 0; i < 4; i++) {
+        const angle = (i / 4) * Math.PI * 2;
+        const atpX = mitoX + Math.cos(angle) * mitoW * 0.25;
+        const atpY = mitoY + Math.sin(angle) * mitoH * 0.25;
+        this.ctx.fillText('ATP', atpX, atpY);
+    }
+
+    // Labels
+    this.ctx.font = '11px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText('• Glucose → 30-32 ATP', width * 0.05, height * 0.85);
+    this.ctx.fillText('• Electron Transport Chain', width * 0.05, height * 0.92);
+}
+
+drawGasExchangeInset(x, y, width, height) {
+    // (Keep existing implementation or enhance it)
+    this.ctx.save();
+    this.ctx.translate(x, y);
+
+    // Title
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Gas Exchange in Alveoli', width / 2, 20);
+
+    // Alveolus (air sac)
+    this.ctx.strokeStyle = '#FFB6D9';
+    this.ctx.fillStyle = 'rgba(255, 182, 217, 0.2)';
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.arc(width * 0.3, height * 0.55, width * 0.2, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.stroke();
+
+    // Capillary (blood vessel) wrapping around alveolus
+    this.ctx.strokeStyle = '#E74C3C';
+    this.ctx.lineWidth = 5;
+    this.ctx.beginPath();
+    this.ctx.arc(width * 0.3, height * 0.55, width * 0.24, 0, Math.PI * 2);
+    this.ctx.stroke();
+
+    // O2 molecules (blue) entering blood
+    this.ctx.fillStyle = '#3498DB';
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('O₂', width * 0.25, height * 0.45);
+    this.drawArrow(width * 0.25, height * 0.47, width * 0.25, height * 0.57, '#3498DB', '', 6);
+
+    // CO2 molecules (orange) leaving blood
+    this.ctx.fillStyle = '#E67E22';
+    this.ctx.fillText('CO₂', width * 0.35, height * 0.67);
+    this.drawArrow(width * 0.35, height * 0.64, width * 0.35, height * 0.54, '#E67E22', '', 6);
+
+    // Red blood cell
+    this.ctx.fillStyle = '#C0392B';
+    this.ctx.strokeStyle = '#A93226';
+    this.ctx.lineWidth = 1;
+    this.ctx.beginPath();
+    this.ctx.ellipse(width * 0.5, height * 0.55, 10, 6, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.stroke();
+    // Biconcave indent
+    this.ctx.fillStyle = '#E74C3C';
+    this.ctx.beginPath();
+    this.ctx.ellipse(width * 0.5, height * 0.55, 4, 2, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    // Labels
+    this.ctx.font = '10px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText('Alveolus', width * 0.55, height * 0.35);
+    this.ctx.fillText('(Air)', width * 0.55, height * 0.42);
+    this.ctx.fillText('Capillary', width * 0.55, height * 0.65);
+    this.ctx.fillText('(Blood)', width * 0.55, height * 0.72);
+    this.ctx.fillText('Red Blood', width * 0.55, height * 0.52);
+    this.ctx.fillText('Cell', width * 0.55, height * 0.59);
+
+    // Process description
+    this.ctx.font = '9px Arial';
+    this.ctx.fillStyle = '#34495E';
+    this.ctx.text
+// ============================================================================
+// SPECIFIC INSET IMPLEMENTATIONS (Continued)
+// ============================================================================
+
+// Continue from the gas exchange inset...
+    this.ctx.fillText('Diffusion of O₂ into blood', width * 0.05, height * 0.92);
+    this.ctx.fillText('Diffusion of CO₂ out of blood', width * 0.05, height * 0.97);
+
+    this.ctx.restore();
+}
+
+drawAlveolarStructureInset(width, height) {
+    // Title
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Alveolar Structure', width / 2, 20);
+
+    // Multiple alveoli
+    const alveoli = [
+        { x: width * 0.25, y: height * 0.4, r: width * 0.12 },
+        { x: width * 0.5, y: height * 0.5, r: width * 0.15 },
+        { x: width * 0.7, y: height * 0.4, r: width * 0.1 }
+    ];
+
+    alveoli.forEach(alv => {
+        // Alveolus wall
+        this.ctx.strokeStyle = '#FFB6D9';
+        this.ctx.fillStyle = 'rgba(255, 182, 217, 0.1)';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(alv.x, alv.y, alv.r, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.stroke();
+
+        // Type I pneumocytes (thin cells for gas exchange)
+        this.ctx.fillStyle = 'rgba(255, 182, 217, 0.5)';
+        for(let i = 0; i < 6; i++) {
+            const angle = (i / 6) * Math.PI * 2;
+            const px = alv.x + Math.cos(angle) * alv.r;
+            const py = alv.y + Math.sin(angle) * alv.r;
+            this.ctx.beginPath();
+            this.ctx.arc(px, py, 3, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+    });
+
+    // Type II pneumocyte (surfactant production)
+    this.ctx.fillStyle = '#9B59B6';
+    this.ctx.beginPath();
+    this.ctx.arc(width * 0.5, height * 0.42, 6, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    // Surfactant layer
+    this.ctx.strokeStyle = '#3498DB';
