@@ -1,0 +1,2936 @@
+Registry Entries (add to AnatomicalDiagramsRegistry.diagrams)
+'leafCrossSection': {
+    name: 'Leaf Cross-Section',
+    category: 'Plant Biology',
+    description: 'Leaf tissue layers from cuticle to vascular bundle',
+    dataRequired: ['layer', 'process'],
+    usage: 'Best for showing photosynthesis sites and leaf anatomy',
+    examples: ['Leaf anatomy', 'Photosynthesis teaching', 'Gas exchange'],
+    layerOptions: ['complete', 'cuticle', 'epidermis', 'palisade', 'spongy', 'vascular'],
+    processOptions: ['structure', 'photosynthesis', 'transpiration', 'gas-exchange'],
+    drawingSteps: [
+        { step: 1, id: 'cuticle',    label: 'Step 1 – Cuticle Layer'           },
+        { step: 2, id: 'epidermis',  label: 'Step 2 – Epidermis & Stomata'     },
+        { step: 3, id: 'palisade',   label: 'Step 3 – Palisade Mesophyll'      },
+        { step: 4, id: 'spongy',     label: 'Step 4 – Spongy Mesophyll'        },
+        { step: 5, id: 'complete',   label: 'Step 5 – Complete with Vascular'  },
+    ],
+    insets: ['stomata-mechanism', 'chloroplast-detail', 'gas-exchange-detail', 'transpiration-stream'],
+    defaultOptions: {
+        title: 'Leaf Cross-Section',
+        layer: 'complete',
+        process: 'structure',
+        drawingStep: 5,
+        showLabels: true,
+        showInset: false,
+        insetType: 'stomata-mechanism',
+        width: 700,
+        height: 480,
+        backgroundColor: '#ffffff'
+    }
+},
+
+'photosynthesis': {
+    name: 'Photosynthesis',
+    category: 'Plant Biology',
+    description: 'Light reactions, Calvin cycle, and electron transport chain',
+    dataRequired: ['stage', 'detail'],
+    usage: 'Best for teaching photosynthesis pathways and energy conversion',
+    examples: ['Photosynthesis overview', 'Light reactions', 'Calvin cycle', 'Biochemistry'],
+    stageOptions: ['complete', 'light-reactions', 'calvin-cycle', 'electron-transport'],
+    detailOptions: ['overview', 'z-scheme', 'atp-synthesis', 'carbon-fixation', 'reduction', 'regeneration'],
+    drawingSteps: [
+        { step: 1, id: 'chloroplast',      label: 'Step 1 – Chloroplast Overview'        },
+        { step: 2, id: 'light-reactions',  label: 'Step 2 – Light-Dependent Reactions'   },
+        { step: 3, id: 'atp-nadph',        label: 'Step 3 – ATP & NADPH Production'      },
+        { step: 4, id: 'calvin-cycle',     label: 'Step 4 – Calvin Cycle'                },
+        { step: 5, id: 'complete',         label: 'Step 5 – Complete with Equation'      },
+    ],
+    insets: ['chloroplast-ultrastructure', 'atp-synthase', 'rubisco-enzyme', 'photorespiration'],
+    defaultOptions: {
+        title: 'Photosynthesis',
+        stage: 'complete',
+        detail: 'overview',
+        drawingStep: 5,
+        showLabels: true,
+        showInset: false,
+        insetType: 'chloroplast-ultrastructure',
+        width: 750,
+        height: 560,
+        backgroundColor: '#ffffff'
+    }
+},
+
+'flowerStructure': {
+    name: 'Flower Structure',
+    category: 'Plant Biology',
+    description: 'Complete flower anatomy including reproductive organs and pollination',
+    dataRequired: ['component', 'stage'],
+    usage: 'Best for teaching plant reproduction and flower anatomy',
+    examples: ['Flower anatomy', 'Pollination', 'Fertilization', 'Seed development'],
+    componentOptions: ['complete', 'petals', 'sepals', 'stamen', 'pistil', 'ovary', 'anther'],
+    stageOptions: ['mature', 'pollination', 'fertilization', 'seed-development'],
+    drawingSteps: [
+        { step: 1, id: 'receptacle',  label: 'Step 1 – Receptacle & Sepals'         },
+        { step: 2, id: 'petals',      label: 'Step 2 – Petals'                       },
+        { step: 3, id: 'stamen',      label: 'Step 3 – Stamens (Male organs)'        },
+        { step: 4, id: 'pistil',      label: 'Step 4 – Pistil (Female organ)'        },
+        { step: 5, id: 'complete',    label: 'Step 5 – Complete with Labels'         },
+    ],
+    insets: ['pollen-grain-detail', 'ovule-structure', 'double-fertilization', 'seed-coat-layers'],
+    defaultOptions: {
+        title: 'Flower Structure',
+        component: 'complete',
+        stage: 'mature',
+        drawingStep: 5,
+        showLabels: true,
+        showInset: false,
+        insetType: 'pollen-grain-detail',
+        width: 640,
+        height: 700,
+        backgroundColor: '#ffffff'
+    }
+},
+
+'stomataStructure': {
+    name: 'Stomata Structure',
+    category: 'Plant Biology',
+    description: 'Guard cells and stomatal pore in open and closed states',
+    dataRequired: ['state', 'view'],
+    usage: 'Best for teaching transpiration control and gas exchange regulation',
+    examples: ['Stomata teaching', 'Transpiration', 'Guard cell mechanism'],
+    stateOptions: ['open', 'closed', 'both'],
+    viewOptions: ['surface', 'cross-section', 'mechanism'],
+    drawingSteps: [
+        { step: 1, id: 'epidermis',      label: 'Step 1 – Epidermal Cells'          },
+        { step: 2, id: 'guard-cells',    label: 'Step 2 – Guard Cells'              },
+        { step: 3, id: 'pore',           label: 'Step 3 – Stomatal Pore'            },
+        { step: 4, id: 'chloroplasts',   label: 'Step 4 – Chloroplasts in Guard Cells' },
+        { step: 5, id: 'complete',       label: 'Step 5 – Complete with Mechanism'  },
+    ],
+    insets: ['turgor-pressure', 'ion-transport', 'abscisic-acid', 'circadian-rhythm'],
+    defaultOptions: {
+        title: 'Stomata Structure',
+        state: 'both',
+        view: 'surface',
+        drawingStep: 5,
+        showLabels: true,
+        showInset: false,
+        insetType: 'turgor-pressure',
+        width: 700,
+        height: 500,
+        backgroundColor: '#ffffff'
+    }
+},
+
+'xylemPhloem': {
+    name: 'Xylem & Phloem',
+    category: 'Plant Biology',
+    description: 'Vascular tissue structure and transport mechanisms',
+    dataRequired: ['tissue', 'transport'],
+    usage: 'Best for teaching water and sugar transport in plants',
+    examples: ['Vascular tissue', 'Water transport', 'Translocation', 'Pressure flow'],
+    tissueOptions: ['both', 'xylem', 'phloem'],
+    transportOptions: ['structure', 'water-movement', 'sugar-movement', 'pressure-flow', 'cohesion-tension'],
+    drawingSteps: [
+        { step: 1, id: 'bundle-sheath',  label: 'Step 1 – Bundle Sheath'            },
+        { step: 2, id: 'xylem',          label: 'Step 2 – Xylem Vessels'             },
+        { step: 3, id: 'phloem',         label: 'Step 3 – Phloem Sieve Tubes'        },
+        { step: 4, id: 'companion',      label: 'Step 4 – Companion Cells'           },
+        { step: 5, id: 'complete',       label: 'Step 5 – Complete with Transport'   },
+    ],
+    insets: ['cohesion-tension-theory', 'sieve-plate-detail', 'companion-cell-function', 'loading-unloading'],
+    defaultOptions: {
+        title: 'Xylem & Phloem',
+        tissue: 'both',
+        transport: 'structure',
+        drawingStep: 5,
+        showLabels: true,
+        showInset: false,
+        insetType: 'cohesion-tension-theory',
+        width: 700,
+        height: 600,
+        backgroundColor: '#ffffff'
+    }
+},
+
+'seedGermination': {
+    name: 'Seed Germination',
+    category: 'Plant Biology',
+    description: 'Germination stages from dry seed to seedling',
+    dataRequired: ['stage', 'seedType'],
+    usage: 'Best for teaching plant life cycle and embryo development',
+    examples: ['Germination stages', 'Dicot vs monocot', 'Plant embryology'],
+    stageOptions: ['complete', 'imbibition', 'activation', 'radicle-emergence', 'shoot-emergence', 'seedling'],
+    seedTypeOptions: ['dicot', 'monocot'],
+    drawingSteps: [
+        { step: 1, id: 'dry-seed',        label: 'Step 1 – Dry Seed'               },
+        { step: 2, id: 'imbibition',      label: 'Step 2 – Imbibition'             },
+        { step: 3, id: 'radicle',         label: 'Step 3 – Radicle Emergence'      },
+        { step: 4, id: 'shoot',           label: 'Step 4 – Shoot Emergence'        },
+        { step: 5, id: 'seedling',        label: 'Step 5 – Young Seedling'         },
+    ],
+    insets: ['seed-internal-anatomy', 'cotyledon-role', 'hormone-activation', 'root-cap-detail'],
+    defaultOptions: {
+        title: 'Seed Germination',
+        stage: 'complete',
+        seedType: 'dicot',
+        drawingStep: 5,
+        showLabels: true,
+        showInset: false,
+        insetType: 'seed-internal-anatomy',
+        width: 900,
+        height: 560,
+        backgroundColor: '#ffffff'
+    }
+},
+
+'plantTropisms': {
+    name: 'Plant Tropisms',
+    category: 'Plant Biology',
+    description: 'Plant growth responses to light, gravity, touch, and water',
+    dataRequired: ['tropismType', 'mechanism'],
+    usage: 'Best for teaching directional growth responses and auxin action',
+    examples: ['Phototropism', 'Gravitropism', 'Thigmotropism', 'Hydrotropism'],
+    tropismTypeOptions: ['all', 'phototropism', 'gravitropism', 'thigmotropism', 'hydrotropism'],
+    mechanismOptions: ['overview', 'auxin-distribution', 'cell-elongation', 'statoliths', 'differential-growth', 'response'],
+    drawingSteps: [
+        { step: 1, id: 'stimulus',       label: 'Step 1 – Stimulus Source'                  },
+        { step: 2, id: 'perception',     label: 'Step 2 – Stimulus Perception'              },
+        { step: 3, id: 'auxin-shift',    label: 'Step 3 – Auxin Redistribution'             },
+        { step: 4, id: 'cell-response',  label: 'Step 4 – Differential Cell Elongation'     },
+        { step: 5, id: 'complete',       label: 'Step 5 – Complete Growth Response'         },
+    ],
+    insets: ['auxin-action', 'statoliths-detail', 'cell-wall-loosening', 'signal-transduction'],
+    defaultOptions: {
+        title: 'Plant Tropisms',
+        tropismType: 'all',
+        mechanism: 'overview',
+        drawingStep: 5,
+        showLabels: true,
+        showInset: false,
+        insetType: 'auxin-action',
+        width: 800,
+        height: 600,
+        backgroundColor: '#ffffff'
+    }
+},
+
+'rootSystem': {
+    name: 'Root System',
+    category: 'Plant Biology',
+    description: 'Taproot and fibrous root systems with absorption structures',
+    dataRequired: ['type', 'process'],
+    usage: 'Best for comparing root architectures and teaching water uptake',
+    examples: ['Root anatomy', 'Water absorption', 'Taproot vs fibrous', 'Root hairs'],
+    typeOptions: ['complete', 'taproot', 'fibrous'],
+    processOptions: ['structure', 'water-uptake', 'mineral-absorption', 'anchorage'],
+    drawingSteps: [
+        { step: 1, id: 'primary-root',   label: 'Step 1 – Primary Root'            },
+        { step: 2, id: 'lateral-roots',  label: 'Step 2 – Lateral Roots'           },
+        { step: 3, id: 'root-hairs',     label: 'Step 3 – Root Hairs'              },
+        { step: 4, id: 'root-cap',       label: 'Step 4 – Root Cap & Meristem'     },
+        { step: 5, id: 'complete',       label: 'Step 5 – Complete with Labels'    },
+    ],
+    insets: ['root-hair-cell', 'osmosis-uptake', 'endodermis-casparian', 'mycorrhizae'],
+    defaultOptions: {
+        title: 'Root System',
+        type: 'complete',
+        process: 'structure',
+        drawingStep: 5,
+        showLabels: true,
+        showInset: false,
+        insetType: 'root-hair-cell',
+        width: 700,
+        height: 650,
+        backgroundColor: '#ffffff'
+    }
+},
+
+'stemSystem': {
+    name: 'Stem System',
+    category: 'Plant Biology',
+    description: 'Stem anatomy including shoot system and longitudinal section',
+    dataRequired: ['type', 'process'],
+    usage: 'Best for teaching shoot anatomy, node/internode structure, transport',
+    examples: ['Stem anatomy', 'Shoot system', 'Node structure', 'Stem transport'],
+    typeOptions: ['complete', 'longitudinal', 'shoot'],
+    processOptions: ['structure', 'transport', 'growth', 'support'],
+    drawingSteps: [
+        { step: 1, id: 'epidermis',    label: 'Step 1 – Epidermis'                  },
+        { step: 2, id: 'cortex',       label: 'Step 2 – Cortex'                     },
+        { step: 3, id: 'vascular',     label: 'Step 3 – Vascular Bundles'           },
+        { step: 4, id: 'nodes',        label: 'Step 4 – Nodes, Buds & Leaves'       },
+        { step: 5, id: 'complete',     label: 'Step 5 – Complete Shoot System'      },
+    ],
+    insets: ['node-detail', 'axillary-bud', 'lenticel-structure', 'pith-function'],
+    defaultOptions: {
+        title: 'Stem System',
+        type: 'complete',
+        process: 'structure',
+        drawingStep: 5,
+        showLabels: true,
+        showInset: false,
+        insetType: 'node-detail',
+        width: 620,
+        height: 720,
+        backgroundColor: '#ffffff'
+    }
+},
+
+'leafArrangement': {
+    name: 'Leaf Arrangement (Phyllotaxis)',
+    category: 'Plant Biology',
+    description: 'Patterns of leaf arrangement: alternate, opposite, whorled, spiral',
+    dataRequired: ['pattern'],
+    usage: 'Best for teaching phyllotaxis, light capture optimization, plant identification',
+    examples: ['Phyllotaxis', 'Leaf patterns', 'Plant identification', 'Fibonacci in nature'],
+    patternOptions: ['complete', 'alternate', 'opposite', 'whorled', 'spiral'],
+    drawingSteps: [
+        { step: 1, id: 'stem',         label: 'Step 1 – Central Stem'              },
+        { step: 2, id: 'nodes',        label: 'Step 2 – Nodes'                     },
+        { step: 3, id: 'leaves',       label: 'Step 3 – Leaf Blades'               },
+        { step: 4, id: 'veins',        label: 'Step 4 – Leaf Venation'             },
+        { step: 5, id: 'complete',     label: 'Step 5 – All Patterns Labeled'      },
+    ],
+    insets: ['golden-angle', 'light-interception', 'fibonacci-sequence', 'leaf-mosaic'],
+    defaultOptions: {
+        title: 'Leaf Arrangement (Phyllotaxis)',
+        pattern: 'complete',
+        drawingStep: 5,
+        showLabels: true,
+        showInset: false,
+        insetType: 'golden-angle',
+        width: 900,
+        height: 600,
+        backgroundColor: '#ffffff'
+    }
+},
+Renderer Methods (add to AnatomicalDiagramRenderer)
+
+// ── Plant Biology ──────────────────────────────────────────────────────
+    case 'leafCrossSection':
+        this.renderLeafCrossSectionDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'stomata':
+        this.renderStomataDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'xylemPhloem':
+        this.renderXylemPhloemDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'tropisms':
+        this.renderTropismsDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'rootSystem':
+        this.renderRootSystemDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'stemSystem':
+        this.renderStemSystemDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'leafArrangement':
+        this.renderLeafArrangementDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'plantHormones':
+        this.renderPlantHormonesDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'auxin':
+        this.renderAuxinDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'photosynthesis':
+        this.renderPhotosynthesisDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'respirationComplete':
+        this.renderRespirationCompleteDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'transpirationStream':
+        this.renderTranspirationStreamDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'nutrientUptake':
+        this.renderNutrientUptakeDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'pressureFlowComplete':
+        this.renderPressureFlowDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'flowerToFruitSequence':
+        this.renderFlowerToFruitDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'fruitTypes':
+        this.renderFruitTypesDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'seedDispersal':
+        this.renderSeedDispersalDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'asexualReproduction':
+        this.renderAsexualReproductionDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'flowerStructure':
+        this.renderFlowerStructureDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'seedGermination':
+        this.renderSeedGerminationDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'photoperiodism':
+        this.renderPhotoperiodismDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'gibberellin':
+        this.renderGibberellinDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'c4Photosynthesis':
+        this.renderC4PhotosynthesisDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'camPhotosynthesis':
+        this.renderCAMPhotosynthesisDiagram(0, 0, width, height, mergedOptions);
+        break;
+    case 'nitrogenCycle':
+        this.renderNitrogenCycleDiagram(0, 0, width, height, mergedOptions);
+        break;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LEAF CROSS-SECTION — STEP-BY-STEP RENDERER
+// Steps:
+//   1 — Cuticle layer
+//   2 — + Epidermis with stomata
+//   3 — + Palisade mesophyll
+//   4 — + Spongy mesophyll
+//   5 — + Vascular bundle, process highlights, labels
+// ═══════════════════════════════════════════════════════════════════════════
+renderLeafCrossSectionDiagram(x, y, width, height, options = {}) {
+    const {
+        layer       = 'complete',
+        process     = 'structure',
+        drawingStep = 5,
+        showLabels  = true,
+        showInset   = false,
+        insetType   = 'stomata-mechanism'
+    } = options;
+
+    this.ctx.save();
+    this.ctx.translate(x - width / 2, y - height / 2);
+
+    const step = Math.max(1, Math.min(5, drawingStep));
+
+    const stepLabels = [
+        'Step 1 – Cuticle Layer',
+        'Step 2 – Epidermis & Stomata',
+        'Step 3 – Palisade Mesophyll',
+        'Step 4 – Spongy Mesophyll',
+        'Step 5 – Complete Leaf Cross-Section'
+    ];
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(stepLabels[step - 1], width / 2, height * 0.05);
+
+    // If a specific layer is requested (not complete), delegate directly
+    if (layer !== 'complete') {
+        AnatomicalShapes.drawLeafCrossSection(
+            this.ctx, 0, height * 0.08, width, height * 0.86, layer, process
+        );
+        if (showLabels) {
+            const names = {
+                cuticle: 'Waxy Cuticle',
+                epidermis: 'Epidermis with Stomata',
+                palisade: 'Palisade Mesophyll',
+                spongy: 'Spongy Mesophyll',
+                vascular: 'Vascular Bundle'
+            };
+            this.addLabel(names[layer] || layer, width / 2, height * 0.96, '#2E7D32');
+        }
+        if (showInset) this.drawInset(width * 0.60, height * 0.05, width * 0.38, height * 0.28, insetType);
+        this.ctx.restore();
+        return;
+    }
+
+    // Layout constants shared across steps
+    const leafX = width  * 0.05;
+    const leafY = height * 0.08;
+    const leafW = width  * 0.90;
+    const leafH = height * 0.82;
+
+    // Background (light sky – represents "above leaf")
+    this.ctx.fillStyle = '#F0F8FF';
+    this.ctx.fillRect(leafX, leafY, leafW, leafH * 0.15);
+    // Leaf interior background
+    this.ctx.fillStyle = '#E8F5E9';
+    this.ctx.fillRect(leafX, leafY + leafH * 0.15, leafW, leafH * 0.65);
+    // Below leaf
+    this.ctx.fillStyle = '#F0F8FF';
+    this.ctx.fillRect(leafX, leafY + leafH * 0.80, leafW, leafH * 0.20);
+
+    // ── STEP 1 — Cuticle ────────────────────────────────────────────────────
+    if (step >= 1) {
+        // Upper cuticle
+        this.ctx.fillStyle = '#F0E68C';
+        this.ctx.fillRect(leafX, leafY + leafH * 0.05, leafW, leafH * 0.05);
+        // Lower cuticle
+        this.ctx.fillStyle = '#F0E68C';
+        this.ctx.fillRect(leafX, leafY + leafH * 0.78, leafW, leafH * 0.05);
+
+        if (showLabels && step === 1) {
+            this.addLabel('Upper Cuticle (waxy, waterproof)', width * 0.5, leafY + leafH * 0.03, '#B8860B');
+            this.addLabel('Lower Cuticle', width * 0.5, leafY + leafH * 0.86, '#B8860B');
+        }
+    }
+
+    // ── STEP 2 — Epidermis ──────────────────────────────────────────────────
+    if (step >= 2) {
+        // Upper epidermis
+        this.ctx.fillStyle = '#E8DDA0';
+        this.ctx.fillRect(leafX, leafY + leafH * 0.10, leafW, leafH * 0.08);
+        // Lower epidermis
+        this.ctx.fillStyle = '#E8DDA0';
+        this.ctx.fillRect(leafX, leafY + leafH * 0.70, leafW, leafH * 0.08);
+
+        // Cell walls in epidermis
+        this.ctx.strokeStyle = '#C8B870';
+        this.ctx.lineWidth = 1;
+        for (let i = 1; i < 10; i++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(leafX + (i / 10) * leafW, leafY + leafH * 0.10);
+            this.ctx.lineTo(leafX + (i / 10) * leafW, leafY + leafH * 0.18);
+            this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.moveTo(leafX + (i / 10) * leafW, leafY + leafH * 0.70);
+            this.ctx.lineTo(leafX + (i / 10) * leafW, leafY + leafH * 0.78);
+            this.ctx.stroke();
+        }
+
+        // Stomata in lower epidermis (2 pairs of guard cells)
+        [[0.28, 0.74], [0.68, 0.74]].forEach(([sx, sy]) => {
+            AnatomicalShapes.drawStomata(
+                this.ctx,
+                leafX + sx * leafW, leafY + sy * leafH,
+                leafW * 0.08, leafH * 0.05,
+                true
+            );
+        });
+
+        if (showLabels && step === 2) {
+            this.addLabel('Upper Epidermis', width * 0.08, leafY + leafH * 0.14, '#8B7355', 'left');
+            this.addLabel('Lower Epidermis + Stomata', width * 0.08, leafY + leafH * 0.74, '#8B7355', 'left');
+        }
+    }
+
+    // ── STEP 3 — Palisade mesophyll ─────────────────────────────────────────
+    if (step >= 3) {
+        const palTop = leafY + leafH * 0.18;
+        const palH   = leafH * 0.22;
+        const palGrad = this.ctx.createLinearGradient(0, palTop, 0, palTop + palH);
+        palGrad.addColorStop(0, '#2D5016');
+        palGrad.addColorStop(1, '#3D6B1F');
+        this.ctx.fillStyle = palGrad;
+        this.ctx.fillRect(leafX, palTop, leafW, palH);
+
+        // Columnar cell walls
+        this.ctx.strokeStyle = '#1A3D0A';
+        this.ctx.lineWidth = 1;
+        for (let i = 1; i < 14; i++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(leafX + (i / 14) * leafW, palTop);
+            this.ctx.lineTo(leafX + (i / 14) * leafW, palTop + palH);
+            this.ctx.stroke();
+        }
+
+        // Chloroplasts
+        this.ctx.fillStyle = '#1A3D0A';
+        for (let i = 0; i < 13; i++) {
+            for (let j = 0; j < 3; j++) {
+                this.ctx.beginPath();
+                this.ctx.ellipse(
+                    leafX + ((i + 0.5) / 14) * leafW,
+                    palTop + (j / 2) * palH * 0.85 + palH * 0.08,
+                    leafW * 0.012, leafH * 0.018,
+                    0, 0, Math.PI * 2
+                );
+                this.ctx.fill();
+            }
+        }
+
+        // Photosynthesis highlight
+        if (process === 'photosynthesis') {
+            this.ctx.strokeStyle = '#FFFF00';
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeRect(leafX, palTop, leafW, palH);
+        }
+
+        if (showLabels && step === 3) {
+            this.addLabel('Palisade Mesophyll (primary photosynthesis)', width * 0.5, palTop - 8, '#1B5E20');
+        }
+    }
+
+    // ── STEP 4 — Spongy mesophyll ───────────────────────────────────────────
+    if (step >= 4) {
+        const spTop = leafY + leafH * 0.40;
+        const spH   = leafH * 0.30;
+        this.ctx.fillStyle = '#6B8E4E';
+        this.ctx.fillRect(leafX, spTop, leafW, spH);
+
+        // Air spaces (white circles scattered)
+        this.ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        const airSpaces = [
+            [0.08,0.42],[0.22,0.48],[0.38,0.44],[0.54,0.50],[0.70,0.46],[0.86,0.52],
+            [0.15,0.60],[0.32,0.56],[0.50,0.62],[0.68,0.58],[0.82,0.64]
+        ];
+        airSpaces.forEach(([ax, ay]) => {
+            this.ctx.beginPath();
+            this.ctx.arc(leafX + ax * leafW, leafY + ay * leafH, leafW * 0.022, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
+
+        // Irregular spongy cells
+        this.ctx.strokeStyle = '#4A6A32';
+        this.ctx.lineWidth = 1;
+        [[0.12,0.44],[0.30,0.42],[0.52,0.47],[0.72,0.43],[0.88,0.48],
+         [0.20,0.60],[0.45,0.57],[0.65,0.62],[0.82,0.59]].forEach(([cx, cy]) => {
+            this.ctx.beginPath();
+            this.ctx.ellipse(
+                leafX + cx * leafW, leafY + cy * leafH,
+                leafW * 0.055, leafH * 0.065, 0, 0, Math.PI * 2
+            );
+            this.ctx.stroke();
+        });
+
+        if (showLabels && step === 4) {
+            this.addLabel('Spongy Mesophyll (air spaces for gas exchange)',
+                width * 0.5, leafY + spH + spTop + 8, '#4A6A32');
+        }
+    }
+
+    // ── STEP 5 — Vascular bundle + process highlights + full labels ─────────
+    if (step >= 5) {
+        const vbX = leafX + leafW * 0.50;
+        const vbY = leafY + leafH * 0.50;
+
+        // Bundle sheath
+        this.ctx.fillStyle = '#D2B48C';
+        this.ctx.strokeStyle = '#8B7355';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.ellipse(vbX, vbY, leafW * 0.06, leafH * 0.12, 0, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+
+        // Xylem (lower)
+        this.ctx.fillStyle = '#8B4513';
+        this.ctx.beginPath();
+        this.ctx.ellipse(vbX, vbY + leafH * 0.05, leafW * 0.035, leafH * 0.055, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // Phloem (upper)
+        this.ctx.fillStyle = '#228B22';
+        this.ctx.beginPath();
+        this.ctx.ellipse(vbX, vbY - leafH * 0.04, leafW * 0.028, leafH * 0.038, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // Outer outline of whole leaf section
+        this.ctx.strokeStyle = '#2E7D32';
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeRect(leafX, leafY + leafH * 0.05, leafW, leafH * 0.78);
+
+        // Process-specific overlays
+        if (process === 'photosynthesis') {
+            this.ctx.fillStyle = '#FFD700';
+            for (let i = 0; i < 5; i++) {
+                const ax = leafX + ((i + 0.5) / 5) * leafW;
+                this.ctx.beginPath();
+                this.ctx.moveTo(ax, leafY);
+                this.ctx.lineTo(ax - 5, leafY + leafH * 0.08);
+                this.ctx.lineTo(ax + 5, leafY + leafH * 0.08);
+                this.ctx.fill();
+            }
+            this.ctx.strokeStyle = '#FFFF00';
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeRect(leafX, leafY + leafH * 0.18, leafW, leafH * 0.22);
+        } else if (process === 'transpiration') {
+            this.ctx.fillStyle = '#87CEEB';
+            this.ctx.font = '11px Arial';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('H₂O ↓', leafX + leafW * 0.28, leafY + leafH * 0.92);
+            this.ctx.fillText('H₂O ↓', leafX + leafW * 0.68, leafY + leafH * 0.92);
+            this.ctx.strokeStyle = '#00BFFF';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.ellipse(leafX + leafW * 0.28, leafY + leafH * 0.74, leafW * 0.04, leafH * 0.025, 0, 0, Math.PI * 2);
+            this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.ellipse(leafX + leafW * 0.68, leafY + leafH * 0.74, leafW * 0.04, leafH * 0.025, 0, 0, Math.PI * 2);
+            this.ctx.stroke();
+        } else if (process === 'gas-exchange') {
+            this.ctx.font = 'bold 11px Arial';
+            this.ctx.fillStyle = '#FF6347';
+            this.ctx.textAlign = 'left';
+            this.ctx.fillText('CO₂ →', leafX + leafW * 0.02, leafY + leafH * 0.74);
+            this.ctx.fillStyle = '#32CD32';
+            this.ctx.textAlign = 'right';
+            this.ctx.fillText('← O₂', leafX + leafW * 0.98, leafY + leafH * 0.80);
+        }
+
+        // Labels
+        if (showLabels) {
+            this.ctx.textAlign = 'left';
+            const labelColor = '#2C3E50';
+            this.addLabel('Upper Cuticle',         width * 0.02, leafY + leafH * 0.07, '#B8860B', 'left');
+            this.addLabel('Upper Epidermis',        width * 0.02, leafY + leafH * 0.14, '#8B7355', 'left');
+            this.addLabel('Palisade Mesophyll',     width * 0.02, leafY + leafH * 0.28, '#1B5E20', 'left');
+            this.addLabel('Spongy Mesophyll',       width * 0.02, leafY + leafH * 0.53, '#4A6A32', 'left');
+            this.addLabel('Lower Epidermis',        width * 0.02, leafY + leafH * 0.73, '#8B7355', 'left');
+            this.addLabel('Lower Cuticle',          width * 0.02, leafY + leafH * 0.81, '#B8860B', 'left');
+            this.addLabel('Vascular Bundle',        leafX + leafW * 0.58, vbY, labelColor, 'left');
+            this.addLabel('Xylem',                  leafX + leafW * 0.58, vbY + leafH * 0.05, '#8B4513', 'left');
+            this.addLabel('Phloem',                 leafX + leafW * 0.58, vbY - leafH * 0.06, '#228B22', 'left');
+            this.addLabel('Stomata',                leafX + leafW * 0.28, leafY + leafH * 0.82, '#555', 'center');
+            this.addLabel('Air spaces',             leafX + leafW * 0.72, leafY + leafH * 0.48, '#555', 'center');
+        }
+
+        // Legend
+        this.drawLegend(8, height - 50, [
+            { color: '#F0E68C', label: 'Cuticle'            },
+            { color: '#E8DDA0', label: 'Epidermis'          },
+            { color: '#2D5016', label: 'Palisade'           },
+            { color: '#6B8E4E', label: 'Spongy mesophyll'   },
+            { color: '#8B4513', label: 'Xylem'              },
+            { color: '#228B22', label: 'Phloem'             }
+        ]);
+    }
+
+    this.ctx.font = 'italic 10px Arial';
+    this.ctx.fillStyle = '#BDC3C7';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`Step ${step} of 5`, width - 8, height - 4);
+
+    if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.26, insetType);
+
+    this.ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PHOTOSYNTHESIS — STEP-BY-STEP RENDERER
+// Steps:
+//   1 — Chloroplast outline
+//   2 — + Light reactions (thylakoid / granum)
+//   3 — + ATP & NADPH production arrows
+//   4 — + Calvin cycle
+//   5 — + Inputs/outputs, equation, full labels
+// ═══════════════════════════════════════════════════════════════════════════
+renderPhotosynthesisDiagram(x, y, width, height, options = {}) {
+    const {
+        stage       = 'complete',
+        detail      = 'overview',
+        drawingStep = 5,
+        showLabels  = true,
+        showInset   = false,
+        insetType   = 'chloroplast-ultrastructure'
+    } = options;
+
+    this.ctx.save();
+    this.ctx.translate(x - width / 2, y - height / 2);
+
+    const step = Math.max(1, Math.min(5, drawingStep));
+
+    const stepLabels = [
+        'Step 1 – Chloroplast Overview',
+        'Step 2 – Light-Dependent Reactions',
+        'Step 3 – ATP & NADPH Production',
+        'Step 4 – Calvin Cycle',
+        'Step 5 – Complete Photosynthesis'
+    ];
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(stepLabels[step - 1], width / 2, height * 0.05);
+
+    // If a specific stage is requested, delegate directly
+    if (stage !== 'complete') {
+        AnatomicalShapes.drawPhotosynthesis(
+            this.ctx, 0, height * 0.08, width, height * 0.86, stage, detail
+        );
+        if (showLabels) {
+            const names = {
+                'light-reactions':    'Light-Dependent Reactions (Z-Scheme)',
+                'calvin-cycle':       'Calvin Cycle (Light-Independent)',
+                'electron-transport': 'Electron Transport Chain'
+            };
+            this.addLabel(names[stage] || stage, width / 2, height * 0.97, '#1B5E20');
+        }
+        if (showInset) this.drawInset(width * 0.60, height * 0.05, width * 0.38, height * 0.28, insetType);
+        this.ctx.restore();
+        return;
+    }
+
+    const cw = width, ch = height;
+
+    // ── STEP 1 — Chloroplast outline ────────────────────────────────────────
+    if (step >= 1) {
+        this.ctx.fillStyle = '#E8F5E9';
+        this.ctx.strokeStyle = '#2E7D32';
+        this.ctx.lineWidth = 3;
+        this.ctx.beginPath();
+        this.ctx.ellipse(cw * 0.50, ch * 0.50, cw * 0.44, ch * 0.40, 0, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+
+        // Stroma background
+        this.ctx.fillStyle = '#C8E6C9';
+        this.ctx.beginPath();
+        this.ctx.ellipse(cw * 0.50, ch * 0.50, cw * 0.40, ch * 0.36, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        if (showLabels && step === 1) {
+            this.addLabel('Chloroplast', cw * 0.50, ch * 0.12, '#1B5E20');
+            this.addLabel('Stroma (fluid interior)', cw * 0.50, ch * 0.88, '#388E3C');
+            this.addLabel('Outer membrane', cw * 0.50, ch * 0.10, '#2E7D32');
+        }
+    }
+
+    // ── STEP 2 — Granum / thylakoid stack (light reactions zone) ───────────
+    if (step >= 2) {
+        const grX = cw * 0.30;
+        const grY = ch * 0.50;
+
+        for (let i = 0; i < 5; i++) {
+            const diskY = grY - ch * 0.14 + i * ch * 0.07;
+            const grad = this.ctx.createLinearGradient(grX - cw * 0.14, diskY, grX + cw * 0.14, diskY);
+            grad.addColorStop(0, '#1B5E20');
+            grad.addColorStop(0.5, '#2E7D32');
+            grad.addColorStop(1, '#1B5E20');
+            this.ctx.fillStyle = grad;
+            this.ctx.fillRect(grX - cw * 0.14, diskY, cw * 0.28, ch * 0.045);
+            this.ctx.strokeStyle = '#0D3818';
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeRect(grX - cw * 0.14, diskY, cw * 0.28, ch * 0.045);
+        }
+
+        // Light arrows hitting granum
+        this.ctx.fillStyle = '#FFD700';
+        for (let i = 0; i < 4; i++) {
+            const lx = grX - cw * 0.09 + i * cw * 0.06;
+            this.ctx.beginPath();
+            this.ctx.moveTo(lx, ch * 0.08);
+            this.ctx.lineTo(lx - 5, ch * 0.18);
+            this.ctx.lineTo(lx + 5, ch * 0.18);
+            this.ctx.fill();
+        }
+        this.ctx.fillStyle = '#FF6F00';
+        this.ctx.font = `bold ${ch * 0.04}px Arial`;
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('LIGHT', grX, ch * 0.14);
+
+        if (showLabels && step === 2) {
+            this.addLabel('Granum\n(thylakoid stack)', grX - cw * 0.20, grY - ch * 0.08, '#1B5E20', 'right');
+            this.addLabel('Thylakoid membrane', grX, grY + ch * 0.24, '#2E7D32');
+        }
+    }
+
+    // ── STEP 3 — ATP / NADPH arrows ─────────────────────────────────────────
+    if (step >= 3) {
+        const grX = cw * 0.30;
+        const cyX = cw * 0.70;
+        const midY = ch * 0.50;
+
+        // Connecting arrow (ATP/NADPH)
+        this.ctx.strokeStyle = '#9C27B0';
+        this.ctx.lineWidth = 4;
+        this.ctx.setLineDash([]);
+        this.ctx.beginPath();
+        this.ctx.moveTo(grX + cw * 0.14, midY);
+        this.ctx.lineTo(cyX - cw * 0.14, midY);
+        this.ctx.stroke();
+        this.drawArrow(grX + cw * 0.14, midY, cyX - cw * 0.14, midY, '#9C27B0', '', 8);
+
+        this.ctx.font = `${ch * 0.032}px Arial`;
+        this.ctx.fillStyle = '#9C27B0';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('ATP', (grX + cyX) / 2, midY - ch * 0.05);
+        this.ctx.fillText('NADPH', (grX + cyX) / 2, midY + ch * 0.08);
+
+        // H₂O input, O₂ output
+        this.ctx.fillStyle = '#2196F3';
+        this.ctx.font = `bold ${ch * 0.04}px Arial`;
+        this.ctx.textAlign = 'right';
+        this.ctx.fillText('H₂O', grX - cw * 0.18, ch * 0.65);
+        this.ctx.fillStyle = '#4CAF50';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText('O₂', grX - cw * 0.12, ch * 0.78);
+
+        if (showLabels && step === 3) {
+            this.addLabel('Water splitting\n(photolysis)', grX - cw * 0.18, ch * 0.72, '#2196F3', 'right');
+            this.addLabel('Oxygen released', grX - cw * 0.12, ch * 0.84, '#4CAF50', 'left');
+        }
+    }
+
+    // ── STEP 4 — Calvin cycle circle ────────────────────────────────────────
+    if (step >= 4) {
+        const cyX = cw * 0.70;
+        const cyY = ch * 0.50;
+        const cyR = cw * 0.14;
+
+        this.ctx.strokeStyle = '#388E3C';
+        this.ctx.lineWidth = 4;
+        this.ctx.setLineDash([8, 4]);
+        this.ctx.beginPath();
+        this.ctx.arc(cyX, cyY, cyR, 0, Math.PI * 2);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
+
+        // Arrows around cycle
+        for (let i = 0; i < 3; i++) {
+            const angle = (i / 3) * Math.PI * 2 - Math.PI / 2;
+            const nextAngle = angle + (Math.PI * 2 / 3);
+            const ax = cyX + Math.cos(nextAngle) * cyR;
+            const ay = cyY + Math.sin(nextAngle) * cyR;
+            this.ctx.fillStyle = '#388E3C';
+            this.ctx.beginPath();
+            this.ctx.arc(ax, ay, cw * 0.02, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+
+        // CO₂ input
+        this.ctx.fillStyle = '#FF5722';
+        this.ctx.font = `bold ${ch * 0.04}px Arial`;
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('CO₂', cyX, ch * 0.12);
+        this.drawArrow(cyX, ch * 0.16, cyX, cyY - cyR, '#FF5722', '', 7);
+
+        // Glucose output
+        this.ctx.fillStyle = '#FF9800';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('C₆H₁₂O₆', cyX, ch * 0.88);
+        this.ctx.font = `${ch * 0.028}px Arial`;
+        this.ctx.fillText('(Glucose)', cyX, ch * 0.93);
+        this.drawArrow(cyX, cyY + cyR, cyX, ch * 0.84, '#FF9800', '', 7);
+
+        if (showLabels && step === 4) {
+            this.addLabel('Calvin Cycle\n(stroma)', cyX, cyY, '#1B5E20');
+            this.addLabel('RuBisCO fixation', cyX + cyR + 10, cyY - cyR * 0.5, '#388E3C', 'left');
+            this.addLabel('G3P → Glucose', cyX + cyR + 10, cyY + cyR * 0.5, '#FF9800', 'left');
+        }
+    }
+
+    // ── STEP 5 — Full labels + overall equation ──────────────────────────────
+    if (step >= 5) {
+        if (showLabels) {
+            this.addLabel('Light Reactions\n(thylakoid)', cw * 0.30, ch * 0.88, '#1B5E20');
+            this.addLabel('Light source', cw * 0.30, ch * 0.06, '#FF6F00');
+        }
+
+        // Overall equation banner
+        this.ctx.fillStyle = 'rgba(27,94,32,0.08)';
+        this.ctx.fillRect(8, height - 36, width - 16, 28);
+        this.ctx.strokeStyle = '#2E7D32';
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(8, height - 36, width - 16, 28);
+        this.ctx.font = `bold ${height * 0.038}px Arial`;
+        this.ctx.fillStyle = '#1B5E20';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('6CO₂ + 6H₂O + Light Energy → C₆H₁₂O₆ + 6O₂', width / 2, height - 16);
+
+        this.drawLegend(8, height - 90, [
+            { color: '#2E7D32', label: 'Thylakoid / granum'   },
+            { color: '#9C27B0', label: 'ATP & NADPH'          },
+            { color: '#FF5722', label: 'CO₂ input'            },
+            { color: '#FF9800', label: 'Glucose output'       },
+            { color: '#4CAF50', label: 'O₂ released'          }
+        ]);
+    }
+
+    this.ctx.font = 'italic 10px Arial';
+    this.ctx.fillStyle = '#BDC3C7';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`Step ${step} of 5`, width - 8, height - 4);
+
+    if (showInset) this.drawInset(width * 0.02, 8, width * 0.36, height * 0.28, insetType);
+
+    this.ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FLOWER STRUCTURE — STEP-BY-STEP RENDERER
+// Steps:
+//   1 — Receptacle & sepals
+//   2 — + Petals
+//   3 — + Stamens
+//   4 — + Pistil
+//   5 — + Labels & stage overlays
+// ═══════════════════════════════════════════════════════════════════════════
+renderFlowerStructureDiagram(x, y, width, height, options = {}) {
+    const {
+        component   = 'complete',
+        stage       = 'mature',
+        drawingStep = 5,
+        showLabels  = true,
+        showInset   = false,
+        insetType   = 'pollen-grain-detail'
+    } = options;
+
+    this.ctx.save();
+    this.ctx.translate(x - width / 2, y - height / 2);
+
+    const step = Math.max(1, Math.min(5, drawingStep));
+
+    const stepLabels = [
+        'Step 1 – Receptacle & Sepals',
+        'Step 2 – Petals',
+        'Step 3 – Stamens (Male organs)',
+        'Step 4 – Pistil (Female organ)',
+        'Step 5 – Complete Flower'
+    ];
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(stepLabels[step - 1], width / 2, height * 0.05);
+
+    // Specific component view
+    if (component !== 'complete') {
+        AnatomicalShapes.drawFlowerStructure(
+            this.ctx, 0, height * 0.08, width, height * 0.86, component, stage
+        );
+        if (showInset) this.drawInset(width * 0.60, height * 0.05, width * 0.38, height * 0.28, insetType);
+        this.ctx.restore();
+        return;
+    }
+
+    const cX = width  * 0.50;
+    const cY = height * 0.56;
+
+    // ── STEP 1 — Stem, receptacle, sepals ───────────────────────────────────
+    if (step >= 1) {
+        // Stem
+        this.ctx.fillStyle = '#4CAF50';
+        this.ctx.strokeStyle = '#2E7D32';
+        this.ctx.lineWidth = 2;
+        this.ctx.fillRect(cX - width * 0.02, cY + height * 0.15, width * 0.04, height * 0.28);
+        this.ctx.strokeRect(cX - width * 0.02, cY + height * 0.15, width * 0.04, height * 0.28);
+
+        // Receptacle
+        this.ctx.fillStyle = '#8BC34A';
+        this.ctx.beginPath();
+        this.ctx.ellipse(cX, cY + height * 0.15, width * 0.07, height * 0.04, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // Sepals
+        for (let i = 0; i < 5; i++) {
+            const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+            this.ctx.save();
+            this.ctx.translate(cX, cY);
+            this.ctx.rotate(angle);
+            this.ctx.fillStyle = '#689F38';
+            this.ctx.strokeStyle = '#33691E';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, height * 0.10);
+            this.ctx.quadraticCurveTo(-width * 0.04, height * 0.17, -width * 0.045, height * 0.22);
+            this.ctx.quadraticCurveTo(0, height * 0.24, width * 0.045, height * 0.22);
+            this.ctx.quadraticCurveTo(width * 0.04, height * 0.17, 0, height * 0.10);
+            this.ctx.fill(); this.ctx.stroke();
+            this.ctx.restore();
+        }
+
+        if (showLabels && step === 1) {
+            this.addLabel('Stem',       cX + width * 0.06, cY + height * 0.25, '#2E7D32', 'left');
+            this.addLabel('Receptacle', cX + width * 0.10, cY + height * 0.15, '#558B2F', 'left');
+            this.addLabel('Sepal',      cX - width * 0.20, cY + height * 0.22, '#33691E', 'right');
+        }
+    }
+
+    // ── STEP 2 — Petals ─────────────────────────────────────────────────────
+    if (step >= 2) {
+        for (let i = 0; i < 5; i++) {
+            const angle = (i / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 10;
+            const grad = this.ctx.createRadialGradient(cX, cY, 0, cX, cY, width * 0.15);
+            grad.addColorStop(0, '#FFE082');
+            grad.addColorStop(0.5, '#FFC107');
+            grad.addColorStop(1, '#FF6F00');
+            this.ctx.save();
+            this.ctx.translate(cX, cY);
+            this.ctx.rotate(angle);
+            this.ctx.fillStyle = grad;
+            this.ctx.strokeStyle = '#E65100';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, 0);
+            this.ctx.quadraticCurveTo(-width * 0.06, height * 0.05, -width * 0.07, height * 0.12);
+            this.ctx.quadraticCurveTo(-width * 0.05, height * 0.18, 0, height * 0.20);
+            this.ctx.quadraticCurveTo(width * 0.05, height * 0.18, width * 0.07, height * 0.12);
+            this.ctx.quadraticCurveTo(width * 0.06, height * 0.05, 0, 0);
+            this.ctx.fill(); this.ctx.stroke();
+            this.ctx.restore();
+        }
+
+        if (showLabels && step === 2) {
+            this.addLabel('Petal\n(corolla)', cX + width * 0.22, cY - height * 0.12, '#E65100', 'left');
+        }
+    }
+
+    // ── STEP 3 — Stamens ────────────────────────────────────────────────────
+    if (step >= 3) {
+        for (let i = 0; i < 6; i++) {
+            const angle = (i / 6) * Math.PI * 2;
+            const stX = cX + Math.cos(angle) * width * 0.08;
+            const stY = cY + Math.sin(angle) * height * 0.07;
+
+            // Filament
+            this.ctx.strokeStyle = '#FFEB3B';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.moveTo(cX, cY);
+            this.ctx.lineTo(stX, stY);
+            this.ctx.stroke();
+
+            // Anther
+            this.ctx.fillStyle = '#F57C00';
+            this.ctx.strokeStyle = '#E65100';
+            this.ctx.lineWidth = 1;
+            this.ctx.beginPath();
+            this.ctx.ellipse(stX, stY, width * 0.014, height * 0.022, angle, 0, Math.PI * 2);
+            this.ctx.fill(); this.ctx.stroke();
+        }
+
+        if (showLabels && step === 3) {
+            this.addLabel('Stamen\n(Filament + Anther)', cX - width * 0.32, cY - height * 0.06, '#F57C00', 'right');
+        }
+    }
+
+    // ── STEP 4 — Pistil ─────────────────────────────────────────────────────
+    if (step >= 4) {
+        // Ovary
+        this.ctx.fillStyle = '#8BC34A';
+        this.ctx.strokeStyle = '#558B2F';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.ellipse(cX, cY, width * 0.038, height * 0.058, 0, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+
+        // Style
+        this.ctx.fillStyle = '#9CCC65';
+        this.ctx.fillRect(cX - width * 0.008, cY - height * 0.10, width * 0.016, height * 0.10);
+
+        // Stigma
+        this.ctx.fillStyle = '#FDD835';
+        this.ctx.strokeStyle = '#F9A825';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(cX, cY - height * 0.10, width * 0.020, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+
+        if (showLabels && step === 4) {
+            this.addLabel('Stigma',  cX + width * 0.06, cY - height * 0.10, '#F9A825', 'left');
+            this.addLabel('Style',   cX + width * 0.06, cY - height * 0.05, '#7CB342', 'left');
+            this.addLabel('Ovary',   cX + width * 0.06, cY + height * 0.01, '#558B2F', 'left');
+            this.addLabel('Pistil\n(female organ)', cX + width * 0.06, cY + height * 0.06, '#2E7D32', 'left');
+        }
+    }
+
+    // ── STEP 5 — Labels + stage overlay ─────────────────────────────────────
+    if (step >= 5) {
+        if (showLabels) {
+            this.addLabel('Petal',    cX - width * 0.28, cY - height * 0.18, '#E65100',  'right');
+            this.addLabel('Sepal',    cX - width * 0.28, cY + height * 0.22, '#33691E',  'right');
+            this.addLabel('Anther',   cX + width * 0.18, cY - height * 0.08, '#F57C00',  'left');
+            this.addLabel('Filament', cX + width * 0.18, cY,                  '#FFEB3B',  'left');
+            this.addLabel('Stigma',   cX + width * 0.10, cY - height * 0.11, '#F9A825',  'left');
+            this.addLabel('Style',    cX + width * 0.10, cY - height * 0.06, '#7CB342',  'left');
+            this.addLabel('Ovary',    cX + width * 0.10, cY + height * 0.01, '#558B2F',  'left');
+        }
+
+        // Stage overlay
+        if (stage === 'pollination') {
+            // Pollen grains on stigma
+            this.ctx.fillStyle = '#FF6F00';
+            for (let i = 0; i < 6; i++) {
+                this.ctx.beginPath();
+                this.ctx.arc(
+                    cX + (Math.random() - 0.5) * width * 0.03,
+                    cY - height * 0.10 + (Math.random() - 0.5) * height * 0.03,
+                    width * 0.004, 0, Math.PI * 2
+                );
+                this.ctx.fill();
+            }
+            this.addLabel('Pollen on stigma', cX - width * 0.12, cY - height * 0.14, '#FF6F00', 'right');
+        } else if (stage === 'fertilization') {
+            // Pollen tube
+            this.ctx.strokeStyle = '#FF9800';
+            this.ctx.lineWidth = 2.5;
+            this.ctx.setLineDash([4, 3]);
+            this.ctx.beginPath();
+            this.ctx.moveTo(cX, cY - height * 0.09);
+            this.ctx.lineTo(cX, cY - height * 0.02);
+            this.ctx.stroke();
+            this.ctx.setLineDash([]);
+            this.addLabel('Pollen tube →\ngrowing to ovule', cX + width * 0.04, cY - height * 0.06, '#FF9800', 'left');
+        }
+
+        const stageText = {
+            mature: 'Mature Flower',
+            pollination: 'Pollination',
+            fertilization: 'Fertilization',
+            'seed-development': 'Seed Development'
+        };
+        this.ctx.font = `bold ${height * 0.042}px Arial`;
+        this.ctx.fillStyle = '#1B5E20';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(`Flower Anatomy — ${stageText[stage] || stage}`, width / 2, height * 0.04);
+
+        this.drawLegend(8, height - 54, [
+            { color: '#FFC107', label: 'Petals (corolla)'    },
+            { color: '#689F38', label: 'Sepals (calyx)'      },
+            { color: '#F57C00', label: 'Anther (pollen)'     },
+            { color: '#FDD835', label: 'Stigma'              },
+            { color: '#8BC34A', label: 'Ovary'               }
+        ]);
+    }
+
+    this.ctx.font = 'italic 10px Arial';
+    this.ctx.fillStyle = '#BDC3C7';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`Step ${step} of 5`, width - 8, height - 4);
+
+    if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+
+    this.ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STOMATA STRUCTURE — STEP-BY-STEP RENDERER
+// Steps:
+//   1 — Epidermal background
+//   2 — + Guard cells
+//   3 — + Stomatal pore
+//   4 — + Chloroplasts in guard cells
+//   5 — + Full mechanism, labels
+// ═══════════════════════════════════════════════════════════════════════════
+renderStomataStructureDiagram(x, y, width, height, options = {}) {
+    const {
+        state       = 'both',
+        view        = 'surface',
+        drawingStep = 5,
+        showLabels  = true,
+        showInset   = false,
+        insetType   = 'turgor-pressure'
+    } = options;
+
+    this.ctx.save();
+    this.ctx.translate(x - width / 2, y - height / 2);
+
+    const step = Math.max(1, Math.min(5, drawingStep));
+
+    const stepLabels = [
+        'Step 1 – Epidermal Cells',
+        'Step 2 – Guard Cells',
+        'Step 3 – Stomatal Pore',
+        'Step 4 – Chloroplasts in Guard Cells',
+        'Step 5 – Complete Mechanism'
+    ];
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(stepLabels[step - 1], width / 2, height * 0.05);
+
+    // For step 5 (or specific state), delegate to AnatomicalShapes
+    if (step === 5 || state !== 'both') {
+        AnatomicalShapes.drawStomataStructure(
+            this.ctx, 0, height * 0.08, width, height * 0.88, state, view
+        );
+        if (showLabels && step === 5) {
+            if (state === 'both') {
+                this.addLabel('Open stomata: guard cells turgid, pore visible',
+                    width * 0.5, height * 0.96, '#2E7D32');
+            } else {
+                this.addLabel(state === 'open' ? 'Open Stomata (high turgor)' : 'Closed Stomata (low turgor)',
+                    width * 0.5, height * 0.96, '#2E7D32');
+            }
+        }
+        if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+        this.ctx.restore();
+        return;
+    }
+
+    // Build up incrementally for steps 1–4
+    const cX = width  * 0.50;
+    const cY = height * 0.52;
+    const gW = width  * 0.55;
+    const gH = height * 0.58;
+
+    // ── STEP 1 — Epidermal background ───────────────────────────────────────
+    if (step >= 1) {
+        this.ctx.fillStyle = '#C5E1A5';
+        this.ctx.fillRect(cX - gW / 2, cY - gH / 2, gW, gH);
+        this.ctx.strokeStyle = '#558B2F';
+        this.ctx.lineWidth = 1.5;
+        // Cell wall grid
+        for (let i = 1; i < 5; i++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(cX - gW / 2 + (i / 5) * gW, cY - gH / 2);
+            this.ctx.lineTo(cX - gW / 2 + (i / 5) * gW, cY + gH / 2);
+            this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.moveTo(cX - gW / 2, cY - gH / 2 + (i / 5) * gH);
+            this.ctx.lineTo(cX + gW / 2, cY - gH / 2 + (i / 5) * gH);
+            this.ctx.stroke();
+        }
+        if (showLabels && step === 1) {
+            this.addLabel('Epidermal cells', cX, cY - gH / 2 - 10, '#4A7020');
+        }
+    }
+
+    // ── STEP 2 — Guard cells ────────────────────────────────────────────────
+    if (step >= 2) {
+        // Left guard cell
+        this.ctx.fillStyle = '#66BB6A';
+        this.ctx.strokeStyle = '#2E7D32';
+        this.ctx.lineWidth = 2.5;
+        this.ctx.beginPath();
+        this.ctx.ellipse(cX - width * 0.07, cY, width * 0.06, height * 0.16, -0.3, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+
+        // Right guard cell
+        this.ctx.beginPath();
+        this.ctx.ellipse(cX + width * 0.07, cY, width * 0.06, height * 0.16, 0.3, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+
+        if (showLabels && step === 2) {
+            this.addLabel('Guard cells\n(bean-shaped)', cX + width * 0.18, cY, '#2E7D32', 'left');
+        }
+    }
+
+    // ── STEP 3 — Pore ───────────────────────────────────────────────────────
+    if (step >= 3) {
+        this.ctx.fillStyle = '#000000';
+        this.ctx.beginPath();
+        this.ctx.ellipse(cX, cY, width * 0.04, height * 0.12, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // Gas exchange arrows
+        this.ctx.strokeStyle = '#87CEEB';
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([4, 3]);
+        for (let i = -1; i <= 1; i += 2) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(cX + i * width * 0.06, cY + height * 0.20);
+            this.ctx.lineTo(cX + i * width * 0.06, cY + height * 0.35);
+            this.ctx.stroke();
+        }
+        this.ctx.setLineDash([]);
+
+        if (showLabels && step === 3) {
+            this.addLabel('Stomatal pore\n(ostiole)', cX - width * 0.18, cY, '#333', 'right');
+            this.addLabel('Gas / H₂O exchange', cX, cY + height * 0.38, '#87CEEB');
+        }
+    }
+
+    // ── STEP 4 — Chloroplasts ───────────────────────────────────────────────
+    if (step >= 4) {
+        this.ctx.fillStyle = '#1B5E20';
+        for (const [gx, gy] of [[-0.07, 0], [0.07, 0]]) {
+            for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * Math.PI * 2;
+                this.ctx.beginPath();
+                this.ctx.ellipse(
+                    cX + gx * width + Math.cos(angle) * width * 0.03,
+                    cY + gy * height + Math.sin(angle) * height * 0.08,
+                    width * 0.012, height * 0.016, 0, 0, Math.PI * 2
+                );
+                this.ctx.fill();
+            }
+        }
+
+        if (showLabels && step === 4) {
+            this.addLabel('Chloroplasts\n(enable guard cell photosynthesis)',
+                cX, cY + height * 0.44, '#1B5E20');
+        }
+    }
+
+    this.ctx.font = 'italic 10px Arial';
+    this.ctx.fillStyle = '#BDC3C7';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`Step ${step} of 5`, width - 8, height - 4);
+
+    if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+
+    this.ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// XYLEM & PHLOEM — STEP-BY-STEP RENDERER
+// Steps:
+//   1 — Bundle sheath
+//   2 — + Xylem vessels
+//   3 — + Phloem sieve tubes
+//   4 — + Companion cells
+//   5 — + Transport arrows, labels, pressure-flow
+// ═══════════════════════════════════════════════════════════════════════════
+renderXylemPhloemDiagram(x, y, width, height, options = {}) {
+    const {
+        tissue      = 'both',
+        transport   = 'structure',
+        drawingStep = 5,
+        showLabels  = true,
+        showInset   = false,
+        insetType   = 'cohesion-tension-theory'
+    } = options;
+
+    this.ctx.save();
+    this.ctx.translate(x - width / 2, y - height / 2);
+
+    const step = Math.max(1, Math.min(5, drawingStep));
+
+    const stepLabels = [
+        'Step 1 – Bundle Sheath',
+        'Step 2 – Xylem Vessels',
+        'Step 3 – Phloem Sieve Tubes',
+        'Step 4 – Companion Cells',
+        'Step 5 – Complete with Transport'
+    ];
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(stepLabels[step - 1], width / 2, height * 0.05);
+
+    // Direct delegation for specific tissue or step 5
+    if (step === 5 || tissue !== 'both') {
+        AnatomicalShapes.drawXylemPhloem(
+            this.ctx, 0, height * 0.08, width, height * 0.86, tissue, transport
+        );
+        if (showLabels && step === 5) {
+            const legend = tissue === 'xylem'
+                ? [{ color: '#A0522D', label: 'Xylem (water/minerals up)' }]
+                : tissue === 'phloem'
+                    ? [{ color: '#90EE90', label: 'Phloem (sugars bidirectional)' }]
+                    : [
+                        { color: '#A0522D', label: 'Xylem'                  },
+                        { color: '#90EE90', label: 'Phloem'                 },
+                        { color: '#98FB98', label: 'Companion cells'        },
+                        { color: '#FFEB3B', label: 'Sieve plates'           }
+                    ];
+            this.drawLegend(8, height - 54, legend);
+        }
+        if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+        this.ctx.restore();
+        return;
+    }
+
+    // Incremental build for steps 1–4
+    const cX = width  * 0.50;
+    const cY = height * 0.50;
+
+    // ── STEP 1 — Bundle sheath ───────────────────────────────────────────────
+    if (step >= 1) {
+        this.ctx.fillStyle = '#D2B48C';
+        this.ctx.strokeStyle = '#8B7355';
+        this.ctx.lineWidth = 3;
+        this.ctx.beginPath();
+        this.ctx.ellipse(cX, cY, width * 0.34, height * 0.40, 0, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+        if (showLabels && step === 1) {
+            this.addLabel('Bundle sheath\n(protective layer)', cX, cY + height * 0.44, '#8B7355');
+        }
+    }
+
+    // ── STEP 2 — Xylem vessels (bottom half) ────────────────────────────────
+    if (step >= 2) {
+        for (let i = 0; i < 5; i++) {
+            const vx = cX - width * 0.18 + (i / 4) * width * 0.36;
+            const vy = cY + height * 0.14;
+            // Cell wall
+            this.ctx.fillStyle = '#A0522D';
+            this.ctx.strokeStyle = '#654321';
+            this.ctx.lineWidth = 3;
+            this.ctx.beginPath();
+            this.ctx.arc(vx, vy, width * 0.05, 0, Math.PI * 2);
+            this.ctx.fill(); this.ctx.stroke();
+            // Lignin rings
+            this.ctx.strokeStyle = '#8B4513';
+            this.ctx.lineWidth = 1.5;
+            for (let r = 1; r <= 3; r++) {
+                this.ctx.beginPath();
+                this.ctx.arc(vx, vy, width * 0.05 - r * width * 0.01, 0, Math.PI * 2);
+                this.ctx.stroke();
+            }
+            // Hollow lumen
+            this.ctx.fillStyle = '#FFFFFF';
+            this.ctx.beginPath();
+            this.ctx.arc(vx, vy, width * 0.022, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+        // Dividing line
+        this.ctx.strokeStyle = '#8B4513';
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([6, 4]);
+        this.ctx.beginPath();
+        this.ctx.moveTo(cX - width * 0.30, cY);
+        this.ctx.lineTo(cX + width * 0.30, cY);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
+
+        if (showLabels && step === 2) {
+            this.addLabel('Xylem vessels\n(lignified, hollow lumen)', cX, cY + height * 0.30, '#8B4513');
+        }
+    }
+
+    // ── STEP 3 — Phloem sieve tubes (top half) ───────────────────────────────
+    if (step >= 3) {
+        for (let i = 0; i < 6; i++) {
+            const px = cX - width * 0.20 + (i / 5) * width * 0.40;
+            const py = cY - height * 0.15;
+            this.ctx.fillStyle = '#228B22';
+            this.ctx.strokeStyle = '#1A6B1A';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.arc(px, py, width * 0.038, 0, Math.PI * 2);
+            this.ctx.fill(); this.ctx.stroke();
+            // Sieve plate line
+            this.ctx.strokeStyle = '#FFD700';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(px - width * 0.03, py);
+            this.ctx.lineTo(px + width * 0.03, py);
+            this.ctx.stroke();
+        }
+
+        if (showLabels && step === 3) {
+            this.addLabel('Phloem sieve tubes\n(living, sieve plates)', cX, cY - height * 0.30, '#228B22');
+        }
+    }
+
+    // ── STEP 4 — Companion cells ─────────────────────────────────────────────
+    if (step >= 4) {
+        for (let i = 0; i < 4; i++) {
+            const px = cX - width * 0.14 + (i / 3) * width * 0.28;
+            const py = cY - height * 0.15;
+            const ccX = px + width * 0.06;
+
+            this.ctx.fillStyle = '#32CD32';
+            this.ctx.strokeStyle = '#1A7A1A';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+            this.ctx.arc(ccX, py, width * 0.022, 0, Math.PI * 2);
+            this.ctx.fill(); this.ctx.stroke();
+
+            // Nucleus in companion cell
+            this.ctx.fillStyle = '#5D4037';
+            this.ctx.beginPath();
+            this.ctx.arc(ccX, py, width * 0.010, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            // Plasmodesmata
+            this.ctx.strokeStyle = '#FFD700';
+            this.ctx.lineWidth = 1;
+            this.ctx.setLineDash([2, 2]);
+            this.ctx.beginPath();
+            this.ctx.moveTo(px + width * 0.038, py);
+            this.ctx.lineTo(ccX - width * 0.022, py);
+            this.ctx.stroke();
+            this.ctx.setLineDash([]);
+        }
+
+        if (showLabels && step === 4) {
+            this.addLabel('Companion cells\n(metabolically active, with nucleus)',
+                cX + width * 0.38, cY - height * 0.15, '#32CD32', 'left');
+        }
+    }
+
+    this.ctx.font = 'italic 10px Arial';
+    this.ctx.fillStyle = '#BDC3C7';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`Step ${step} of 5`, width - 8, height - 4);
+
+    if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+
+    this.ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SEED GERMINATION — STEP-BY-STEP RENDERER
+// Steps:
+//   1 — Dry seed
+//   2 — + Imbibition (water uptake)
+//   3 — + Radicle emergence
+//   4 — + Shoot emergence
+//   5 — + Young seedling with root system
+// ═══════════════════════════════════════════════════════════════════════════
+renderSeedGerminationDiagram(x, y, width, height, options = {}) {
+    const {
+        stage       = 'complete',
+        seedType    = 'dicot',
+        drawingStep = 5,
+        showLabels  = true,
+        showInset   = false,
+        insetType   = 'seed-internal-anatomy'
+    } = options;
+
+    this.ctx.save();
+    this.ctx.translate(x - width / 2, y - height / 2);
+
+    const step = Math.max(1, Math.min(5, drawingStep));
+
+    const stepLabels = [
+        'Step 1 – Dry Seed',
+        'Step 2 – Imbibition (Water Uptake)',
+        'Step 3 – Radicle Emergence',
+        'Step 4 – Shoot Emergence',
+        'Step 5 – Young Seedling'
+    ];
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(stepLabels[step - 1], width / 2, height * 0.05);
+
+    // For step 5 or a specific stage, delegate to AnatomicalShapes
+    if (step === 5 || stage !== 'complete') {
+        AnatomicalShapes.drawSeedGermination(
+            this.ctx, 0, height * 0.08, width, height * 0.86, stage, seedType
+        );
+        if (showLabels && step === 5) {
+            this.addLabel(
+                seedType === 'dicot' ? 'Dicot Germination' : 'Monocot Germination',
+                width / 2, height * 0.96, '#2E7D32'
+            );
+        }
+        if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+        this.ctx.restore();
+        return;
+    }
+
+    // Incremental build: show n stages across the canvas for steps 1–4
+    const soilY = height * 0.55;
+
+    // Soil fill
+    this.ctx.fillStyle = '#8D6E63';
+    this.ctx.fillRect(0, soilY, width, height - soilY);
+    this.ctx.fillStyle = '#6D4C41';
+    for (let i = 0; i < 30; i++) {
+        this.ctx.beginPath();
+        this.ctx.arc(
+            (i * 137.5 % 1) * width,
+            soilY + (i * 0.083 % 1) * (height - soilY),
+            width * 0.006, 0, Math.PI * 2
+        );
+        this.ctx.fill();
+    }
+
+    // Draw only the stages that have been "reached"
+    const stageConfigs = [
+        { method: AnatomicalShapes.drawDrySeed,       x: 0.14, label: 'Dry Seed'   },
+        { method: AnatomicalShapes.drawImbibition,    x: 0.30, label: 'Imbibition' },
+        { method: AnatomicalShapes.drawRadicleEmergence, x: 0.50, label: 'Radicle'  },
+        { method: AnatomicalShapes.drawShootEmergence,   x: 0.68, label: 'Shoot'    },
+        { method: AnatomicalShapes.drawYoungSeedling,    x: 0.86, label: 'Seedling' },
+    ];
+
+    stageConfigs.slice(0, step).forEach((cfg, idx) => {
+        const sx = cfg.x * width;
+        const sw = width * 0.12;
+        const sh = height * 0.40;
+
+        cfg.method.call(AnatomicalShapes, this.ctx, sx, soilY - sh * 0.3, sw, sh, seedType);
+
+        if (showLabels) {
+            this.ctx.font = `bold ${height * 0.032}px Arial`;
+            this.ctx.fillStyle = '#FFFFFF';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(cfg.label, sx, soilY + height * 0.08);
+
+            // Step number
+            this.ctx.fillStyle = '#FFC107';
+            this.ctx.font = `bold ${height * 0.04}px Arial`;
+            this.ctx.fillText(`${idx + 1}`, sx, height * 0.10);
+        }
+
+        // Arrow to next
+        if (idx < step - 1) {
+            const nextX = stageConfigs[idx + 1].x * width;
+            this.ctx.fillStyle = '#66BB6A';
+            this.ctx.beginPath();
+            const arrowMid = (sx + nextX) / 2;
+            this.ctx.moveTo(arrowMid, soilY - height * 0.12);
+            this.ctx.lineTo(arrowMid - 6, soilY - height * 0.18);
+            this.ctx.lineTo(arrowMid + 6, soilY - height * 0.18);
+            this.ctx.fill();
+        }
+    });
+
+    // Timeline bar
+    this.ctx.strokeStyle = '#8D6E63';
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.moveTo(width * 0.08, height * 0.92);
+    this.ctx.lineTo(width * 0.92, height * 0.92);
+    this.ctx.stroke();
+
+    const timeLabels = ['0–24 h', '24–48 h', '2–3 d', '3–5 d', '5–7 d'];
+    stageConfigs.slice(0, step).forEach((cfg, idx) => {
+        this.ctx.fillStyle = '#BCAAA4';
+        this.ctx.font = `${height * 0.025}px Arial`;
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(timeLabels[idx], cfg.x * width, height * 0.97);
+    });
+
+    this.ctx.font = 'italic 10px Arial';
+    this.ctx.fillStyle = '#BDC3C7';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`Step ${step} of 5`, width - 8, height - 4);
+
+    if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+
+    this.ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PLANT TROPISMS — STEP-BY-STEP RENDERER
+// Steps:
+//   1 — Stimulus source
+//   2 — + Stimulus perception
+//   3 — + Auxin redistribution
+//   4 — + Differential cell elongation
+//   5 — + Complete growth response with labels
+// ═══════════════════════════════════════════════════════════════════════════
+renderPlantTropismsDiagram(x, y, width, height, options = {}) {
+    const {
+        tropismType = 'all',
+        mechanism   = 'overview',
+        drawingStep = 5,
+        showLabels  = true,
+        showInset   = false,
+        insetType   = 'auxin-action'
+    } = options;
+
+    this.ctx.save();
+    this.ctx.translate(x - width / 2, y - height / 2);
+
+    const step = Math.max(1, Math.min(5, drawingStep));
+
+    const stepLabels = [
+        'Step 1 – Stimulus Source',
+        'Step 2 – Stimulus Perception',
+        'Step 3 – Auxin Redistribution',
+        'Step 4 – Differential Cell Elongation',
+        'Step 5 – Complete Growth Response'
+    ];
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(stepLabels[step - 1], width / 2, height * 0.05);
+
+    // Delegate for step 5 or specific tropism
+    if (step === 5 || tropismType !== 'all') {
+        const mech = step === 5 ? mechanism : 'overview';
+        AnatomicalShapes.drawTropisms(
+            this.ctx, 0, height * 0.08, width, height * 0.86, tropismType, mech
+        );
+        if (showLabels && step === 5) {
+            this.drawLegend(8, height - 54, [
+                { color: '#FFD700', label: 'Light stimulus'         },
+                { color: '#F44336', label: 'Gravity'                },
+                { color: '#9C27B0', label: 'Auxin (IAA)'            },
+                { color: '#4CAF50', label: 'Positive growth zone'   },
+                { color: '#C5E1A5', label: 'Elongated cells'        }
+            ]);
+        }
+        if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+        this.ctx.restore();
+        return;
+    }
+
+    // Incremental build for steps 1–4 (phototropism as the model example)
+    const soilY   = height * 0.70;
+    const plantX  = width  * 0.38;
+    const lightX  = width  * 0.12;
+    const lightY  = height * 0.25;
+
+    // Soil
+    this.ctx.fillStyle = '#8D6E63';
+    this.ctx.fillRect(0, soilY, width, height - soilY);
+
+    // ── STEP 1 — Light source ────────────────────────────────────────────────
+    if (step >= 1) {
+        this.ctx.fillStyle = '#FFD700';
+        this.ctx.strokeStyle = '#FF6F00';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(lightX, lightY, width * 0.07, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+        for (let i = 0; i < 10; i++) {
+            const a = (i / 10) * Math.PI * 2;
+            this.ctx.strokeStyle = '#FFEB3B';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.moveTo(lightX + Math.cos(a) * width * 0.07, lightY + Math.sin(a) * width * 0.07);
+            this.ctx.lineTo(lightX + Math.cos(a) * width * 0.12, lightY + Math.sin(a) * width * 0.12);
+            this.ctx.stroke();
+        }
+        // Stem (vertical at this step)
+        this.ctx.strokeStyle = '#4CAF50';
+        this.ctx.lineWidth = 6;
+        this.ctx.beginPath();
+        this.ctx.moveTo(plantX, soilY);
+        this.ctx.lineTo(plantX, soilY - height * 0.50);
+        this.ctx.stroke();
+
+        if (showLabels && step === 1) {
+            this.addLabel('Light source\n(stimulus)', lightX, lightY - width * 0.10, '#FF6F00');
+            this.addLabel('Plant stem\n(before bending)', plantX + 20, soilY - height * 0.25, '#2E7D32', 'left');
+        }
+    }
+
+    // ── STEP 2 — Perception (photoreceptors in tip) ──────────────────────────
+    if (step >= 2) {
+        // Coleoptile / shoot tip
+        this.ctx.fillStyle = '#A5D6A7';
+        this.ctx.strokeStyle = '#2E7D32';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(plantX, soilY - height * 0.50, width * 0.04, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+
+        // Light rays hitting tip
+        this.ctx.strokeStyle = '#FFD700';
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([4, 3]);
+        for (let i = 0; i < 3; i++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(lightX + width * 0.07, lightY + i * height * 0.02);
+            this.ctx.lineTo(plantX - width * 0.04, soilY - height * 0.50 + i * height * 0.02);
+            this.ctx.stroke();
+        }
+        this.ctx.setLineDash([]);
+
+        if (showLabels && step === 2) {
+            this.addLabel('Shoot apex\n(photoreceptors detect light)',
+                plantX - 30, soilY - height * 0.55, '#2E7D32', 'right');
+        }
+    }
+
+    // ── STEP 3 — Auxin redistribution ───────────────────────────────────────
+    if (step >= 3) {
+        const auxinPanelX = width * 0.58;
+        const auxinPanelY = soilY - height * 0.45;
+        const panW = width * 0.30;
+        const panH = height * 0.35;
+
+        this.ctx.fillStyle = '#E8F5E9';
+        this.ctx.strokeStyle = '#388E3C';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.fillRect(auxinPanelX, auxinPanelY, panW, panH);
+        this.ctx.strokeRect(auxinPanelX, auxinPanelY, panW, panH);
+
+        // Stem cross-section (half / half)
+        const csX = auxinPanelX + panW / 2;
+        const csY = auxinPanelY + panH / 2;
+
+        // High auxin side (shaded)
+        this.ctx.fillStyle = '#9C27B0';
+        this.ctx.beginPath();
+        this.ctx.arc(csX, csY, width * 0.07, Math.PI / 2, Math.PI * 3 / 2);
+        this.ctx.lineTo(csX, csY);
+        this.ctx.closePath();
+        this.ctx.fill();
+
+        // Low auxin side
+        this.ctx.fillStyle = 'rgba(156,39,176,0.2)';
+        this.ctx.beginPath();
+        this.ctx.arc(csX, csY, width * 0.07, -Math.PI / 2, Math.PI / 2);
+        this.ctx.lineTo(csX, csY);
+        this.ctx.closePath();
+        this.ctx.fill();
+
+        this.ctx.strokeStyle = '#6A1B9A';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(csX, csY, width * 0.07, 0, Math.PI * 2);
+        this.ctx.stroke();
+
+        if (showLabels) {
+            this.ctx.font = `${height * 0.028}px Arial`;
+            this.ctx.fillStyle = '#9C27B0';
+            this.ctx.textAlign = 'right';
+            this.ctx.fillText('High auxin', csX - width * 0.08, csY + height * 0.01);
+            this.ctx.textAlign = 'left';
+            this.ctx.fillText('Low auxin',  csX + width * 0.08, csY + height * 0.01);
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('Auxin distribution', auxinPanelX + panW / 2, auxinPanelY - 10);
+        }
+    }
+
+    // ── STEP 4 — Differential elongation (bending stem) ─────────────────────
+    if (step >= 4) {
+        // Replace vertical stem with curved stem
+        this.ctx.strokeStyle = '#4CAF50';
+        this.ctx.lineWidth = 6;
+        this.ctx.beginPath();
+        this.ctx.moveTo(plantX, soilY);
+        this.ctx.quadraticCurveTo(
+            plantX - width * 0.08, soilY - height * 0.25,
+            plantX - width * 0.20, soilY - height * 0.50
+        );
+        this.ctx.stroke();
+
+        // Elongated cells (shaded side)
+        const ecs = [[plantX - width * 0.04, soilY - height * 0.20],
+                     [plantX - width * 0.08, soilY - height * 0.32],
+                     [plantX - width * 0.14, soilY - height * 0.43]];
+        this.ctx.fillStyle = '#C5E1A5';
+        this.ctx.strokeStyle = '#558B2F';
+        this.ctx.lineWidth = 1;
+        ecs.forEach(([ex, ey]) => {
+            this.ctx.fillRect(ex - width * 0.02, ey - height * 0.04, width * 0.025, height * 0.08);
+            this.ctx.strokeRect(ex - width * 0.02, ey - height * 0.04, width * 0.025, height * 0.08);
+        });
+
+        // Bending arrow
+        this.ctx.strokeStyle = '#F44336';
+        this.ctx.lineWidth = 2.5;
+        this.ctx.setLineDash([4, 3]);
+        this.ctx.beginPath();
+        this.ctx.arc(plantX, soilY - height * 0.25, width * 0.12, Math.PI, Math.PI * 1.5, false);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
+
+        if (showLabels && step === 4) {
+            this.addLabel('Cells elongate more\non shaded side →\nstem bends toward light',
+                plantX - width * 0.28, soilY - height * 0.30, '#558B2F', 'right');
+        }
+    }
+
+    this.ctx.font = 'italic 10px Arial';
+    this.ctx.fillStyle = '#BDC3C7';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`Step ${step} of 5`, width - 8, height - 4);
+
+    if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+
+    this.ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ROOT SYSTEM — STEP-BY-STEP RENDERER
+// Steps:
+//   1 — Primary root
+//   2 — + Lateral roots
+//   3 — + Root hairs
+//   4 — + Root cap & meristem
+//   5 — + Complete system with labels (delegates to AnatomicalShapes)
+// ═══════════════════════════════════════════════════════════════════════════
+renderRootSystemDiagram(x, y, width, height, options = {}) {
+    const {
+        type        = 'complete',
+        process     = 'structure',
+        drawingStep = 5,
+        showLabels  = true,
+        showInset   = false,
+        insetType   = 'root-hair-cell'
+    } = options;
+
+    this.ctx.save();
+    this.ctx.translate(x - width / 2, y - height / 2);
+
+    const step = Math.max(1, Math.min(5, drawingStep));
+
+    const stepLabels = [
+        'Step 1 – Primary Root',
+        'Step 2 – Lateral Roots',
+        'Step 3 – Root Hairs',
+        'Step 4 – Root Cap & Meristem',
+        'Step 5 – Complete Root System'
+    ];
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(stepLabels[step - 1], width / 2, height * 0.05);
+
+    // Delegate at step 5 or for a specific type
+    if (step === 5 || type !== 'complete') {
+        AnatomicalShapes.drawRootSystem(
+            this.ctx, 0, height * 0.08, width, height * 0.86, type, process
+        );
+        if (showLabels && step === 5) {
+            this.drawLegend(8, height - 54, [
+                { color: '#C8A050', label: 'Taproot system'   },
+                { color: '#B89040', label: 'Fibrous roots'    },
+                { color: '#D4B060', label: 'Root hairs'       },
+                { color: '#4488FF', label: 'Water uptake'     }
+            ]);
+        }
+        if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+        this.ctx.restore();
+        return;
+    }
+
+    // Incremental soil + taproot build for steps 1–4
+    const soilTop = height * 0.10;
+    const rootX   = width  * 0.50;
+
+    // Soil
+    const soilGrad = this.ctx.createLinearGradient(0, soilTop, 0, height);
+    soilGrad.addColorStop(0, '#8B6914');
+    soilGrad.addColorStop(1, '#5A3E08');
+    this.ctx.fillStyle = soilGrad;
+    this.ctx.fillRect(0, soilTop, width, height - soilTop);
+
+    // ── STEP 1 — Primary (tap)root ───────────────────────────────────────────
+    if (step >= 1) {
+        this.ctx.fillStyle = '#C8A050';
+        this.ctx.strokeStyle = '#8B6020';
+        this.ctx.lineWidth = 2;
+        // Main taproot body
+        this.ctx.beginPath();
+        this.ctx.moveTo(rootX - width * 0.04, soilTop + height * 0.02);
+        this.ctx.bezierCurveTo(rootX - width * 0.038, soilTop + height * 0.3,
+            rootX - width * 0.035, soilTop + height * 0.6, rootX - width * 0.033, soilTop + height * 0.84);
+        this.ctx.lineTo(rootX + width * 0.033, soilTop + height * 0.84);
+        this.ctx.bezierCurveTo(rootX + width * 0.035, soilTop + height * 0.6,
+            rootX + width * 0.038, soilTop + height * 0.3, rootX + width * 0.04, soilTop + height * 0.02);
+        this.ctx.closePath();
+        this.ctx.fill(); this.ctx.stroke();
+
+        if (showLabels && step === 1) {
+            this.addLabel('Primary taproot\n(main axis)', rootX + width * 0.06, soilTop + height * 0.40, '#C8A050', 'left');
+        }
+    }
+
+    // ── STEP 2 — Lateral roots ───────────────────────────────────────────────
+    if (step >= 2) {
+        const laterals = [
+            { y: 0.20, dir: -1, len: 0.22 }, { y: 0.28, dir:  1, len: 0.20 },
+            { y: 0.38, dir: -1, len: 0.18 }, { y: 0.46, dir:  1, len: 0.16 },
+            { y: 0.56, dir: -1, len: 0.14 }, { y: 0.64, dir:  1, len: 0.12 },
+        ];
+        this.ctx.strokeStyle = '#A88030';
+        this.ctx.lineWidth = 2.5;
+        laterals.forEach(lr => {
+            const sy = soilTop + lr.y * height;
+            this.ctx.beginPath();
+            this.ctx.moveTo(rootX + (lr.dir < 0 ? -width * 0.038 : width * 0.038), sy);
+            this.ctx.bezierCurveTo(
+                rootX + lr.dir * width * (0.04 + lr.len * 0.5), sy + height * 0.02,
+                rootX + lr.dir * width * (0.04 + lr.len * 0.8), sy + height * 0.04,
+                rootX + lr.dir * width * (0.04 + lr.len),       sy + height * 0.06
+            );
+            this.ctx.stroke();
+        });
+        if (showLabels && step === 2) {
+            this.addLabel('Lateral roots', rootX - width * 0.28, soilTop + height * 0.35, '#A88030', 'right');
+        }
+    }
+
+    // ── STEP 3 — Root hairs ─────────────────────────────────────────────────
+    if (step >= 3) {
+        this.ctx.strokeStyle = '#C8A060';
+        this.ctx.lineWidth = 1;
+        for (let i = 0; i < 12; i++) {
+            const hy = soilTop + height * (0.15 + i * 0.06);
+            for (const dir of [-1, 1]) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(rootX + dir * width * 0.04, hy);
+                this.ctx.lineTo(rootX + dir * width * (0.04 + 0.07), hy + height * 0.015);
+                this.ctx.stroke();
+            }
+        }
+        if (showLabels && step === 3) {
+            this.addLabel('Root hairs\n(absorption surface)', rootX + width * 0.14, soilTop + height * 0.22, '#C8A060', 'left');
+        }
+    }
+
+    // ── STEP 4 — Root cap & meristem zone ───────────────────────────────────
+    if (step >= 4) {
+        // Root cap
+        this.ctx.fillStyle = '#D4B060';
+        this.ctx.strokeStyle = '#9A7230';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.ellipse(rootX, soilTop + height * 0.87, width * 0.048, height * 0.04, 0, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+
+        // Meristematic zone marker
+        this.ctx.strokeStyle = '#FF9800';
+        this.ctx.lineWidth = 2;
+        this.ctx.setLineDash([4, 3]);
+        this.ctx.strokeRect(rootX - width * 0.05, soilTop + height * 0.70, width * 0.10, height * 0.14);
+        this.ctx.setLineDash([]);
+
+        if (showLabels && step === 4) {
+            this.addLabel('Root cap',        rootX + width * 0.07, soilTop + height * 0.87, '#D4B060', 'left');
+            this.addLabel('Zone of division\n(meristem)', rootX + width * 0.07, soilTop + height * 0.76, '#FF9800', 'left');
+        }
+    }
+
+    this.ctx.font = 'italic 10px Arial';
+    this.ctx.fillStyle = '#BDC3C7';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`Step ${step} of 5`, width - 8, height - 4);
+
+    if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+
+    this.ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STEM SYSTEM — STEP-BY-STEP RENDERER
+// Steps:
+//   1 — Epidermis
+//   2 — + Cortex
+//   3 — + Vascular bundles
+//   4 — + Nodes, buds & leaves
+//   5 — + Complete shoot system (delegates to AnatomicalShapes)
+// ═══════════════════════════════════════════════════════════════════════════
+renderStemSystemDiagram(x, y, width, height, options = {}) {
+    const {
+        type        = 'complete',
+        process     = 'structure',
+        drawingStep = 5,
+        showLabels  = true,
+        showInset   = false,
+        insetType   = 'node-detail'
+    } = options;
+
+    this.ctx.save();
+    this.ctx.translate(x - width / 2, y - height / 2);
+
+    const step = Math.max(1, Math.min(5, drawingStep));
+
+    const stepLabels = [
+        'Step 1 – Epidermis',
+        'Step 2 – Cortex',
+        'Step 3 – Vascular Bundles',
+        'Step 4 – Nodes, Buds & Leaves',
+        'Step 5 – Complete Shoot System'
+    ];
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(stepLabels[step - 1], width / 2, height * 0.05);
+
+    // Delegate at step 5 or specific type
+    if (step === 5 || type !== 'complete') {
+        AnatomicalShapes.drawStemSystem(
+            this.ctx, 0, height * 0.08, width, height * 0.86, type, process
+        );
+        if (showLabels && step === 5) {
+            this.drawLegend(8, height - 54, [
+                { color: '#6B8830', label: 'Epidermis'         },
+                { color: '#7AB840', label: 'Cortex'            },
+                { color: '#B04020', label: 'Xylem'             },
+                { color: '#E08050', label: 'Phloem'            },
+                { color: '#E8D880', label: 'Pith'              }
+            ]);
+        }
+        if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+        this.ctx.restore();
+        return;
+    }
+
+    // Incremental cross-section build for steps 1–4
+    const cX   = width  * 0.50;
+    const cY   = height * 0.52;
+    const maxR = width  * 0.28;
+
+    // ── STEP 1 — Epidermis ring ──────────────────────────────────────────────
+    if (step >= 1) {
+        this.ctx.fillStyle = '#3A6010';
+        this.ctx.strokeStyle = '#1A3808';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(cX, cY, maxR, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+        if (showLabels && step === 1) {
+            this.addLabel('Epidermis\n(outermost protective layer)', cX, cY - maxR - 14, '#3A6010');
+        }
+    }
+
+    // ── STEP 2 — Cortex ─────────────────────────────────────────────────────
+    if (step >= 2) {
+        this.ctx.fillStyle = '#7AB840';
+        this.ctx.beginPath();
+        this.ctx.arc(cX, cY, maxR * 0.88, 0, Math.PI * 2);
+        this.ctx.fill();
+        if (showLabels && step === 2) {
+            this.addLabel('Cortex\n(parenchyma, photosynthesis, storage)',
+                cX + maxR * 0.62, cY, '#4A7A20', 'left');
+        }
+    }
+
+    // ── STEP 3 — Vascular bundles ────────────────────────────────────────────
+    if (step >= 3) {
+        // Pith
+        this.ctx.fillStyle = '#E8D880';
+        this.ctx.beginPath();
+        this.ctx.arc(cX, cY, maxR * 0.40, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // 6 vascular bundles arranged in a ring
+        for (let i = 0; i < 6; i++) {
+            const angle = (i / 6) * Math.PI * 2;
+            const bx = cX + Math.cos(angle) * maxR * 0.62;
+            const by = cY + Math.sin(angle) * maxR * 0.62;
+
+            // Phloem (outer)
+            this.ctx.fillStyle = '#E08050';
+            this.ctx.beginPath();
+            this.ctx.arc(bx, by, maxR * 0.10, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            // Xylem (inner)
+            this.ctx.fillStyle = '#B04020';
+            this.ctx.beginPath();
+            this.ctx.arc(
+                bx + Math.cos(angle + Math.PI) * maxR * 0.06,
+                by + Math.sin(angle + Math.PI) * maxR * 0.06,
+                maxR * 0.07, 0, Math.PI * 2
+            );
+            this.ctx.fill();
+        }
+
+        if (showLabels && step === 3) {
+            this.addLabel('Vascular bundle\n(xylem + phloem)',
+                cX + maxR * 0.75, cY - maxR * 0.40, '#B04020', 'left');
+            this.addLabel('Pith\n(storage)', cX, cY, '#B8A840');
+        }
+    }
+
+    // ── STEP 4 — Node label + external shoot sketch ──────────────────────────
+    if (step >= 4) {
+        const sketX = width * 0.75;
+        const sketY = height * 0.35;
+        const sketH = height * 0.55;
+
+        // Mini shoot sketch
+        this.ctx.fillStyle = '#6B8830';
+        this.ctx.strokeStyle = '#3A5510';
+        this.ctx.lineWidth = 2;
+        this.ctx.fillRect(sketX - width * 0.02, sketY, width * 0.04, sketH);
+        this.ctx.strokeRect(sketX - width * 0.02, sketY, width * 0.04, sketH);
+
+        [0.15, 0.35, 0.55, 0.75].forEach((ny, i) => {
+            // Node band
+            this.ctx.fillStyle = '#4A7020';
+            this.ctx.fillRect(sketX - width * 0.025, sketY + ny * sketH, width * 0.05, height * 0.022);
+
+            // Axillary bud
+            this.ctx.fillStyle = '#C8A050';
+            this.ctx.beginPath();
+            this.ctx.arc(sketX + width * 0.036, sketY + ny * sketH, width * 0.014, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            // Small leaf
+            const side = i % 2 === 0 ? -1 : 1;
+            this.ctx.fillStyle = '#7AB840';
+            this.ctx.strokeStyle = '#3A6810';
+            this.ctx.lineWidth = 1;
+            this.ctx.beginPath();
+            this.ctx.moveTo(sketX + side * width * 0.02, sketY + ny * sketH + height * 0.012);
+            this.ctx.bezierCurveTo(
+                sketX + side * width * 0.10, sketY + ny * sketH - height * 0.02,
+                sketX + side * width * 0.17, sketY + ny * sketH,
+                sketX + side * width * 0.18, sketY + ny * sketH + height * 0.02
+            );
+            this.ctx.bezierCurveTo(
+                sketX + side * width * 0.12, sketY + ny * sketH + height * 0.05,
+                sketX + side * width * 0.06, sketY + ny * sketH + height * 0.04,
+                sketX + side * width * 0.02, sketY + ny * sketH + height * 0.012
+            );
+            this.ctx.fill(); this.ctx.stroke();
+        });
+
+        if (showLabels && step === 4) {
+            this.addLabel('Node', sketX + width * 0.06, sketY + height * 0.36 * 0.15, '#4A7020', 'left');
+            this.addLabel('Axillary bud', sketX + width * 0.07, sketY + height * 0.36 * 0.16 + 14, '#C8A050', 'left');
+            this.addLabel('Internode', sketX + width * 0.06, sketY + sketH * 0.55, '#6B8830', 'left');
+        }
+    }
+
+    // Bottom labels
+    if (showLabels) {
+        this.ctx.font = `bold ${height * 0.04}px Arial`;
+        this.ctx.fillStyle = '#2C3E50';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(step <= 4 ? 'Stem Cross-Section' : 'Complete Shoot System', cX * 0.70, height * 0.96);
+    }
+
+    this.ctx.font = 'italic 10px Arial';
+    this.ctx.fillStyle = '#BDC3C7';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`Step ${step} of 5`, width - 8, height - 4);
+
+    if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.28, insetType);
+
+    this.ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LEAF ARRANGEMENT — STEP-BY-STEP RENDERER
+// Steps:
+//   1 — Central stem
+//   2 — + Nodes
+//   3 — + Leaf blades
+//   4 — + Leaf venation
+//   5 — + All patterns labeled (delegates to AnatomicalShapes)
+// ═══════════════════════════════════════════════════════════════════════════
+renderLeafArrangementDiagram(x, y, width, height, options = {}) {
+    const {
+        pattern     = 'complete',
+        drawingStep = 5,
+        showLabels  = true,
+        showInset   = false,
+        insetType   = 'golden-angle'
+    } = options;
+
+    this.ctx.save();
+    this.ctx.translate(x - width / 2, y - height / 2);
+
+    const step = Math.max(1, Math.min(5, drawingStep));
+
+    const stepLabels = [
+        'Step 1 – Central Stem',
+        'Step 2 – Nodes',
+        'Step 3 – Leaf Blades',
+        'Step 4 – Leaf Venation',
+        'Step 5 – All Arrangement Patterns'
+    ];
+    this.ctx.font = 'bold 13px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText(stepLabels[step - 1], width / 2, height * 0.05);
+
+    // Delegate at step 5 or specific pattern
+    if (step === 5 || pattern !== 'complete') {
+        AnatomicalShapes.drawLeafArrangement(
+            this.ctx, 0, height * 0.08, width, height * 0.86, pattern, null
+        );
+        if (showLabels && step === 5) {
+            this.drawLegend(8, height - 42, [
+                { color: '#7AB840', label: 'Alternate'   },
+                { color: '#5A9830', label: 'Opposite'    },
+                { color: '#3A7820', label: 'Whorled'     },
+                { color: '#9ACA50', label: 'Spiral'      }
+            ]);
+        }
+        if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.26, insetType);
+        this.ctx.restore();
+        return;
+    }
+
+    // Incremental single-stem build for steps 1–4 (using alternate as model)
+    const cX  = width  * 0.50;
+    const topY = height * 0.10;
+    const botY = height * 0.88;
+    const nodeYs = [0.18, 0.30, 0.42, 0.56, 0.68, 0.80];
+
+    this.ctx.fillStyle = '#0A1A08';
+    this.ctx.fillRect(0, 0, width, height);
+
+    // ── STEP 1 — Stem ────────────────────────────────────────────────────────
+    if (step >= 1) {
+        this.ctx.fillStyle = '#6B8830';
+        this.ctx.strokeStyle = '#3A5510';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.rect(cX - width * 0.025, topY, width * 0.05, botY - topY);
+        this.ctx.fill(); this.ctx.stroke();
+
+        if (showLabels && step === 1) {
+            this.addLabel('Stem (main axis)', cX + width * 0.06, (topY + botY) / 2, '#6B8830', 'left');
+        }
+    }
+
+    // ── STEP 2 — Nodes ───────────────────────────────────────────────────────
+    if (step >= 2) {
+        this.ctx.fillStyle = '#4A7020';
+        nodeYs.forEach(ny => {
+            this.ctx.fillRect(cX - width * 0.03, ny * height, width * 0.06, height * 0.022);
+        });
+        if (showLabels && step === 2) {
+            this.addLabel('Nodes\n(points of leaf attachment)',
+                cX + width * 0.06, nodeYs[2] * height, '#4A7020', 'left');
+        }
+    }
+
+    // ── STEP 3 — Alternate leaf blades ───────────────────────────────────────
+    if (step >= 3) {
+        nodeYs.forEach((ny, i) => {
+            const side = i % 2 === 0 ? 1 : -1;
+            this.ctx.fillStyle = `hsl(${90 + i * 12}, 60%, 40%)`;
+            this.ctx.strokeStyle = '#3A6810';
+            this.ctx.lineWidth = 1;
+            this.ctx.beginPath();
+            this.ctx.moveTo(cX + side * width * 0.025, ny * height + height * 0.012);
+            this.ctx.bezierCurveTo(
+                cX + side * width * 0.15, ny * height - height * 0.03,
+                cX + side * width * 0.28, ny * height,
+                cX + side * width * 0.30, ny * height + height * 0.015
+            );
+            this.ctx.bezierCurveTo(
+                cX + side * width * 0.22, ny * height + height * 0.05,
+                cX + side * width * 0.08, ny * height + height * 0.04,
+                cX + side * width * 0.025, ny * height + height * 0.012
+            );
+            this.ctx.fill(); this.ctx.stroke();
+        });
+        if (showLabels && step === 3) {
+            this.addLabel('Alternate arrangement\n(each leaf at different height, opposite sides)',
+                cX, height * 0.94, '#7AB840');
+        }
+    }
+
+    // ── STEP 4 — Venation ────────────────────────────────────────────────────
+    if (step >= 4) {
+        nodeYs.forEach((ny, i) => {
+            const side = i % 2 === 0 ? 1 : -1;
+            const mx = cX + side * width * 0.025;
+            const my = ny * height + height * 0.012;
+
+            // Midrib
+            this.ctx.strokeStyle = '#2A5010';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(mx, my);
+            this.ctx.lineTo(mx + side * width * 0.27, my + height * 0.012);
+            this.ctx.stroke();
+
+            // Side veins
+            this.ctx.strokeStyle = '#4A7020';
+            this.ctx.lineWidth = 0.8;
+            for (let v = 1; v <= 3; v++) {
+                const vx = mx + side * width * (0.05 + v * 0.07);
+                const vy = my + height * 0.010;
+                this.ctx.beginPath();
+                this.ctx.moveTo(vx, vy);
+                this.ctx.lineTo(vx + side * width * 0.04, vy - height * 0.02);
+                this.ctx.stroke();
+                this.ctx.beginPath();
+                this.ctx.moveTo(vx, vy);
+                this.ctx.lineTo(vx + side * width * 0.04, vy + height * 0.02);
+                this.ctx.stroke();
+            }
+        });
+        if (showLabels && step === 4) {
+            this.addLabel('Reticulate (net) venation\n(typical dicot pattern)',
+                cX, height * 0.94, '#4A7020');
+        }
+    }
+
+    // Title
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.font = `bold ${height * 0.048}px Arial`;
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Phyllotaxis — Leaf Arrangement', width / 2, height * 0.05);
+
+    this.ctx.font = 'italic 10px Arial';
+    this.ctx.fillStyle = '#BDC3C7';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText(`Step ${step} of 5`, width - 8, height - 4);
+
+    if (showInset) this.drawInset(width * 0.60, 8, width * 0.38, height * 0.26, insetType);
+
+    this.ctx.restore();
+}
+Plant Biology Inset Methods (add to AnatomicalDiagramRenderer)
+// ═══════════════════════════════════════════════════════════════════════════
+// PLANT BIOLOGY INSETS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Add these cases to the drawInset switch statement:
+//   case 'stomata-mechanism':      this.drawStomataMechanismInset(width, height); break;
+//   case 'chloroplast-ultrastructure': this.drawChloroplastInset(width, height); break;
+//   case 'cohesion-tension-theory':    this.drawCohesionTensionInset(width, height); break;
+//   case 'turgor-pressure':            this.drawTurgorPressureInset(width, height); break;
+//   case 'auxin-action':               this.drawAuxinActionInset(width, height); break;
+//   case 'golden-angle':               this.drawGoldenAngleInset(width, height); break;
+//   case 'root-hair-cell':             this.drawRootHairInset(width, height); break;
+//   case 'pollen-grain-detail':        this.drawPollenGrainInset(width, height); break;
+//   case 'seed-internal-anatomy':      this.drawSeedAnatomyInset(width, height); break;
+//   case 'node-detail':                this.drawNodeDetailInset(width, height); break;
+
+drawStomataMechanismInset(width, height) {
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Stomata Opening Mechanism', width / 2, 18);
+
+    // Two columns: open / closed
+    const cols = [
+        { label: 'Open (turgid)', x: width * 0.28, open: true,  color: '#66BB6A' },
+        { label: 'Closed (flaccid)', x: width * 0.72, open: false, color: '#A5D6A7' }
+    ];
+    const cy = height * 0.52;
+
+    cols.forEach(col => {
+        // Guard cells
+        this.ctx.fillStyle = col.color;
+        this.ctx.strokeStyle = '#2E7D32';
+        this.ctx.lineWidth = 2;
+
+        if (col.open) {
+            this.ctx.beginPath();
+            this.ctx.ellipse(col.x - width * 0.07, cy, width * 0.06, height * 0.18, -0.3, 0, Math.PI * 2);
+            this.ctx.fill(); this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.ellipse(col.x + width * 0.07, cy, width * 0.06, height * 0.18, 0.3, 0, Math.PI * 2);
+            this.ctx.fill(); this.ctx.stroke();
+            // Pore
+            this.ctx.fillStyle = '#1A1A2E';
+            this.ctx.beginPath();
+            this.ctx.ellipse(col.x, cy, width * 0.04, height * 0.12, 0, 0, Math.PI * 2);
+            this.ctx.fill();
+        } else {
+            this.ctx.beginPath();
+            this.ctx.ellipse(col.x - width * 0.05, cy, width * 0.05, height * 0.18, 0, 0, Math.PI * 2);
+            this.ctx.fill(); this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.ellipse(col.x + width * 0.05, cy, width * 0.05, height * 0.18, 0, 0, Math.PI * 2);
+            this.ctx.fill(); this.ctx.stroke();
+            // Closed line
+            this.ctx.strokeStyle = '#1B5E20';
+            this.ctx.lineWidth = 3;
+            this.ctx.beginPath();
+            this.ctx.moveTo(col.x, cy - height * 0.18);
+            this.ctx.lineTo(col.x, cy + height * 0.18);
+            this.ctx.stroke();
+        }
+
+        this.ctx.fillStyle = '#2C3E50';
+        this.ctx.font = 'bold 9px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(col.label, col.x, cy + height * 0.26);
+        this.ctx.font = '8px Arial';
+        this.ctx.fillStyle = '#9C27B0';
+        this.ctx.fillText(col.open ? 'K⁺ in → H₂O in' : 'K⁺ out → H₂O out', col.x, cy + height * 0.36);
+    });
+}
+
+drawChloroplastInset(width, height) {
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Chloroplast Structure', width / 2, 18);
+
+    const cx = width / 2, cy = height * 0.52;
+
+    // Outer/inner membrane
+    this.ctx.fillStyle = '#E8F5E9';
+    this.ctx.strokeStyle = '#2E7D32';
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.ellipse(cx, cy, width * 0.42, height * 0.36, 0, 0, Math.PI * 2);
+    this.ctx.fill(); this.ctx.stroke();
+
+    // Stroma
+    this.ctx.fillStyle = '#C8E6C9';
+    this.ctx.beginPath();
+    this.ctx.ellipse(cx, cy, width * 0.36, height * 0.30, 0, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    // Granum stack
+    this.ctx.fillStyle = '#1B5E20';
+    for (let i = 0; i < 4; i++) {
+        this.ctx.fillRect(cx - width * 0.12, cy - height * 0.16 + i * height * 0.08, width * 0.24, height * 0.05);
+    }
+
+    // Labels
+    this.ctx.font = '8px Arial';
+    this.ctx.fillStyle = '#1B5E20';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText('Granum', cx + width * 0.14, cy - height * 0.05);
+    this.ctx.fillText('(thylakoid stack)', cx + width * 0.14, cy + height * 0.03);
+    this.ctx.fillStyle = '#388E3C';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText('Stroma', cx - width * 0.14, cy + height * 0.22);
+    this.ctx.fillStyle = '#2E7D32';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Outer membrane', cx, cy - height * 0.38);
+}
+
+drawCohesionTensionInset(width, height) {
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Cohesion-Tension Theory', width / 2, 18);
+
+    // Column representing xylem vessel
+    const vx = width / 2;
+    this.ctx.fillStyle = '#A0522D';
+    this.ctx.strokeStyle = '#654321';
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeRect(vx - width * 0.08, height * 0.12, width * 0.16, height * 0.75);
+
+    // Water column (blue)
+    this.ctx.fillStyle = '#2196F3';
+    this.ctx.fillRect(vx - width * 0.06, height * 0.14, width * 0.12, height * 0.71);
+
+    // Upward arrows (tension)
+    this.ctx.fillStyle = '#FFFFFF';
+    for (let i = 0; i < 4; i++) {
+        const ay = height * (0.25 + i * 0.16);
+        this.ctx.beginPath();
+        this.ctx.moveTo(vx, ay);
+        this.ctx.lineTo(vx - 5, ay + 12);
+        this.ctx.lineTo(vx + 5, ay + 12);
+        this.ctx.fill();
+    }
+
+    // Labels
+    this.ctx.font = '8px Arial';
+    this.ctx.fillStyle = '#2196F3';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText('Transpiration', vx + width * 0.12, height * 0.18);
+    this.ctx.fillText('pull (tension)', vx + width * 0.12, height * 0.26);
+    this.ctx.fillStyle = '#1565C0';
+    this.ctx.fillText('H₂O cohesion', vx + width * 0.12, height * 0.50);
+    this.ctx.fillStyle = '#0D47A1';
+    this.ctx.fillText('Root pressure', vx + width * 0.12, height * 0.80);
+}
+
+drawTurgorPressureInset(width, height) {
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Turgor Pressure', width / 2, 18);
+
+    const cols = [
+        { label: 'Low turgor', x: width * 0.28, r: 0.14, waterCount: 3, color: '#A5D6A7' },
+        { label: 'High turgor', x: width * 0.72, r: 0.20, waterCount: 9, color: '#43A047' }
+    ];
+    const cy = height * 0.52;
+
+    cols.forEach(col => {
+        this.ctx.fillStyle = col.color;
+        this.ctx.strokeStyle = '#2E7D32';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(col.x, cy, col.r * width, 0, Math.PI * 2);
+        this.ctx.fill(); this.ctx.stroke();
+
+        // Water molecules
+        this.ctx.fillStyle = '#2196F3';
+        for (let i = 0; i < col.waterCount; i++) {
+            const angle = (i / col.waterCount) * Math.PI * 2;
+            const r = col.r * width * 0.55;
+            this.ctx.beginPath();
+            this.ctx.arc(col.x + Math.cos(angle) * r, cy + Math.sin(angle) * r, 4, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+
+        this.ctx.fillStyle = '#2C3E50';
+        this.ctx.font = 'bold 9px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(col.label, col.x, cy + col.r * width + 16);
+    });
+
+    // Osmosis arrow
+    this.ctx.strokeStyle = '#9C27B0';
+    this.ctx.lineWidth = 2;
+    this.ctx.setLineDash([4, 3]);
+    this.ctx.beginPath();
+    this.ctx.moveTo(width * 0.42, cy);
+    this.ctx.lineTo(width * 0.52, cy);
+    this.ctx.stroke();
+    this.ctx.setLineDash([]);
+    this.ctx.fillStyle = '#9C27B0';
+    this.ctx.font = '8px Arial';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Osmosis', width / 2, cy + 14);
+}
+
+drawAuxinActionInset(width, height) {
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Auxin (IAA) Action', width / 2, 18);
+
+    // Cell wall acidification model
+    const steps = [
+        { y: 0.25, label: '1. Auxin binds receptor', color: '#9C27B0' },
+        { y: 0.42, label: '2. H⁺ pumped into wall', color: '#F44336' },
+        { y: 0.58, label: '3. Wall loosened (acidic)', color: '#FF9800' },
+        { y: 0.75, label: '4. Cell elongates', color: '#4CAF50' }
+    ];
+
+    steps.forEach((s, i) => {
+        this.ctx.fillStyle = s.color;
+        this.ctx.beginPath();
+        this.ctx.arc(width * 0.12, s.y * height, 8, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.font = '9px Arial';
+        this.ctx.fillStyle = '#2C3E50';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText(s.label, width * 0.20, s.y * height + 4);
+
+        if (i < steps.length - 1) {
+            this.ctx.strokeStyle = '#BDC3C7';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(width * 0.12, s.y * height + 10);
+            this.ctx.lineTo(width * 0.12, steps[i + 1].y * height - 10);
+            this.ctx.stroke();
+        }
+    });
+
+    this.ctx.font = 'italic 8px Arial';
+    this.ctx.fillStyle = '#7F8C8D';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Acid growth hypothesis', width / 2, height * 0.90);
+}
+
+drawGoldenAngleInset(width, height) {
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Golden Angle (137.5°)', width / 2, 18);
+
+    const cx = width / 2, cy = height * 0.52;
+
+    // Spiral of leaves using golden angle
+    for (let i = 0; i < 20; i++) {
+        const angle = i * 2.399; // radians (~137.5°)
+        const r = Math.sqrt(i) * width * 0.06;
+        const lx = cx + Math.cos(angle) * r;
+        const ly = cy + Math.sin(angle) * r;
+
+        this.ctx.fillStyle = `hsl(${80 + i * 14}, 60%, ${35 + i * 1.5}%)`;
+        this.ctx.beginPath();
+        this.ctx.arc(lx, ly, 4 + i * 0.3, 0, Math.PI * 2);
+        this.ctx.fill();
+    }
+
+    this.ctx.font = '9px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Each leaf at 137.5° from last', cx, height * 0.88);
+    this.ctx.fillText('→ maximises light capture', cx, height * 0.94);
+}
+
+drawRootHairInset(width, height) {
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Root Hair Cell', width / 2, 18);
+
+    const cx = width * 0.45, cy = height * 0.52;
+
+    // Cell body
+    this.ctx.fillStyle = '#FFF9C4';
+    this.ctx.strokeStyle = '#F9A825';
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.ellipse(cx, cy, width * 0.20, height * 0.30, 0, 0, Math.PI * 2);
+    this.ctx.fill(); this.ctx.stroke();
+
+    // Nucleus
+    this.ctx.fillStyle = '#F57C00';
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy, width * 0.06, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    // Root hair extension
+    this.ctx.fillStyle = '#FFFDE7';
+    this.ctx.strokeStyle = '#F9A825';
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.moveTo(cx + width * 0.20, cy - height * 0.05);
+    this.ctx.quadraticCurveTo(cx + width * 0.45, cy - height * 0.02, cx + width * 0.50, cy + height * 0.10);
+    this.ctx.quadraticCurveTo(cx + width * 0.48, cy + height * 0.20, cx + width * 0.22, cy + height * 0.08);
+    this.ctx.closePath();
+    this.ctx.fill(); this.ctx.stroke();
+
+    // Water arrows entering hair
+    this.ctx.fillStyle = '#2196F3';
+    for (let i = 0; i < 4; i++) {
+        this.ctx.beginPath();
+        this.ctx.arc(cx + width * (0.36 + i * 0.04), cy + height * (0.04 + i * 0.04), 3, 0, Math.PI * 2);
+        this.ctx.fill();
+    }
+
+    this.ctx.font = '9px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText('Root hair', cx + width * 0.22, cy - height * 0.20);
+    this.ctx.fillText('(extension)', cx + width * 0.22, cy - height * 0.12);
+    this.ctx.fillStyle = '#2196F3';
+    this.ctx.fillText('H₂O →', cx + width * 0.53, cy + height * 0.10);
+}
+
+drawPollenGrainInset(width, height) {
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Pollen Grain Structure', width / 2, 18);
+
+    const cx = width / 2, cy = height * 0.50;
+    const pr = width * 0.22;
+
+    // Outer wall (exine)
+    this.ctx.fillStyle = '#FF9800';
+    this.ctx.strokeStyle = '#E65100';
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy, pr, 0, Math.PI * 2);
+    this.ctx.fill(); this.ctx.stroke();
+
+    // Spiky surface
+    for (let i = 0; i < 14; i++) {
+        const angle = (i / 14) * Math.PI * 2;
+        this.ctx.fillStyle = '#BF360C';
+        this.ctx.beginPath();
+        this.ctx.moveTo(cx + Math.cos(angle) * pr, cy + Math.sin(angle) * pr);
+        this.ctx.lineTo(cx + Math.cos(angle - 0.15) * (pr - 5), cy + Math.sin(angle - 0.15) * (pr - 5));
+        this.ctx.lineTo(cx + Math.cos(angle + 0.15) * (pr - 5), cy + Math.sin(angle + 0.15) * (pr - 5));
+        this.ctx.fill();
+    }
+
+    // Inner wall (intine)
+    this.ctx.fillStyle = '#FFF8E1';
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy, pr * 0.80, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    // Nuclei
+    this.ctx.fillStyle = '#9C27B0';
+    this.ctx.beginPath();
+    this.ctx.arc(cx - pr * 0.22, cy, pr * 0.18, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.fillStyle = '#673AB7';
+    this.ctx.beginPath();
+    this.ctx.arc(cx + pr * 0.22, cy, pr * 0.12, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    // Labels
+    this.ctx.font = '8px Arial';
+    this.ctx.fillStyle = '#E65100';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText('Exine (outer)', cx - pr - 4, cy - pr * 0.30);
+    this.ctx.fillStyle = '#9C27B0';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText('Veg. nucleus', cx + pr + 4, cy - height * 0.05);
+    this.ctx.fillText('Gen. nucleus', cx + pr + 4, cy + height * 0.08);
+}
+
+drawSeedAnatomyInset(width, height) {
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Seed Internal Anatomy', width / 2, 18);
+
+    const cx = width / 2, cy = height * 0.52;
+
+    // Seed coat
+    this.ctx.fillStyle = '#8D6E63';
+    this.ctx.strokeStyle = '#5D4037';
+    this.ctx.lineWidth = 2;
+    this.ctx.beginPath();
+    this.ctx.ellipse(cx, cy, width * 0.36, height * 0.36, 0, 0, Math.PI * 2);
+    this.ctx.fill(); this.ctx.stroke();
+
+    // Cotyledons
+    this.ctx.fillStyle = '#AED581';
+    [[-0.14, 0], [0.14, 0]].forEach(([dx, dy]) => {
+        this.ctx.beginPath();
+        this.ctx.ellipse(cx + dx * width, cy + dy * height, width * 0.14, height * 0.24, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.strokeStyle = '#558B2F';
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke();
+    });
+
+    // Embryonic axis
+    this.ctx.fillStyle = '#FFEB3B';
+    this.ctx.fillRect(cx - width * 0.03, cy - height * 0.20, width * 0.06, height * 0.40);
+
+    // Plumule / radicle tips
+    this.ctx.fillStyle = '#66BB6A';
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy - height * 0.22, width * 0.04, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.fillStyle = '#FDD835';
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy + height * 0.22, width * 0.04, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    this.ctx.font = '8px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText('Plumule →', cx - width * 0.04, cy - height * 0.23);
+    this.ctx.fillText('Cotyledons →', cx - width * 0.04, cy + height * 0.02);
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText('← Radicle', cx + width * 0.06, cy + height * 0.23);
+    this.ctx.fillStyle = '#5D4037';
+    this.ctx.fillText('← Seed coat', cx + width * 0.38, cy - height * 0.28);
+}
+
+drawNodeDetailInset(width, height) {
+    this.ctx.font = 'bold 12px Arial';
+    this.ctx.fillStyle = '#2C3E50';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('Node Anatomy', width / 2, 18);
+
+    const cx = width / 2, cy = height * 0.52;
+
+    // Internode (stem segment)
+    this.ctx.fillStyle = '#7AB840';
+    this.ctx.strokeStyle = '#3A6810';
+    this.ctx.lineWidth = 2;
+    this.ctx.fillRect(cx - width * 0.06, height * 0.15, width * 0.12, height * 0.70);
+    this.ctx.strokeRect(cx - width * 0.06, height * 0.15, width * 0.12, height * 0.70);
+
+    // Node band
+    this.ctx.fillStyle = '#4A7020';
+    this.ctx.fillRect(cx - width * 0.07, cy - height * 0.04, width * 0.14, height * 0.08);
+
+    // Axillary bud
+    this.ctx.fillStyle = '#C8A050';
+    this.ctx.strokeStyle = '#8B6020';
+    this.ctx.lineWidth = 1.5;
+    this.ctx.beginPath();
+    this.ctx.ellipse(cx + width * 0.10, cy, width * 0.06, height * 0.06, 0, 0, Math.PI * 2);
+    this.ctx.fill(); this.ctx.stroke();
+
+    // Leaf base (petiole attachment)
+    this.ctx.fillStyle = '#66BB6A';
+    this.ctx.beginPath();
+    this.ctx.moveTo(cx + width * 0.06, cy - height * 0.02);
+    this.ctx.bezierCurveTo(cx + width * 0.18, cy - height * 0.06,
+        cx + width * 0.32, cy - height * 0.04, cx + width * 0.38, cy);
+    this.ctx.bezierCurveTo(cx + width * 0.32, cy + height * 0.04,
+        cx + width * 0.18, cy + height * 0.06, cx + width * 0.06, cy + height * 0.02);
+    this.ctx.fill();
+
+    // Labels
+    this.ctx.font = '8px Arial';
+    this.ctx.fillStyle = '#4A7020';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText('Node', cx - width * 0.10, cy + height * 0.02);
+    this.ctx.fillStyle = '#C8A050';
+    this.ctx.textAlign = 'left';
+    this.ctx.fillText('Axillary bud', cx + width * 0.18, cy - height * 0.08);
+    this.ctx.fillStyle = '#66BB6A';
+    this.ctx.fillText('Leaf base', cx + width * 0.36, cy + height * 0.12);
+    this.ctx.fillStyle = '#7AB840';
+    this.ctx.textAlign = 'right';
+    this.ctx.fillText('Internode', cx - width * 0.10, height * 0.30);
+}
+Also add these cases to the existing drawInset switch statement:
+case 'stomata-mechanism':
+    this.drawStomataMechanismInset(width, height);
+    break;
+case 'chloroplast-ultrastructure':
+    this.drawChloroplastInset(width, height);
+    break;
+case 'cohesion-tension-theory':
+    this.drawCohesionTensionInset(width, height);
+    break;
+case 'turgor-pressure':
+    this.drawTurgorPressureInset(width, height);
+    break;
+case 'auxin-action':
+    this.drawAuxinActionInset(width, height);
+    break;
+case 'golden-angle':
+    this.drawGoldenAngleInset(width, height);
+    break;
+case 'root-hair-cell':
+    this.drawRootHairInset(width, height);
+    break;
+case 'pollen-grain-detail':
+    this.drawPollenGrainInset(width, height);
+    break;
+case 'seed-internal-anatomy':
+    this.drawSeedAnatomyInset(width, height);
+    break;
+case 'node-detail':
+    this.drawNodeDetailInset(width, height);
+    break;
